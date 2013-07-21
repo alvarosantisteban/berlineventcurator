@@ -1,0 +1,6 @@
+<resources>
+    <declare-styleable name="MyCalendarView">
+        <attr name="eventsNumber" format="integer"/>
+    </declare-styleable>
+</resources>
+

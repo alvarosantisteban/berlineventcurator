@@ -1,0 +1,93 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context=".AboutActivity" >
+
+    <TextView
+        android:id="@+id/my_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/development"
+        android:layout_below="@+id/development"
+        android:text="@string/my_name"
+        android:textAlignment="textEnd" />
+
+    <TextView
+        android:id="@+id/code"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/my_name"
+        android:layout_below="@+id/my_name"
+        android:layout_marginTop="64dp"
+        android:text="@string/code"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/codeUrl"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/my_name"
+        android:layout_below="@+id/code"
+        android:text="@string/code_url" />
+
+    <TextView
+        android:id="@+id/email"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/my_name"
+        android:layout_below="@+id/my_name"
+        android:layout_marginTop="15dp"
+        android:text="@string/email"
+        android:textStyle="bold"  />
+
+    <TextView
+        android:id="@+id/email_address"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/code"
+        android:layout_below="@+id/email"
+        android:text="@string/email_address" />
+
+    <ImageView
+        android:id="@+id/logo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/development"
+        android:layout_alignParentLeft="true"
+        android:layout_marginBottom="30dp"
+        android:contentDescription="@string/logo_content_description"
+        android:src="@drawable/oso_berlin_icon" />
+
+    <TextView
+        android:id="@+id/development"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:text="@string/development"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/version"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/logo"
+        android:layout_alignLeft="@+id/app_name"
+        android:text="@string/version"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/app_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/version"
+        android:layout_toRightOf="@+id/logo"
+        android:text="@string/app_name"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+</RelativeLayout>

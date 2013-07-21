@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.alvarosantisteban.berlincurator"
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+    <uses-sdk
+        android:minSdkVersion="14"
+        android:targetSdkVersion="17" />
+
+    <permission
+        android:name="com.alvarosantisteban.berlincurator.permission.MAPS_RECEIVE"
+        android:protectionLevel="signature" />
+
+    <uses-permission android:name="com.alvarosantisteban.berlincurator.permission.MAPS_RECEIVE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
+    <uses-feature
+        android:glEsVersion="0x00020000"
+        android:required="true" />
+
+    <application
+        android:allowBackup="true"
+        android:debuggable="true"
+        android:icon="@drawable/oso_berlin_icon"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+        <activity
+            android:name="com.alvarosantisteban.berlincurator.MainActivity"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.alvarosantisteban.berlincurator.DateActivity"
+            android:label="@string/title_activity_date" >
+        </activity>
+        <activity
+            android:name="com.alvarosantisteban.berlincurator.EventActivity"
+            android:label="@string/title_activity_event" >
+        </activity>
+        <activity
+            android:name="com.alvarosantisteban.berlincurator.CalendarActivity"
+            android:label="@string/title_activity_calendar" >
+        </activity>
+        <activity
+            android:name="com.alvarosantisteban.berlincurator.SettingsActivity"
+            android:label="@string/title_activity_settings" >
+        </activity>
+        <activity
+            android:name="com.alvarosantisteban.berlincurator.AboutActivity"
+            android:label="@string/title_activity_about" >
+        </activity>
+        
+        <activity
+            android:name="com.alvarosantisteban.berlincurator.LegalNoticesActivity"
+            android:label="@string/title_activity_legal_notices" >
+        </activity>
+
+        <meta-data
+            android:name="com.google.android.maps.v2.API_KEY"
+            android:value="AIzaSyBu5GNhAdUZzy3YWPdUcmbZnPC58m1Grto" />
+
+        
+    </application>
+
+</manifest>

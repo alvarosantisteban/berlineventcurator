@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <MultiSelectListPreference
+        android:key="multilist_sites"
+        android:dialogTitle="@string/multilist_dialog"
+        android:summary="@string/multilist_summary"        
+        android:title="@string/multilist_title"
+        android:entries="@array/sites_array"
+        android:entryValues="@array/sites_array_values"
+        android:defaultValue="@array/sites_array_values"
+        />
+    <Preference 
+        android:key="about"
+        android:dialogTitle="@string/about_title"
+        android:summary="@string/about_summary"        
+        android:title="@string/about_title"
+        />
+    <Preference 
+        android:key="legal"
+        android:dialogTitle="@string/legal_title"
+        android:summary="@string/legal_summary"        
+        android:title="@string/legal_title"
+        />
+        
+</PreferenceScreen>

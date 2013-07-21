@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Title from the activities on the Action Bar -->
+    <string name="app_name">Berlin Event Curator</string>
+    <string name="title_activity_date">Events of the day</string>
+    <string name="title_activity_event">Event information</string>
+    <string name="title_activity_calendar">Calendar</string>
+    <string name="title_activity_settings">Settings</string>
+    <string name="title_activity_about">About</string>
+    <string name="title_activity_legal_notices">Legal Notices</string>
+
+    <!-- Main Activity -->
+    <string name="loading_events">Click the button to load the events</string>
+    <string name="image_find_text">Find what\'s going on in Berlin tonight!</string>
+
+    <!-- Event Activity -->
+    <string name="events_name">Name of the event</string>
+    <string name="extra_info">Event\'s info:</string>
+    <string name="description">There are no more details about this event.</string>
+    <string name="related_links">Related links:</string>
+    <string name="events_links">There are no links for this event.</string>
+    <string name="add_to_calendar">Add this event to my Google Calendar</string>
+    <string name="events_map_tag">Location of the event</string>
+    <string name="events_interesting">Mark if you find this event interesting</string>
+    <string name="events_location">There is no known location for this event</string>
+
+    <!-- Settings Activity -->
+    <string name="multilist_title">Events sources</string>
+    <string name="multilist_summary">Choose the websites from where the events will be taken</string>
+    <string name="multilist_dialog">Active websites</string>
+    <string name="about_title">About</string>
+    <string name="about_summary">General information about Berlin Event Curator</string>
+    <string name="legal_title">Legal Notices</string>
+    <string name="legal_summary">Legal attributions to services that Berlin Event Curator uses</string>
+    
+    <!-- Legal Noticies Activity -->
+    <string name="googleplay_tag">Google Play services attribution:</string>
+    <string name="googleplay_attribution">Google play services is not available at the moment</string>
+
+<!--       Info Activity -->
+    <string name="version">Version 1.0</string>
+    <string name="development">Developed by:</string>
+    <string name="my_name">Álvaro Santisteban Diéguez</string>
+    <string name="email">Contact me at:</string>
+    <string name="email_address">alvarosantisteban@gmail.com</string>
+    <string name="code">Code available at:</string>
+    <string name="code_url">https://github.com/alvarosantisteban/curator</string>
+
+    <!-- Menu item name -->
+    <string name="menu_settings">Settings</string>
+    <string name="menu_calendar">Calendar</string>
+
+    <!-- General, blanks and no infos -->
+    <string name="image_content_description">No content description for this image</string>
+    <string name="logo_content_description">Logo from Berlin Event Curator</string>
+    <string name="time_unknown"></string>
+    <string name="nothing"></string>
+    <string name="hello_world">Hello world!</string>
+
+    <!-- Arrays -->
+    <string-array name="empty_array" />
+    <string-array name="sites_array">
+        <item>I Heart Berlin</item>
+        <item>Berlin Art Parasites</item>
+        <item>Metal Concerts</item>
+        <item>White Trash</item>
+        <item>Köpi\'s events</item>
+        <item>Goth Datum</item>
+        <item>Stress Faktor</item>
+        <item>Index</item>
+    </string-array>
+    
+    <string-array name="default_sites_array">
+        <item>I Heart Berlin</item>
+        <item>White Trash</item>
+        <item>Köpi\'s events</item>
+        <item>Goth Datum</item>
+        <item>Stress Faktor</item>
+        <item>Index</item>
+    </string-array>
+    <string-array name="sites_array_values">
+        <item>I Heart Berlin</item>
+        <item>Berlin Art Parasites</item>
+        <item>Metal Concerts</item>
+        <item>White Trash</item>
+        <item>Köpi\'s events</item>
+        <item>Goth Datum</item>
+        <item>Stress Faktor</item>
+        <item>Index</item>
+    </string-array>
+
+    
+
+</resources>
