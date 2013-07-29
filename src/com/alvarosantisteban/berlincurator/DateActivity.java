@@ -1,18 +1,23 @@
 package com.alvarosantisteban.berlincurator;
 
+import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
+import com.j256.ormlite.dao.RuntimeExceptionDao;
+
 import android.app.ActionBar;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -34,7 +39,7 @@ import android.widget.Toast;
  * @author Alvaro Santisteban 2013 - alvarosantisteban@gmail.com
  *
  */
-public class DateActivity extends Activity{
+public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 
 	public static final String EXTRA_EVENT = "com.alvarosantisteban.berlincurator.event";
 	// Settings
@@ -92,6 +97,11 @@ public class DateActivity extends Activity{
 	 */
 	private ListAdapter listAdapter;
 	
+	/**
+	 * The Database Helper that helps dealing with the db easily
+	 */
+	//private DatabaseHelper databaseHelper = null;
+	
 	final Context context = this;
 		
 	/**
@@ -112,6 +122,7 @@ public class DateActivity extends Activity{
 	    actionBar.setDisplayHomeAsUpEnabled(true);
 		
 		Intent intent = getIntent();
+		//eventsList = intent.getExtra(MainActivity.EXTRA_HTML);
 		// Get the choosen date from the calendar or from the event that the user was consulting
 		choosenDate = intent.getStringExtra(CalendarActivity.EXTRA_DATE);
 		choosenDate = intent.getStringExtra(EventActivity.EXTRA_DATE);
@@ -131,6 +142,8 @@ public class DateActivity extends Activity{
 		}
 		
 		createHeaderGroups(MainActivity.websNames);
+		
+		//databaseHelper = getHelper();
 		
 		expandableSitesList = (ExpandableListView) findViewById(R.id.expandableSitesList);
 		// Create the adapter by passing the ArrayList data
@@ -152,6 +165,8 @@ public class DateActivity extends Activity{
 		//expandableSitesList.setOnGroupCollapseListener(myCollapsedGroup);
 		// Listener for the expanded group
 		//expandableSitesList.setOnGroupExpandListener(myExpandedGroup);
+		
+		
 	}
 
 	/**
@@ -203,7 +218,7 @@ public class DateActivity extends Activity{
 	
 	/**
 	 * Loads the events from the selected websites into the list if the day is the right one
-	 */
+	 *
 	private void loadEvents(){ 
 		// Load the events for the selected websites
 		Set <Entry<String, List<Event>>> keyValue = MainActivity.events.entrySet();
@@ -218,8 +233,58 @@ public class DateActivity extends Activity{
 				}
 			}
 		}
-	}
+	}*/
 	
+	/**
+	 * Loads the events from the selected websites into the list if the day is the right one
+	 */
+	private void loadEvents(){ 
+		/*
+		// Load the events for the selected websites
+		Set <Entry<String, List<Event>>> keyValue = MainActivity.events.entrySet();
+		Iterator<Entry<String, List<Event>>> keyValueIterator = keyValue.iterator();
+		while(keyValueIterator.hasNext()){
+			Entry<String, List<Event>> entry = keyValueIterator.next();
+			List<Event> eventsList = entry.getValue();
+			for (int i=0; i<eventsList.size();i++){
+				if(eventsList.get(i).getDay().equals(choosenDate)){
+					//addEvent(entry.getKey(), eventsList.get(i));
+					addEvent(eventsList.get(i).getEventsOrigin(), eventsList.get(i));
+				}
+			}
+		}*/
+		System.out.println("LOAD EVENTS");
+		System.out.println("-----------------------------");
+		// Get our dao
+		RuntimeExceptionDao<Event, Integer> eventDao = getHelper().getEventDataDao();
+		for (int i=0; i<MainActivity.websNames.length; i++){
+		//int i=0;
+			System.out.println(MainActivity.websNames[i]);
+			List<Event> eventsFromWebsite = null;
+			try {
+				//eventsFromWebsite = eventDao.queryBuilder().where().eq("eventsOrigin",MainActivity.websNames[i]).query();
+				//eventsFromWebsite = eventDao.queryBuilder().where().eq("eventsOrigin","White Trash").query();
+				//eventsFromWebsite = eventDao.queryForAll();
+				Map<String, Object> fieldValues = new HashMap<String,Object>();
+				fieldValues.put("eventsOrigin", MainActivity.websNames[i]);
+				//eventsFromWebsite = eventDao.queryForEq("eventsOrigin", MainActivity.websNames[i]);
+				eventsFromWebsite = eventDao.queryForFieldValuesArgs(fieldValues);
+			//} catch (SQLException e) {
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.out.println("DB exception while retrieving the events from the website " +MainActivity.websNames[i]);
+			}
+			System.out.println("eventsFromWebsite.size():" +eventsFromWebsite.size());
+			for (int j = 0; j < eventsFromWebsite.size(); j++) {
+				//System.out.println(eventsFromWebsite.get(j).getName());
+				if(eventsFromWebsite.get(j).getDay().equals(choosenDate)){
+					addEvent(MainActivity.websNames[i],eventsFromWebsite.get(j));
+				}
+			}
+			//System.out.println("------------\\-----------------");
+		}
+		//System.out.println("-----------------------------");
+	}
 	
 	/**
 	 * Add an event to its corresponding group (site where it comes from)
@@ -392,5 +457,19 @@ public class DateActivity extends Activity{
 	public void onDestroy() {
 	    super.onDestroy();
 	    System.out.println(tag + "In the onDestroy() event");
+	    /*
+	    if (databaseHelper != null) {
+	        OpenHelperManager.releaseHelper();
+	        databaseHelper = null;
+	    }*/
 	}
+	
+	/*
+	private DatabaseHelper getHelper() {
+	    if (databaseHelper == null) {
+	        databaseHelper =
+	            OpenHelperManager.getHelper(this, DatabaseHelper.class);
+	    }
+	    return databaseHelper;
+	}*/
 }

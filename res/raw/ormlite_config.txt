@@ -1,0 +1,54 @@
+#
+# generated on 2013/07/29 01:32:52
+#
+# --table-start--
+dataClass=com.alvarosantisteban.berlincurator.Event
+tableName=events
+# --table-fields-start--
+# --field-start--
+fieldName=sequence
+useGetSet=true
+# --field-end--
+# --field-start--
+fieldName=name
+canBeNull=false
+useGetSet=true
+# --field-end--
+# --field-start--
+fieldName=day
+canBeNull=false
+useGetSet=true
+# --field-end--
+# --field-start--
+fieldName=hour
+useGetSet=true
+# --field-end--
+# --field-start--
+fieldName=description
+useGetSet=true
+# --field-end--
+# --field-start--
+fieldName=location
+useGetSet=true
+# --field-end--
+# --field-start--
+fieldName=links
+columnName=links
+dataPersister=SERIALIZABLE
+useGetSet=true
+# --field-end--
+# --field-start--
+fieldName=isInteresting
+useGetSet=true
+# --field-end--
+# --field-start--
+fieldName=isDescriptionInGerman
+useGetSet=true
+# --field-end--
+# --field-start--
+fieldName=eventsOrigin
+useGetSet=true
+# --field-end--
+# --table-fields-end--
+# --table-end--
+#################################

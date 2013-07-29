@@ -4,12 +4,23 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.j256.ormlite.android.apptools.OpenHelperManager;
+import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
+import com.j256.ormlite.dao.RuntimeExceptionDao;
+
 import android.content.Context;
 
 public class GothDatumEventLoader implements EventLoader {
 	
 	public final static String websiteURL = "http://www.goth-city-radio.com/dsb/dates.php";
 	public final static String webName = "Goth Datum";
+	//
+	
+	/**
+	 * The Database Helper that helps dealing with the db easily
+	 */
+	//private DatabaseHelper databaseHelper = null;
 	
 	/**
 	 * Map with names of clubs and its corresponding website url
@@ -97,11 +108,22 @@ public class GothDatumEventLoader implements EventLoader {
 				}
 				// Set the origin
 				event.setEventsOrigin(webName);
+				//addEventToDB(event);
 				events.add(event);
 			}
 		}
 		return events;		
 	}
+
+	/*
+	private void addEventToDB(Event event) {
+		databaseHelper = getHelper();
+		// Get our dao
+		RuntimeExceptionDao<Event, Integer> eventDao = getHelper().getEventDataDao();
+		// Store the event in the database
+		eventDao.create(event);
+	}
+	*/
 
 	/**
 	 * Checks if there is a corresponding link for the clubName parameter

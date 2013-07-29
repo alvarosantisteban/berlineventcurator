@@ -114,7 +114,7 @@ public class MyCalendarView extends CalendarView{
     protected void dispatchDraw(Canvas canvas) {
 		super.dispatchDraw(canvas);
 		System.out.println("dispatchDraw");
-		drawEventsNumbers(canvas);
+		//drawEventsNumbers(canvas);
 		/*
 		int x = 0;
 		int y = 0;

@@ -2,22 +2,27 @@ package com.alvarosantisteban.berlincurator;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.j256.ormlite.android.apptools.OpenHelperManager;
+import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
+import com.j256.ormlite.dao.RuntimeExceptionDao;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.graphics.Rect;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -36,9 +41,9 @@ import android.widget.Toast;
  * @author Alvaro Santisteban 2013 - alvarosantisteban@gmail.com
  *
  */
-public class MainActivity extends Activity {
+public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 
-	//public static final String EXTRA_HTML = "com.alvarosantisteban.berlincurator.html";
+	public static final String EXTRA_HTML = "com.alvarosantisteban.berlincurator.html";
 	//public static List<List<Event>> events = (ArrayList)new ArrayList <ArrayList<Event>>();
 	
 	String tag = "MainActivity";
@@ -47,6 +52,10 @@ public class MainActivity extends Activity {
 	 * The key is the date and the value its corresponding list of events.
 	 */
 	public static Map<String, List<Event>> events = (Map<String, List<Event>>)(Map<String,?>) new HashMap <String, ArrayList<Event>>();
+	public static List<Event> eventsList;
+	Map<String, List<Event>> eventsByWebsite;
+	Map<Calendar, List<Event>> eventsByDate;
+	
 	
 	public static int actionBarHeight;
 	
@@ -106,6 +115,11 @@ public static String[] websNames = {"I Heart Berlin",
 	 * The button that triggers the download and extraction of events
 	 */
     Button loadButton;
+    
+    /**
+	 * The Database Helper that helps dealing with the db easily
+	 */
+	//private DatabaseHelper databaseHelper = null;
 	
 	/**
 	 * Loads the elements from the resources
@@ -147,6 +161,9 @@ public static String[] websNames = {"I Heart Berlin",
 		context.getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true);
 		actionBarHeight = getResources().getDimensionPixelSize(tv.resourceId);
 		
+		eventsList = new ArrayList<Event>();
+		
+		//databaseHelper = getHelper();
 		
 		/*
 		calendarText.setOnClickListener(new OnClickListener() {
@@ -216,7 +233,21 @@ public static String[] websNames = {"I Heart Berlin",
 	public void onDestroy() {
 	    super.onDestroy();
 	    System.out.println(tag + "In the onDestroy() event");
+	    /*
+	    if (databaseHelper != null) {
+	        OpenHelperManager.releaseHelper();
+	        databaseHelper = null;
+	    }*/
 	}
+	
+	/*
+	private DatabaseHelper getHelper() {
+	    if (databaseHelper == null) {
+	        databaseHelper =
+	            OpenHelperManager.getHelper(this, DatabaseHelper.class);
+	    }
+	    return databaseHelper;
+	}*/
 
 	
 	/**
@@ -304,11 +335,42 @@ public static String[] websNames = {"I Heart Berlin",
 				}else{
 					// If not, we store its events
 					events.put(websNames[i], event);
+					//organizeByDays(event);
+					//events.put(event.get(0).getDay(), event);
+					for (int j = 0; j < event.size(); j++) {
+						addEventToDB(event.get(j));
+					}
 				}
 			}
+			
 			return events;
 		} 
-       
+		
+		private void addEventToDB(Event event) {
+			//databaseHelper = getHelper();
+			// Get our dao
+			RuntimeExceptionDao<Event, Integer> eventDao = getHelper().getEventDataDao();
+			// Store the event in the database
+			// Check if the event already exists
+			if(!isEventInDB(eventDao, event)){
+				eventDao.create(event);
+			}
+		}
+
+		private boolean isEventInDB(RuntimeExceptionDao<Event, Integer> eventDao, Event event) {
+			//if(eventDao.queryForMatching(event) != null){
+			Map<String, Object> fieldValues = new HashMap<String,Object>();
+			fieldValues.put("name", event.getName());
+			fieldValues.put("day", event.getDay());
+			fieldValues.put("description", event.getDescription());
+			// eooo
+			if(eventDao.queryForFieldValuesArgs(fieldValues) != null){
+				System.out.println("El evento ya existe, no se añade");
+				return true;
+			}
+			return false;
+		}
+
 		/**
 		 * If there was a problem, inform the user
 		 */
@@ -332,7 +394,9 @@ public static String[] websNames = {"I Heart Berlin",
 			loadButton.setEnabled(true);
 			// Go to the Date Activity
 			Intent intent = new Intent(context, DateActivity.class);
-			//intent.putParcelableArrayListExtra(EXTRA_HTML, result);
+			//intent.putParcelableArrayListExtra(EXTRA_HTML, (ArrayList<? extends Parcelable>) result);
+			//intent.putExtra(EXTRA_HTML, (Serializable)result);
+			//intent.putStringArrayListExtra(EXTRA_HTML, result);
 			startActivity(intent);
 			
 		}

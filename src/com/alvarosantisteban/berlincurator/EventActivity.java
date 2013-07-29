@@ -1,6 +1,5 @@
 package com.alvarosantisteban.berlincurator;
 
-
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
@@ -11,7 +10,6 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Rect;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
