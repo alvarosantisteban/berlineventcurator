@@ -1,17 +1,16 @@
 package com.alvarosantisteban.berlincurator;
 
-import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
@@ -20,7 +19,13 @@ import com.j256.ormlite.dao.RuntimeExceptionDao;
 import android.app.ActionBar;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -30,6 +35,7 @@ import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.ExpandableListView.OnGroupClickListener;
 import android.widget.ExpandableListView.OnGroupCollapseListener;
 import android.widget.ExpandableListView.OnGroupExpandListener;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,9 +50,6 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 	public static final String EXTRA_EVENT = "com.alvarosantisteban.berlincurator.event";
 	// Settings
 	private static final int RESULT_SETTINGS = 1;
-	
-	//private boolean isToday=false;
-	//private boolean isTomorrow =false;
 			
 	/**
 	 * Used for logging purposes
@@ -64,14 +67,14 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 	Calendar currentDay = Calendar.getInstance();
 	
 	/**
-	 * The TextView displaying the selected date. It may also display the words "Today" or "Tomorrow"
-	 */
-	private TextView displayedDate;
-	
-	/**
 	 * The String with the date of today in the format DD/MM/YYYY
 	 */
 	private String today = dateFormat.format(currentDay.getTime());
+	
+	/**
+	 * The TextView displaying the selected date. It may also display the words "Today" or "Tomorrow"
+	 */
+	private TextView displayedDate;
 	
 	/**
 	 * The String with the choosenDate by the user in the format DD/MM/YYYY
@@ -103,6 +106,16 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 	//private DatabaseHelper databaseHelper = null;
 	
 	final Context context = this;
+	
+	/**
+   	 * The progress bar for downloading and extracting the events
+   	 */
+	ProgressBar loadProgressBar;
+	
+	/**
+	 *  User preferences
+	 */
+	SharedPreferences sharedPref;
 		
 	/**
 	 *  Loads the elements from the resources, gets the data from the mainActitivy and calls the parsers to extract the information that
@@ -113,15 +126,44 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		System.out.println(tag +"onCreate-----------------");
+		System.out.println(tag +" onCreate-----------------");
+		
+		// Get the default shared preferences
+		sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+		
+		// --------------------------------------------------
+		// Know if its the first time the user uses the app
+		// --------------------------------------------------
+		boolean isFirstTimeApp = sharedPref.getBoolean("isFirstTimeApp", true);
+		
+		Intent intent;
+		if (isFirstTimeApp) {
+			// Go directly to First Time Activity
+			intent = new Intent(context, FirstTimeActivity.class);
+			startActivity(intent);
+		}
+		Editor editor = sharedPref.edit();
+		editor.putBoolean("isFirstTimeApp", false);
+		editor.commit();
+		
+		// --------------------------------------------------
+		// Set basic UI
+		// --------------------------------------------------
 		
 		setContentView(R.layout.activity_date);
+		expandableSitesList = (ExpandableListView) findViewById(R.id.expandableSitesList);
+		loadProgressBar = (ProgressBar)findViewById(R.id.progressLoadHtml);	
 		
-		// Enable the app's icon to act as home
-		ActionBar actionBar = getActionBar();
-	    actionBar.setDisplayHomeAsUpEnabled(true);
+		// Get the sites are meant to be shown
+		Set<String> set = sharedPref.getStringSet(SettingsFragment.KEY_PREF_MULTILIST_SITES, new HashSet<String>(Arrays.asList(FirstTimeActivity.websNames)));
+		FirstTimeActivity.websNames = set.toArray(new String[0]);
+		createHeaderGroups(FirstTimeActivity.websNames);	
+	    
+	    // --------------------------------------------------
+	 	// Display the right date
+	    // --------------------------------------------------
 		
-		Intent intent = getIntent();
+		intent = getIntent();
 		//eventsList = intent.getExtra(MainActivity.EXTRA_HTML);
 		// Get the choosen date from the calendar or from the event that the user was consulting
 		choosenDate = intent.getStringExtra(CalendarActivity.EXTRA_DATE);
@@ -129,23 +171,24 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 		displayedDate = (TextView) findViewById(R.id.date);
 		if (choosenDate == null){	
 			// The user did not select anything, the default date is today
-			displayedDate.setText("These are the events for today!");
+			displayedDate.setText(R.string.events_for_today);
 			choosenDate = today;
 		}else{
 			if (choosenDate.equals(today)){
-				displayedDate.setText("These are the events for today!");
+				displayedDate.setText(R.string.events_for_today);
 			}else if (choosenDate.equals(getTomorrow())){
-				displayedDate.setText("These are the events for tomorrow");
+				displayedDate.setText(R.string.events_for_tomorrow);
 			}else{
-				displayedDate.setText("Events for the " +choosenDate);
+				displayedDate.setText(R.string.events_for_a +choosenDate);
 			}
-		}
-		
-		createHeaderGroups(MainActivity.websNames);
+		}	
 		
 		//databaseHelper = getHelper();
 		
-		expandableSitesList = (ExpandableListView) findViewById(R.id.expandableSitesList);
+		// Enable the app's icon to act as home
+		ActionBar actionBar = getActionBar();
+		actionBar.setDisplayHomeAsUpEnabled(true);
+		
 		// Create the adapter by passing the ArrayList data
 		listAdapter = new ListAdapter(DateActivity.this, websitesList);
 		// Attach the adapter to the expandableList
@@ -239,51 +282,28 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 	 * Loads the events from the selected websites into the list if the day is the right one
 	 */
 	private void loadEvents(){ 
-		/*
-		// Load the events for the selected websites
-		Set <Entry<String, List<Event>>> keyValue = MainActivity.events.entrySet();
-		Iterator<Entry<String, List<Event>>> keyValueIterator = keyValue.iterator();
-		while(keyValueIterator.hasNext()){
-			Entry<String, List<Event>> entry = keyValueIterator.next();
-			List<Event> eventsList = entry.getValue();
-			for (int i=0; i<eventsList.size();i++){
-				if(eventsList.get(i).getDay().equals(choosenDate)){
-					//addEvent(entry.getKey(), eventsList.get(i));
-					addEvent(eventsList.get(i).getEventsOrigin(), eventsList.get(i));
-				}
-			}
-		}*/
 		System.out.println("LOAD EVENTS");
 		System.out.println("-----------------------------");
 		// Get our dao
 		RuntimeExceptionDao<Event, Integer> eventDao = getHelper().getEventDataDao();
-		for (int i=0; i<MainActivity.websNames.length; i++){
-		//int i=0;
-			System.out.println(MainActivity.websNames[i]);
+		for (int i=0; i<FirstTimeActivity.websNames.length; i++){
+			System.out.println(FirstTimeActivity.websNames[i]);
 			List<Event> eventsFromWebsite = null;
 			try {
-				//eventsFromWebsite = eventDao.queryBuilder().where().eq("eventsOrigin",MainActivity.websNames[i]).query();
-				//eventsFromWebsite = eventDao.queryBuilder().where().eq("eventsOrigin","White Trash").query();
-				//eventsFromWebsite = eventDao.queryForAll();
 				Map<String, Object> fieldValues = new HashMap<String,Object>();
-				fieldValues.put("eventsOrigin", MainActivity.websNames[i]);
-				//eventsFromWebsite = eventDao.queryForEq("eventsOrigin", MainActivity.websNames[i]);
+				fieldValues.put("eventsOrigin", FirstTimeActivity.websNames[i]);
+				fieldValues.put("day", choosenDate);
 				eventsFromWebsite = eventDao.queryForFieldValuesArgs(fieldValues);
 			//} catch (SQLException e) {
 			} catch (Exception e) {
 				e.printStackTrace();
-				System.out.println("DB exception while retrieving the events from the website " +MainActivity.websNames[i]);
+				System.out.println("DB exception while retrieving the events from the website " +FirstTimeActivity.websNames[i]);
 			}
 			System.out.println("eventsFromWebsite.size():" +eventsFromWebsite.size());
 			for (int j = 0; j < eventsFromWebsite.size(); j++) {
-				//System.out.println(eventsFromWebsite.get(j).getName());
-				if(eventsFromWebsite.get(j).getDay().equals(choosenDate)){
-					addEvent(MainActivity.websNames[i],eventsFromWebsite.get(j));
-				}
+				addEvent(FirstTimeActivity.websNames[i],eventsFromWebsite.get(j));
 			}
-			//System.out.println("------------\\-----------------");
 		}
-		//System.out.println("-----------------------------");
 	}
 	
 	/**
@@ -358,7 +378,7 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 			  // If the group does not contain events, tell the user
 			  if(headerInfo.getEventsNumber() == 0){
 				  Toast toast = Toast.makeText(getBaseContext(), "There are no events to show for " + headerInfo.getName(), Toast.LENGTH_SHORT);
-				  toast.setGravity(Gravity.TOP, 0, MainActivity.actionBarHeight);
+				  toast.setGravity(Gravity.TOP, 0, FirstTimeActivity.actionBarHeight);
 				  toast.show();
 				  // Avoid propagation = the group is not expanded/collapsed
 				  return true;
@@ -419,13 +439,32 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
         if (item.getItemId() == R.id.menu_calendar) {
 			Intent i2 = new Intent(this, CalendarActivity.class);
 			startActivity(i2);
-		} else if (item.getItemId() == android.R.id.home) {
+		}else if (item.getItemId() == R.id.menu_refresh_events) {
+			// Create a connection
+			ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+		    NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+		    // Check if is possible to establish a connection
+		    if (networkInfo != null && networkInfo.isConnected()) {
+				DownloadWebpageTask2 download = new DownloadWebpageTask2();
+				// Execute the asyncronous task of downloading the websites
+				download.execute();
+		    } else {
+		    	// Inform the user that there is no network connection available
+		    	Toast toast = Toast.makeText(getBaseContext(), R.string.no_network, Toast.LENGTH_LONG);
+		    	toast.setGravity(Gravity.TOP, 0, FirstTimeActivity.actionBarHeight);
+		    	toast.show();
+		        System.out.println(R.string.no_network);
+		    }
+		}else if (item.getItemId() == R.id.menu_settings) {
+			Intent i = new Intent(this, SettingsActivity.class);
+			startActivityForResult(i, RESULT_SETTINGS);
+		}
+		/*else if (item.getItemId() == android.R.id.home) {
 			// app icon in action bar clicked; go home
 			Intent intent = new Intent(this, MainActivity.class);
 			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 			startActivity(intent);
-		}
- 
+		}*/
         return true;
     }
 	
@@ -472,4 +511,160 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 	    }
 	    return databaseHelper;
 	}*/
+	
+	/** 
+     * Uses AsyncTask to create a task away from the main UI thread. 
+     * This task takes the creates several HttpUrlConnection to download the html from different websites. 
+     * Afterwards, the several lists of Events are created and the execution goes to the Date Activity.
+    */
+	public class DownloadWebpageTask2 extends AsyncTask<Void, String, Integer> {
+		
+		/**
+		 * Makes the progressBar visible
+		 */
+		protected void onPreExecute(){
+	    	System.out.println("onPreExecute");
+	    	loadProgressBar.setVisibility(View.VISIBLE);
+	    	// Inform the user
+	    	publishProgress("Start", "");
+		}
+		
+		/**
+		 * Downloads the htmls and creates the lists of Events. 
+		 * Detects any possible problem during the download of the website or the extraction of events.
+		 * @return 
+		 * 
+		 */
+		protected Integer doInBackground(Void... params) { 
+			int numOfNewEvents = 0;
+			// Load the events from the selected websites
+			for (int i=0; i<FirstTimeActivity.websNames.length; i++){
+				List<Event> eventsFromAWebsite = null;
+				if (FirstTimeActivity.websNames[i].equals("I Heart Berlin")){
+					System.out.println("Ihearberlin dentro");
+					eventsFromAWebsite = EventLoaderFactory.newIHeartBerlinEventLoader().load(context);
+				}else if(FirstTimeActivity.websNames[i].equals("Berlin Art Parasites")){
+					System.out.println("artParasites dentro");
+					eventsFromAWebsite = EventLoaderFactory.newArtParasitesEventLoader().load(context);
+				}else if(FirstTimeActivity.websNames[i].equals("Metal Concerts")){
+					System.out.println("metalConcerts dentro");
+					eventsFromAWebsite = EventLoaderFactory.newMetalConcertsEventLoader().load(context);
+				}else if(FirstTimeActivity.websNames[i].equals("White Trash")){
+					System.out.println("whitetrash dentro");
+					eventsFromAWebsite = EventLoaderFactory.newWhiteTrashEventLoader().load(context);
+				}else if(FirstTimeActivity.websNames[i].equals("Köpi's events")){
+					System.out.println("koepi dentro");
+					eventsFromAWebsite = EventLoaderFactory.newKoepiEventLoader().load(context);
+				}else if(FirstTimeActivity.websNames[i].equals("Goth Datum")){
+					System.out.println("goth dentro");
+					eventsFromAWebsite = EventLoaderFactory.newGothDatumEventLoader().load(context);
+				}else if(FirstTimeActivity.websNames[i].equals("Stress Faktor")){
+					System.out.println("Stresssssss faktor dentro");
+					eventsFromAWebsite = EventLoaderFactory.newStressFaktorEventLoader().load(context);
+				}else if(FirstTimeActivity.websNames[i].equals("Index")){
+					System.out.println("Index dentro");
+					eventsFromAWebsite = EventLoaderFactory.newIndexEventLoader().load(context);
+				}else{
+					return null;
+				}
+				// If there was a problem loading the events we tell the user
+				if (eventsFromAWebsite == null){
+					// Distinguish the situation where the event is null because the Berlin Art Parasites website is not checked
+					if(!(FirstTimeActivity.websNames[i].equals("Berlin Art Parasites") && !ArtParasitesEventLoader.isBerlinWeekend())){
+						System.out.println("Event is null");
+						publishProgress("Exception", FirstTimeActivity.websNames[i]);	
+					}
+				}else{
+					// Add the events from this website to the DB
+					for (int j = 0; j < eventsFromAWebsite.size(); j++) {
+						if(addEventToDB(eventsFromAWebsite.get(j))){
+							numOfNewEvents++;
+						}
+					}
+				}
+			}
+			// Inform the user
+			publishProgress("Finish",Integer.valueOf(numOfNewEvents).toString());
+			return numOfNewEvents;
+		} 
+		
+		/**
+		 * Adds an event to the DB if it does not already exist.
+		 * 
+		 * @param event The event to be added
+		 * @return true if the event was added, false otherwise.
+		 */
+		private boolean addEventToDB(Event event) {
+			// Get our dao
+			RuntimeExceptionDao<Event, Integer> eventDao = getHelper().getEventDataDao();
+			// Check if the event already exists in the DB
+			if(!isEventInDB(eventDao, event)){
+				// Store the event in the database
+				eventDao.create(event);
+				return true;
+			}
+			return false;
+		}
+
+		/**
+		 * Checks if an event is already in the DB. To determinate it, checks the name, day and description of an event.
+		 * 
+		 * @param eventDao Our DAO for the Events table
+		 * @param event The event to be checked its presence in the DB
+		 * @return true if the event is already in the DB
+		 */
+		private boolean isEventInDB(RuntimeExceptionDao<Event, Integer> eventDao, Event event) {
+			Map<String, Object> fieldValues = new HashMap<String,Object>();
+			fieldValues.put("name", event.getName());
+			fieldValues.put("day", event.getDay());
+			fieldValues.put("description", event.getDescription());
+			if(eventDao.queryForFieldValuesArgs(fieldValues) != null){
+				//System.out.println("El evento ya existe, no se añade.");
+				return true;
+			}
+			return false;
+		}
+
+		/**
+		 * Informs the user of the state of the process of events download.
+		 */
+		protected void onProgressUpdate(String... progress) {
+    		System.out.println("Estoy en onProgressUpdate:"+progress[0]);
+    		if (progress[0].equals("Start")){
+    			Toast toast = Toast.makeText(context, R.string.searching, Toast.LENGTH_LONG);
+    			toast.setGravity(Gravity.TOP, 0, FirstTimeActivity.actionBarHeight);
+		    	toast.show();
+    		}else if (progress[0].equals("Exception")){
+    			Toast toast = Toast.makeText(context, "There were problems downloading the content from: " +progress[1] +" It's events won't be displayed.", Toast.LENGTH_LONG);
+    			toast.setGravity(Gravity.TOP, 0, FirstTimeActivity.actionBarHeight);
+		    	toast.show();
+    		}else if (progress[0].equals("Finish")){
+    			if (Integer.parseInt(progress[1]) > 0){
+    				Toast toast = Toast.makeText(context, progress[1] +R.string.new_events, Toast.LENGTH_LONG);
+        			toast.setGravity(Gravity.TOP, 0, FirstTimeActivity.actionBarHeight);
+    		    	toast.show();
+    			}else{
+    				Toast toast = Toast.makeText(context, R.string.no_new_events, Toast.LENGTH_LONG);
+        			toast.setGravity(Gravity.TOP, 0, FirstTimeActivity.actionBarHeight);
+    		    	toast.show();
+    			}
+    		}
+    		//loadProgressBar.setProgress(progress[0].intValue());
+		}
+		
+		/**
+		* Goes to the Date Activity and hides the progressBar.
+        */
+		protected void onPostExecute(Integer result) {
+			System.out.println("onPostExecute------------>");
+			loadProgressBar.setVisibility(View.GONE);
+			// Reload the Date Activity if there are new events
+			if (result > 0){
+				Intent intent = new Intent(context, DateActivity.class);
+				startActivity(intent);
+			}
+			
+		}
+	}
+
 }

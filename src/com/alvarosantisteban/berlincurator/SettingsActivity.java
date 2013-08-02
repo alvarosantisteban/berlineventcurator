@@ -35,7 +35,7 @@ public class SettingsActivity extends Activity  {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
 			// app icon in action bar clicked; go home
-			Intent intent = new Intent(this, MainActivity.class);
+			Intent intent = new Intent(this, DateActivity.class);
 			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 			startActivity(intent);
 		}

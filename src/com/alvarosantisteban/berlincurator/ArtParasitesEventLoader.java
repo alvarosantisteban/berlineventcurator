@@ -33,7 +33,7 @@ public class ArtParasitesEventLoader implements EventLoader {
 	 * 
 	 * @return true if the day when the function is running is thursday, friday, saturday or sunday. False otherwise.
 	 */
-	private boolean isBerlinWeekend() {
+	public static boolean isBerlinWeekend() {
 		Calendar calendar = Calendar.getInstance();
 		int day = calendar.get(Calendar.DAY_OF_WEEK); 
 		return (day== Calendar.THURSDAY || day == Calendar.FRIDAY || day == Calendar.SATURDAY || day == Calendar.SUNDAY);

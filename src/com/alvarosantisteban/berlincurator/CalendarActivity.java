@@ -38,7 +38,7 @@ public class CalendarActivity extends Activity {
             public void onSelectedDayChange(CalendarView view, int year, int month,
                     int dayOfMonth) {
                  Toast toast = Toast.makeText(getApplicationContext(), "You selected to see the events for the day: "+dayOfMonth +"/" +(++month) +"/" +year, Toast.LENGTH_LONG);
-                 toast.setGravity(Gravity.TOP, 0, MainActivity.actionBarHeight);
+                 toast.setGravity(Gravity.TOP, 0, FirstTimeActivity.actionBarHeight);
 				 toast.show();
                  selectedDay = dayOfMonth;
                  Intent intent = new Intent(context, DateActivity.class);
@@ -67,7 +67,7 @@ public class CalendarActivity extends Activity {
 			public void onClick(View arg0) {
 				System.out.println("ecooooo2------------");
 				Toast toast = Toast.makeText(getApplicationContext(), "View=" +((CalendarView) arg0).getDate(), Toast.LENGTH_LONG);
-                toast.setGravity(Gravity.TOP, 0, MainActivity.actionBarHeight);
+                toast.setGravity(Gravity.TOP, 0, FirstTimeActivity.actionBarHeight);
 				toast.show();
 			}
 			

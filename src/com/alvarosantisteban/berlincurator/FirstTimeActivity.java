@@ -9,20 +9,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
-
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -41,7 +36,7 @@ import android.widget.Toast;
  * @author Alvaro Santisteban 2013 - alvarosantisteban@gmail.com
  *
  */
-public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
+public class FirstTimeActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 
 	public static final String EXTRA_HTML = "com.alvarosantisteban.berlincurator.html";
 	//public static List<List<Event>> events = (ArrayList)new ArrayList <ArrayList<Event>>();
@@ -99,7 +94,7 @@ public static String[] websNames = {"I Heart Berlin",
 	/**
 	 * The set of urls from where the html will be downloaded
 	 */
-   	String[] stringUrls = {IHeartBerlinEventLoader.websiteURL,
+   	public static String[] stringUrls = {IHeartBerlinEventLoader.websiteURL,
 				   			ArtParasitesEventLoader.websiteURL,
 				   			MetalConcertsEventLoader.websiteURL,
 				   			WhiteTrashEventLoader.websiteURL,
@@ -126,7 +121,7 @@ public static String[] websNames = {"I Heart Berlin",
 	 */
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
+		setContentView(R.layout.activity_first_time);
 		System.out.println("--------------- BEGIN ------------");
 		
 		context = this;
@@ -137,13 +132,12 @@ public static String[] websNames = {"I Heart Berlin",
 		
 		
 		// This is suppose to be used to clear the data from shared preferences
-		
-		Editor editor = sharedPref.edit();
-		editor.clear();
-		editor.commit();
+		//Editor editor = sharedPref.edit();
+		//editor.clear();
+		//editor.commit();
 		 
 		
-		// Check which sites are meant to be shown
+		// Get the sites are meant to be shown
 		Set<String> set = sharedPref.getStringSet(SettingsFragment.KEY_PREF_MULTILIST_SITES, new HashSet<String>(Arrays.asList(websNames)));
 		websNames = set.toArray(new String[0]);
 
@@ -163,17 +157,16 @@ public static String[] websNames = {"I Heart Berlin",
 		
 		eventsList = new ArrayList<Event>();
 		
-		//databaseHelper = getHelper();
-		
+		// CODIGO PARA BORRAR DE LA BASE DE DATOS
+		// The first one creates problems, the second one takes longer
+		//context.deleteDatabase("berlincurator.db");
 		/*
-		calendarText.setOnClickListener(new OnClickListener() {
-			
-			// Goes to the Calendar activity
-			public void onClick(View v) {
-				Intent intent = new Intent(context, CalendarActivity.class);
-				startActivity(intent);
-			}
-		});
+		try {
+			TableUtils.clearTable(getConnectionSource(), Event.class);
+		} catch (java.sql.SQLException e) {
+			System.out.println("PETATTTSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS");
+			e.printStackTrace();
+		}
 		*/
 		
 		loadButton.setOnClickListener(new OnClickListener() {
@@ -196,7 +189,7 @@ public static String[] websNames = {"I Heart Berlin",
 			    } else {
 			    	// Inform the user that there is no network connection available
 			    	Toast toast = Toast.makeText(getBaseContext(), "No network connection available.", Toast.LENGTH_LONG);
-			    	toast.setGravity(Gravity.TOP, 0, MainActivity.actionBarHeight);
+			    	toast.setGravity(Gravity.TOP, 0, FirstTimeActivity.actionBarHeight);
 			    	toast.show();
 			        System.out.println("No network connection available.");
 			    }
@@ -256,7 +249,7 @@ public static String[] websNames = {"I Heart Berlin",
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.main, menu);
+		getMenuInflater().inflate(R.menu.first_time, menu);
 		//getMenuInflater().inflate(R.menu.preferences, menu);
 		return true;
 	}
@@ -273,13 +266,14 @@ public static String[] websNames = {"I Heart Berlin",
  
         return true;
     }
+
     
     /** 
      * Uses AsyncTask to create a task away from the main UI thread. 
      * This task takes the creates several HttpUrlConnection to download the html from different websites. 
      * Afterwards, the several lists of Events are created and the execution goes to the Date Activity.
     */
-	private class DownloadWebpageTask extends AsyncTask<String, String, Map<String,List<Event>>> {
+	public class DownloadWebpageTask extends AsyncTask<String, String, Map<String,List<Event>>> {
 		
 		/**
 		 * Makes the progressBar visible
@@ -347,7 +341,6 @@ public static String[] websNames = {"I Heart Berlin",
 		} 
 		
 		private void addEventToDB(Event event) {
-			//databaseHelper = getHelper();
 			// Get our dao
 			RuntimeExceptionDao<Event, Integer> eventDao = getHelper().getEventDataDao();
 			// Store the event in the database
@@ -365,7 +358,7 @@ public static String[] websNames = {"I Heart Berlin",
 			fieldValues.put("description", event.getDescription());
 			// eooo
 			if(eventDao.queryForFieldValuesArgs(fieldValues) != null){
-				System.out.println("El evento ya existe, no se añade");
+				System.out.println("El evento ya existe, no se añade.");
 				return true;
 			}
 			return false;
@@ -378,7 +371,7 @@ public static String[] websNames = {"I Heart Berlin",
     		System.out.println("Estoy en onProgressUpdate:"+progress[0]);
     		if (progress[0].equals("Exception")){
     			Toast toast = Toast.makeText(context, "There were problems downloading the content from: " +progress[1] +" It's events won't be displayed.", Toast.LENGTH_LONG);
-    			toast.setGravity(Gravity.TOP, 0, MainActivity.actionBarHeight);
+    			toast.setGravity(Gravity.TOP, 0, FirstTimeActivity.actionBarHeight);
 		    	toast.show();
     		}
     		//loadProgressBar.setProgress(progress[0].intValue());

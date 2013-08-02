@@ -31,17 +31,16 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="com.alvarosantisteban.berlincurator.MainActivity"
+            android:name="com.alvarosantisteban.berlincurator.FirstTimeActivity"
             android:label="@string/app_name" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name="com.alvarosantisteban.berlincurator.DateActivity"
             android:label="@string/title_activity_date" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity
             android:name="com.alvarosantisteban.berlincurator.EventActivity"
@@ -59,7 +58,6 @@
             android:name="com.alvarosantisteban.berlincurator.AboutActivity"
             android:label="@string/title_activity_about" >
         </activity>
-        
         <activity
             android:name="com.alvarosantisteban.berlincurator.LegalNoticesActivity"
             android:label="@string/title_activity_legal_notices" >
@@ -68,8 +66,6 @@
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="AIzaSyBu5GNhAdUZzy3YWPdUcmbZnPC58m1Grto" />
-
-        
     </application>
 
 </manifest>

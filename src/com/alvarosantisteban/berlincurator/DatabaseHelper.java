@@ -64,7 +64,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 	@Override
 	public void onUpgrade(SQLiteDatabase db, ConnectionSource connectionSource, int oldVersion, int newVersion) {
 		try {
-			Log.i(DatabaseHelper.class.getName(), "onUpgrade");
+			Log.i(DatabaseHelper.class.getName(), "/////////////////////////////////////onUpgrade");
 			TableUtils.dropTable(connectionSource, Event.class, true);
 			// after we drop the old databases, we create the new ones
 			onCreate(db, connectionSource);

@@ -249,8 +249,8 @@ public class EventActivity extends Activity {
 	    System.out.println(event.getName() +"with id:" +event.getId() +" is interesting =" +event.isTheEventInteresting());
 	    if (view.getId() == R.id.checkbox_interesting) {
 			if (checked){
-				Toast toast = Toast.makeText(getBaseContext(), "You marked this event as interesting", Toast.LENGTH_SHORT);
-				toast.setGravity(Gravity.TOP, 0, MainActivity.actionBarHeight);
+				Toast toast = Toast.makeText(getBaseContext(), R.string.mark_event, Toast.LENGTH_SHORT);
+				toast.setGravity(Gravity.TOP, 0, FirstTimeActivity.actionBarHeight);
 				toast.show();
 				saveInSp("cb"+event.getId(), true);
 			}else{

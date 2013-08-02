@@ -4,5 +4,16 @@
           android:icon="@drawable/icon_calendar_dark"
           android:showAsAction="ifRoom"
            />
+    <item android:id="@+id/menu_refresh_events"
+          android:title="@string/menu_refresh"
+          android:icon="@drawable/icon_refresh_dark"
+          android:showAsAction="ifRoom"
+           />
+    <item
+        android:id="@+id/menu_settings"
+        android:title="@string/menu_settings"
+        android:orderInCategory="100"
+        android:icon="@drawable/icon_settings_dark"/>
+    
 
 </menu>

@@ -40,10 +40,11 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
         MultiSelectListPreference connectionPref = (MultiSelectListPreference) findPreference(PREFS_FILE_NAME);
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
         Editor editor = sharedPref.edit();
-		editor.clear();
-		editor.commit();
-        Set<String> set = sharedPref.getStringSet(KEY_PREF_MULTILIST_SITES, new HashSet<String>(Arrays.asList(MainActivity.websNames)));
+		//editor.clear();
+		//editor.commit();
+        Set<String> set = sharedPref.getStringSet(KEY_PREF_MULTILIST_SITES, new HashSet<String>(Arrays.asList(FirstTimeActivity.websNames)));
         connectionPref.setValues(set);
+        editor.commit();
         
         // Set the intent for the About preference (triggered when clicked)
         findPreference("about").setIntent(new Intent(getActivity(), AboutActivity.class));
@@ -63,7 +64,7 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
             // Get the new values
             Set<String> set = sharedPreferences.getStringSet(key, null);
             // Set the new values on the list
-    		MainActivity.websNames = set.toArray(new String[0]);
+    		FirstTimeActivity.websNames = set.toArray(new String[0]);
     		// Set the values on the shown list
             connectionPref.setValues(set);
         }
