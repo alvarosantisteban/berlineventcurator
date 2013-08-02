@@ -1,8 +1,6 @@
 package com.alvarosantisteban.berlincurator;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -14,6 +12,7 @@ import com.j256.ormlite.dao.RuntimeExceptionDao;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -45,12 +44,10 @@ public class FirstTimeActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 	/**
 	 * The map with the events.
 	 * The key is the date and the value its corresponding list of events.
-	 */
+	 *
 	public static Map<String, List<Event>> events = (Map<String, List<Event>>)(Map<String,?>) new HashMap <String, ArrayList<Event>>();
 	public static List<Event> eventsList;
-	Map<String, List<Event>> eventsByWebsite;
-	Map<Calendar, List<Event>> eventsByDate;
-	
+	*/
 	
 	public static int actionBarHeight;
 	
@@ -75,20 +72,6 @@ public class FirstTimeActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 									GothDatumEventLoader.webName, 
 									StressFaktorEventLoader.webName, 
 									IndexEventLoader.webName};
-									
-	
-	/**
-* The total set of webs where the events can be extracted
-*
-public static String[] websNames = {"I Heart Berlin", 
-								"Berlin Art Parasites", 
-								"Metal Concerts", 
-								"White Trash", 
-								"Köpi\'s events", 
-								"Goth Datum", 
-								"Stress Faktor",
-								"Index"};
-*/
 
 
 	/**
@@ -106,6 +89,7 @@ public static String[] websNames = {"I Heart Berlin",
    	 * The progress bar for downloading and extracting the events
    	 */
 	ProgressBar loadProgressBar;
+	
 	/**
 	 * The button that triggers the download and extraction of events
 	 */
@@ -140,6 +124,11 @@ public static String[] websNames = {"I Heart Berlin",
 		// Get the sites are meant to be shown
 		Set<String> set = sharedPref.getStringSet(SettingsFragment.KEY_PREF_MULTILIST_SITES, new HashSet<String>(Arrays.asList(websNames)));
 		websNames = set.toArray(new String[0]);
+		
+		Editor editor = sharedPref.edit();
+		editor.putBoolean("isFirstTimeApp", false);
+		editor.commit();
+		
 
 		/*
 		 * To check that the websites are there
@@ -155,7 +144,7 @@ public static String[] websNames = {"I Heart Berlin",
 		context.getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true);
 		actionBarHeight = getResources().getDimensionPixelSize(tv.resourceId);
 		
-		eventsList = new ArrayList<Event>();
+		//eventsList = new ArrayList<Event>();
 		
 		// CODIGO PARA BORRAR DE LA BASE DE DATOS
 		// The first one creates problems, the second one takes longer
@@ -179,6 +168,9 @@ public static String[] websNames = {"I Heart Berlin",
 				// prepare for a progress bar dialog	
 				loadButton.setEnabled(false);
 				
+				Toast toast = Toast.makeText(getBaseContext(), "Downloading the events.\nIt might take a few seconds, be patient ;)", Toast.LENGTH_LONG);
+		    	toast.setGravity(Gravity.TOP, 0, FirstTimeActivity.actionBarHeight);
+		    	toast.show();
 				ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 			    NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
 			    // Check if is possible to establish a connection
@@ -188,7 +180,7 @@ public static String[] websNames = {"I Heart Berlin",
 					download.execute(stringUrls);
 			    } else {
 			    	// Inform the user that there is no network connection available
-			    	Toast toast = Toast.makeText(getBaseContext(), "No network connection available.", Toast.LENGTH_LONG);
+			    	toast = Toast.makeText(getBaseContext(), "No network connection available.", Toast.LENGTH_LONG);
 			    	toast.setGravity(Gravity.TOP, 0, FirstTimeActivity.actionBarHeight);
 			    	toast.show();
 			        System.out.println("No network connection available.");
@@ -290,8 +282,7 @@ public static String[] websNames = {"I Heart Berlin",
 		 */
 		protected Map<String,List<Event>> doInBackground(String... urls) { 	
 			// Remove all the entries from the map
-			events.clear();
-			// TODO Instead of clearing all the events, maintain the ones that did not change
+			//events.clear();
 			// Load the events from the selected websites
 			for (int i=0; i<websNames.length; i++){
 				List<Event> event = null;
@@ -328,7 +319,7 @@ public static String[] websNames = {"I Heart Berlin",
 					publishProgress("Exception", websNames[i]);		
 				}else{
 					// If not, we store its events
-					events.put(websNames[i], event);
+					//events.put(websNames[i], event);
 					//organizeByDays(event);
 					//events.put(event.get(0).getDay(), event);
 					for (int j = 0; j < event.size(); j++) {
@@ -337,7 +328,8 @@ public static String[] websNames = {"I Heart Berlin",
 				}
 			}
 			
-			return events;
+			//return events;
+			return null;
 		} 
 		
 		private void addEventToDB(Event event) {

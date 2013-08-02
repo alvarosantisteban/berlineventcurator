@@ -82,6 +82,11 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 	public String choosenDate;
 	
 	/**
+	 * The total number of events for a choosenDate
+	 */
+	int numEvents = 0;
+	
+	/**
 	 * The expandable list with the groups and events
 	 */
 	ExpandableListView expandableSitesList;
@@ -142,9 +147,6 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 			intent = new Intent(context, FirstTimeActivity.class);
 			startActivity(intent);
 		}
-		Editor editor = sharedPref.edit();
-		editor.putBoolean("isFirstTimeApp", false);
-		editor.commit();
 		
 		// --------------------------------------------------
 		// Set basic UI
@@ -209,7 +211,11 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 		// Listener for the expanded group
 		//expandableSitesList.setOnGroupExpandListener(myExpandedGroup);
 		
-		
+		if(numEvents == 0){
+			Toast toast = Toast.makeText(getBaseContext(), "There are no events for this day. Refresh or go to another day.", Toast.LENGTH_LONG);
+	    	toast.setGravity(Gravity.TOP, 0, FirstTimeActivity.actionBarHeight);
+	    	toast.show();
+		}
 	}
 
 	/**
@@ -330,8 +336,9 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 		ArrayList<Event> eventsList = headerInfo.getEventsList();
 		// Get the size of the children list
 		int listSize = eventsList.size();
-		// Add to the counter
+		// Add to the counters
 		listSize++;
+		numEvents++;
 	 
 		// Set the sequence for the event
 		newEvent.setSequence(String.valueOf(listSize));
@@ -340,6 +347,7 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 		// Update the site with the "new" eventsList
 		headerInfo.setEventsList(eventsList);
 		headerInfo.setEventsNumber(listSize);
+		
 		 
 		//find the group position inside the list
 		groupPosition = websitesList.indexOf(headerInfo);
