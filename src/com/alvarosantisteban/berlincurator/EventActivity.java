@@ -34,6 +34,8 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
+import com.j256.ormlite.dao.RuntimeExceptionDao;
 
 
 /**
@@ -42,7 +44,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
  * @author Alvaro Santisteban 2013 - alvarosantisteban@gmail.com
  *
  */
-public class EventActivity extends Activity {
+public class EventActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 	
 	CustomScrollView scrollView;
 	LinearLayout eventLayout;
@@ -75,7 +77,7 @@ public class EventActivity extends Activity {
 			System.out.println("SUCCESSS");
 		}
 		*/
-		
+	    System.out.println(tag + "In the onCreate() event");
 		setContentView(R.layout.activity_event);
 		
 		
@@ -113,8 +115,8 @@ public class EventActivity extends Activity {
 		day.setText(event.getDay().trim());
 		
 		// Get the state of the check
-		interestingCheck.setChecked(getFromSP("cb" +event.getId()));
-		//interestingCheck.setChecked(event.isTheEventMarked()); 
+		//interestingCheck.setChecked(getFromSP("cb" +event.getId()));
+		interestingCheck.setChecked(event.isTheEventInteresting()); 
 		
 		// Get the name
 		name.setMovementMethod(LinkMovementMethod.getInstance());
@@ -248,14 +250,22 @@ public class EventActivity extends Activity {
 	    event.markEventAsInteresting(checked);
 	    System.out.println(event.getName() +"with id:" +event.getId() +" is interesting =" +event.isTheEventInteresting());
 	    if (view.getId() == R.id.checkbox_interesting) {
+	    	Toast toast;
 			if (checked){
-				Toast toast = Toast.makeText(getBaseContext(), R.string.mark_event, Toast.LENGTH_SHORT);
-				toast.setGravity(Gravity.TOP, 0, FirstTimeActivity.actionBarHeight);
-				toast.show();
-				saveInSp("cb"+event.getId(), true);
+				toast = Toast.makeText(getBaseContext(), R.string.mark_event, Toast.LENGTH_SHORT);
 			}else{
-				saveInSp("cb"+event.getId(), false);
+				toast = Toast.makeText(getBaseContext(), R.string.unmark_event, Toast.LENGTH_SHORT);
 			}
+			toast.setGravity(Gravity.TOP, 0, FirstTimeActivity.actionBarHeight);
+			toast.show();
+			// Get our dao
+			RuntimeExceptionDao<Event, Integer> eventDao = getHelper().getEventDataDao();
+			// Update the event
+			eventDao.update(event);
+			// Tell DateActivity that the event was updated and return it
+			Intent returnIntent = new Intent();
+			returnIntent.putExtra(DateActivity.EVENTS_RESULT_DATA, event);
+			setResult(DateActivity.RESULT_UPDATE, returnIntent);  
 		}
 	}
 	

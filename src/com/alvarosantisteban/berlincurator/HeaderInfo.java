@@ -48,4 +48,17 @@ public class HeaderInfo {
 	public void setEventsList(ArrayList<Event> eventsList) {
 		this.eventsList = eventsList;
 	}
+	
+	/*
+	@Override
+	public boolean equals(Object other){
+		if (other == null) return false;
+	    if (other == this) return true;
+	    if (!(other instanceof HeaderInfo))return false;
+	    HeaderInfo otherHeaderInfo = (HeaderInfo)other;
+	    if(otherHeaderInfo.getName().equals(this.getName())){
+	    	return true;
+	    }
+	    return false;
+	}*/
 }

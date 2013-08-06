@@ -22,10 +22,8 @@ import com.j256.ormlite.table.DatabaseTable;
 public class Event implements Serializable{
 	
 	public Event(){
-		this.id = UUID.randomUUID();
 	}
 	
-	  
 	/**
 	 * 
 	 */
@@ -34,7 +32,8 @@ public class Event implements Serializable{
 	/**
 	 * The unique ID from the event, which is randomly generated
 	 */
-	private final UUID id;
+	@DatabaseField(generatedId = true, useGetSet = true)
+	private int id;
 	
 	/**
 	 * The position of the event inside the list
@@ -101,8 +100,13 @@ public class Event implements Serializable{
 	@DatabaseField(useGetSet = true)
 	private String eventsOrigin = "";
 	
-	public UUID getId(){
+	public int getId(){
 		return this.id;
+	}
+	
+	public void setId(int id){
+		//Does not do anything
+		this.id = id;
 	}
 	
 	/**

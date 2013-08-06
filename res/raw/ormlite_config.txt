@@ -1,10 +1,15 @@
 #
-# generated on 2013/07/29 01:32:52
+# generated on 2013/08/05 02:19:33
 #
 # --table-start--
 dataClass=com.alvarosantisteban.berlincurator.Event
 tableName=events
 # --table-fields-start--
+# --field-start--
+fieldName=id
+generatedId=true
+useGetSet=true
+# --field-end--
 # --field-start--
 fieldName=sequence
 useGetSet=true

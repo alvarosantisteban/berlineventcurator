@@ -50,6 +50,11 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 	public static final String EXTRA_EVENT = "com.alvarosantisteban.berlincurator.event";
 	// Settings
 	private static final int RESULT_SETTINGS = 1;
+	
+	// Code return constants used to get info from Event Activity 
+	private static final int INTENT_RETURN_CODE = 1;
+	public static final int RESULT_UPDATE = 1;
+	public static final String EVENTS_RESULT_DATA = "result data";
 			
 	/**
 	 * Used for logging purposes
@@ -92,9 +97,10 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 	ExpandableListView expandableSitesList;
 	
 	/**
-	 * A LinkedHashMap with the a String as key and a HeaderInfo as value
+	 * A LinkedHashMap with the name of the website as key and its corresponding HeaderInfo as value. 
+	 * Used to make the search easier
 	 */
-	private LinkedHashMap<String, HeaderInfo> websites = new LinkedHashMap<String, HeaderInfo>();
+	private LinkedHashMap<String, HeaderInfo> websitesMap = new LinkedHashMap<String, HeaderInfo>();
 	/**
 	 * An ArrayList with the HeaderInfo of each website
 	 */
@@ -123,6 +129,15 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 	SharedPreferences sharedPref;
 		
 	/**
+	 * The position of the last touched group
+	 */
+	int lastTouchedGroupPosition;
+	/**
+	 * The position of the last child (event) touched inside  the lastTouchedGroupPosition
+	 */
+	int lastTouchedChildPosition;
+	
+	/**
 	 *  Loads the elements from the resources, gets the data from the mainActitivy and calls the parsers to extract the information that
 	 *  will be shown.
 	 *  
@@ -142,6 +157,7 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 		boolean isFirstTimeApp = sharedPref.getBoolean("isFirstTimeApp", true);
 		
 		Intent intent;
+		//isFirstTimeApp = true;
 		if (isFirstTimeApp) {
 			// Go directly to First Time Activity
 			intent = new Intent(context, FirstTimeActivity.class);
@@ -185,11 +201,16 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 			}
 		}	
 		
+		
 		//databaseHelper = getHelper();
 		
 		// Enable the app's icon to act as home
 		ActionBar actionBar = getActionBar();
 		actionBar.setDisplayHomeAsUpEnabled(true);
+		
+		// --------------------------------------------------
+		// Adapter and loading of events
+		// --------------------------------------------------
 		
 		// Create the adapter by passing the ArrayList data
 		listAdapter = new ListAdapter(DateActivity.this, websitesList);
@@ -267,25 +288,6 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 	
 	/**
 	 * Loads the events from the selected websites into the list if the day is the right one
-	 *
-	private void loadEvents(){ 
-		// Load the events for the selected websites
-		Set <Entry<String, List<Event>>> keyValue = MainActivity.events.entrySet();
-		Iterator<Entry<String, List<Event>>> keyValueIterator = keyValue.iterator();
-		while(keyValueIterator.hasNext()){
-			Entry<String, List<Event>> entry = keyValueIterator.next();
-			List<Event> eventsList = entry.getValue();
-			for (int i=0; i<eventsList.size();i++){
-				if(eventsList.get(i).getDay().equals(choosenDate)){
-					//addEvent(entry.getKey(), eventsList.get(i));
-					addEvent(eventsList.get(i).getEventsOrigin(), eventsList.get(i));
-				}
-			}
-		}
-	}*/
-	
-	/**
-	 * Loads the events from the selected websites into the list if the day is the right one
 	 */
 	private void loadEvents(){ 
 		System.out.println("LOAD EVENTS");
@@ -305,7 +307,6 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 				e.printStackTrace();
 				System.out.println("DB exception while retrieving the events from the website " +FirstTimeActivity.websNames[i]);
 			}
-			System.out.println("eventsFromWebsite.size():" +eventsFromWebsite.size());
 			for (int j = 0; j < eventsFromWebsite.size(); j++) {
 				addEvent(FirstTimeActivity.websNames[i],eventsFromWebsite.get(j));
 			}
@@ -323,12 +324,12 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 		int groupPosition = 0;
 	   
 		// Check in the hash map if the group already exists
-		HeaderInfo headerInfo = websites.get(websiteName);
+		HeaderInfo headerInfo = websitesMap.get(websiteName);
 		// Add the group if doesn't exists
 		if(headerInfo == null){
 			headerInfo = new HeaderInfo();
 			headerInfo.setName(websiteName);
-			websites.put(websiteName, headerInfo);
+			websitesMap.put(websiteName, headerInfo);
 			websitesList.add(headerInfo);
 		}
 	 
@@ -355,6 +356,22 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 	}
 	
 	/**
+	 * Populates the {@link websites} and the {@link websitesList} by creating {@link HeaderInfo} using the array of names of sites passed
+	 * in the parameter.
+	 * 
+	 * @param sitesNames the names of the sites which contain the events
+	 */
+	private void createHeaderGroups(String[] sitesNames) {
+		//System.out.println("createHeaderGroups");
+		for (int i=0; i<sitesNames.length; i++){
+			HeaderInfo headerInfo = new HeaderInfo();
+			headerInfo.setName(sitesNames[i]);
+			websitesMap.put(sitesNames[i], headerInfo);
+			websitesList.add(headerInfo);
+		}
+	}
+	
+	/**
 	 * The child listener for the events
 	 */
 	private OnChildClickListener myEventClicked =  new OnChildClickListener() {
@@ -365,11 +382,13 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 			  HeaderInfo headerInfo = websitesList.get(groupPosition);
 			  // Get the child info
 			  Event clickedEvent =  headerInfo.getEventsList().get(childPosition);
-			  // Display it or do something with it
-			  //Toast.makeText(getBaseContext(), "Clicked on Detail " + headerInfo.getName() + "/" + clickedEvent.getName(), Toast.LENGTH_LONG).show();
+			  // Update the last touched group and child position
+			  lastTouchedGroupPosition = groupPosition;
+			  lastTouchedChildPosition = childPosition;
+			  // Go the Event Activity
 			  Intent intent = new Intent(context, EventActivity.class);
 			  intent.putExtra(EXTRA_EVENT, clickedEvent);
-			  startActivity(intent);
+			  startActivityForResult(intent, INTENT_RETURN_CODE);
 			  return false;
 		  }
 	};
@@ -416,21 +435,7 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 		}
 	};
 	
-	/**
-	 * Populates the {@link websites} and the {@link websitesList} by creating {@link HeaderInfo} using the array of names of sites passed
-	 * in the parameter.
-	 * 
-	 * @param sitesNames the names of the sites which contain the events
-	 */
-	private void createHeaderGroups(String[] sitesNames) {
-		//System.out.println("createHeaderGroups");
-		for (int i=0; i<sitesNames.length; i++){
-			HeaderInfo headerInfo = new HeaderInfo();
-			headerInfo.setName(sitesNames[i]);
-			websites.put(sitesNames[i], headerInfo);
-			websitesList.add(headerInfo);
-		}
-	}
+	
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -511,6 +516,44 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 	    }*/
 	}
 	
+	/**
+	 * Called when an activity you launched exits, giving you the requestCode you started it with, 
+	 * the resultCode it returned, and any additional data from it. 
+	 * The resultCode will be RESULT_CANCELED if the activity explicitly returned that, didn't return any result, 
+	 * or crashed during its operation.
+	 * 
+	 * You will receive this call immediately before onResume() when your activity is re-starting.
+	 * 
+	 * @param requestCode The integer request code originally supplied to startActivityForResult(), allowing you to identify who this result came from.
+	 * @param resultCode The integer result code returned by the child activity through its setResult().
+	 * @param data 	An Intent, which can return result data to the caller (various data can be attached to Intent "extras").
+	 */
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+	    System.out.println(tag + "In the onActivityResult() event");
+		if (requestCode == INTENT_RETURN_CODE) {
+			if(resultCode == RESULT_UPDATE){      
+		        // The event was updated
+				Event changedEvent = (Event)data.getSerializableExtra(EVENTS_RESULT_DATA);
+				replaceAnEvent(changedEvent);
+				listAdapter.notifyDataSetChanged();
+		    }
+		}
+	}
+	
+	/**
+	 * Replaces the event pointed by lastTouchedGroupPosition and lastTouchedChildPosition for the one received as parameter
+	 * 
+	 * @param changedEvent the event that will be set in the websitesList
+	 */
+	private void replaceAnEvent(Event changedEvent) {		
+		// Get the group header of the touched event
+		HeaderInfo headerInfo = websitesList.get(lastTouchedGroupPosition);
+		// Substitute the old event for the new one
+		headerInfo.getEventsList().set(lastTouchedChildPosition, changedEvent);
+		websitesList.set(lastTouchedGroupPosition, headerInfo);
+	}
+
 	/*
 	private DatabaseHelper getHelper() {
 	    if (databaseHelper == null) {
@@ -627,7 +670,7 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 			fieldValues.put("day", event.getDay());
 			fieldValues.put("description", event.getDescription());
 			if(eventDao.queryForFieldValuesArgs(fieldValues) != null){
-				//System.out.println("El evento ya existe, no se añade.");
+				System.out.println("El evento ya existe, no se añade.");
 				return true;
 			}
 			return false;

@@ -9,6 +9,8 @@ import java.util.Set;
 
 import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
+import com.j256.ormlite.table.TableUtils;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -149,14 +151,14 @@ public class FirstTimeActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 		// CODIGO PARA BORRAR DE LA BASE DE DATOS
 		// The first one creates problems, the second one takes longer
 		//context.deleteDatabase("berlincurator.db");
-		/*
+		
 		try {
 			TableUtils.clearTable(getConnectionSource(), Event.class);
 		} catch (java.sql.SQLException e) {
 			System.out.println("PETATTTSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS");
 			e.printStackTrace();
 		}
-		*/
+		
 		
 		loadButton.setOnClickListener(new OnClickListener() {
 			

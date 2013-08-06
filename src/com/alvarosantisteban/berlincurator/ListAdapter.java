@@ -67,7 +67,7 @@ public class ListAdapter extends BaseExpandableListAdapter {
 	 * @return the View corresponding to the event at the specified position 
 	 */
 	public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
-
+		//System.out.println("GET CHILD VIEWWWWWWWWWWWWWWWWWWW");
 		Event event = (Event) getChild(groupPosition, childPosition);
 		if (convertView == null) {
 			LayoutInflater infalInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -79,11 +79,11 @@ public class ListAdapter extends BaseExpandableListAdapter {
 		//sequence.setText(detailInfo.getSequence().trim() + ") ");
 		TextView childItem = (TextView) convertView.findViewById(R.id.childItem);
 		childItem.setText("- " +Html.fromHtml(event.getName().trim()));
-		//System.out.println(event.getName() +"with id:" +event.getId() +" is interesting =" +event.isTheEventInteresting());
-	    //if(EventActivity.getFromSP("cb" +event.getId())){
 		if (event.isTheEventInteresting()){
-	    	System.out.println("getChildView - event marked");
-	    	childItem.append(" X");
+	    	//childItem.append(" XXX");
+	    	childItem.setTextColor(Color.parseColor("#427212"));
+	    }else{
+	    	childItem.setTextColor(Color.BLACK);
 	    }
 		return convertView;
 	}
