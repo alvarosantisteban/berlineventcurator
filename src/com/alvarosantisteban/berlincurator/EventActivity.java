@@ -119,7 +119,8 @@ public class EventActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 		interestingCheck.setChecked(event.isTheEventInteresting()); 
 		
 		// Get the name
-		name.setMovementMethod(LinkMovementMethod.getInstance());
+		//name.setMovementMethod(LinkMovementMethod.getInstance()); The problem with this, is that is makes the text not selectable
+		// http://stackoverflow.com/questions/8558732/listview-textview-with-linkmovementmethod-makes-list-item-unclickable
 		name.setText(Html.fromHtml(event.getName()));
 		
 		// Get the hour, if any
@@ -130,7 +131,7 @@ public class EventActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 		
 		// Get the description, if any
 		if (!event.getDescription().equals("")){
-			description.setMovementMethod(LinkMovementMethod.getInstance());
+			//description.setMovementMethod(LinkMovementMethod.getInstance());
 			description.setText(Html.fromHtml(event.getDescription()));
 		}
 		
@@ -148,7 +149,7 @@ public class EventActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 		// Get the location, if any
 		if(!event.getLocation().equals("")){
 			//location.setText(event.getLocation());
-			location.setMovementMethod(LinkMovementMethod.getInstance());
+			//location.setMovementMethod(LinkMovementMethod.getInstance());
 			location.setText(Html.fromHtml(event.getLocation()));
 			//Linkify.addLinks(location, Linkify.WEB_URLS);
 			//location.setMovementMethod(LinkMovementMethod.getInstance());
