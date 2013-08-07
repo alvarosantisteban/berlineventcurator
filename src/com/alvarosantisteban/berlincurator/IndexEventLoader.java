@@ -9,6 +9,7 @@ public class IndexEventLoader implements EventLoader {
 	
 	public final static String websiteURL = "http://www.indexberlin.de/openings-and-events";
 	public final static String webName = "Index";
+	//public final static String ART = "Art (Exhibitions, Talks, etc)";
 
 	@Override
 	public List<Event> load(Context context) {
@@ -77,6 +78,10 @@ public class IndexEventLoader implements EventLoader {
 				event.setDescription(description2[0].replace("<strong>", "Artist/s: ").replace("</strong>", ""));
 				// Set the origin
 				event.setEventsOrigin(webName);
+				// Set the Thema tag
+				event.setThemaTag(DateActivity.ART_THEMA_TAG);
+				// Set the type tag
+				event.setTypeTag(extractTypeTag(tagAndMaybeHour[0]));
 				events.add(event);
 			}
 		}
@@ -84,6 +89,19 @@ public class IndexEventLoader implements EventLoader {
 	}
 
 	
+	private String extractTypeTag(String name) {
+		if(name.contains("Talk")){
+			return DateActivity.TALK_TYPE_TAG;
+		}
+		if(name.contains("Screening")){
+			return DateActivity.SCREENING_TYPE_TAG;
+		}
+		if(name.contains("Party")){
+			return DateActivity.PARTY_TYPE_TAG;
+		}
+		return DateActivity.EXHIBITION_TYPE_TAG;
+	}
+
 	/**
 	 * THIS METHOD HAS NOT BEEN TESTED AND PROBABLY IT WONT BE NEEDED
 	 * 

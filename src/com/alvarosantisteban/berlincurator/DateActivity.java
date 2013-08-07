@@ -47,6 +47,25 @@ import android.widget.Toast;
  */
 public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 
+	// Event's thema tags
+	public final static String ART_THEMA_TAG = "Art";
+	public final static String POLITICAL_THEMA_TAG = "Political";
+	public final static String GOING_OUT_THEMA_TAG = "Going out";
+	
+	// Event's type tags
+	public final static String CONCERT_TYPE_TAG = "Concert";
+	public final static String PARTY_TYPE_TAG = "Party";
+	public final static String EXHIBITION_TYPE_TAG = "Exhibition";
+	public final static String TALK_TYPE_TAG = "Talk";
+	public final static String SCREENING_TYPE_TAG = "Screening";
+	public final static String OTHER_TYPE_TAG = "Other";
+	
+	public final static String ART_EVENTS = "Art events (Exhibitions, Talks, etc)";
+	public final static String CONCERTS = "Concerts (Rock, Metal and Punk)";
+	public final static String PARTIES = "Parties";
+	public final static String POLITICAL_EVENTS = "Political events";
+	public final static String OTHER_EVENTS = "Other (Screenings, Exhibitions, Talks, etc)";
+	
 	public static final String EXTRA_EVENT = "com.alvarosantisteban.berlincurator.event";
 	// Settings
 	private static final int RESULT_SETTINGS = 1;

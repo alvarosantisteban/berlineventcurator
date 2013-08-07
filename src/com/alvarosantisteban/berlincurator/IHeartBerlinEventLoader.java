@@ -2,6 +2,9 @@ package com.alvarosantisteban.berlincurator;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+
+import android.annotation.SuppressLint;
 import android.content.Context;
 
 public class IHeartBerlinEventLoader implements EventLoader {
@@ -78,16 +81,26 @@ public class IHeartBerlinEventLoader implements EventLoader {
 				}
 				// Set the origin
 				event.setEventsOrigin(webName);
+				// Set the type tag
+				event.setTypeTag(extractTag(nameAndRest[0].trim()));
 				events.add(event);
 			}
 		}
 		return events;
     }
 
+	private String extractTag(String text) {
+		System.out.println("text:"+text);
+		if (text.toLowerCase(Locale.getDefault()).contains("screening")){
+			return DateActivity.SCREENING_TYPE_TAG;
+		}
+		return DateActivity.OTHER_TYPE_TAG;
+	}
+
 	/**
 	 * Extract the street name from the description.
 	 * It does not get it if it's written like "NAME Str" or "NAMEstrasse".
-	 * It also misses the posible letter that it might go after the number of the street.
+	 * It also misses the possible letter that it might go after the number of the street.
 	 * 
 	 * @param description the string with the street name on it
 	 * @return the street or an empty string if it was not found

@@ -108,22 +108,30 @@ public class GothDatumEventLoader implements EventLoader {
 				}
 				// Set the origin
 				event.setEventsOrigin(webName);
-				//addEventToDB(event);
+				// Set the thema tag
+				event.setThemaTag(DateActivity.GOING_OUT_THEMA_TAG);
+				// Set the type tag
+				event.setTypeTag(extractTag(nameAndRest[0].trim()));
 				events.add(event);
 			}
 		}
 		return events;		
 	}
 
-	/*
-	private void addEventToDB(Event event) {
-		databaseHelper = getHelper();
-		// Get our dao
-		RuntimeExceptionDao<Event, Integer> eventDao = getHelper().getEventDataDao();
-		// Store the event in the database
-		eventDao.create(event);
+	/**
+	 * Extracts the tag from the event's name. To do so, searches for several key words that indicate that the event is a concert.
+	 * Warning: The last keyword, "*", is very weak.
+	 * 
+	 * @param eventsName
+	 * @return CONCERTS_TAG if one of the key words is found or PARTIES_TAG otherwise
+	 */
+	private String extractTag(String eventsName) {
+		if(eventsName.contains("live") || eventsName.contains("Festival") || eventsName.contains("+ Support") || (eventsName.contains("*") && !eventsName.contains("Party"))){
+			return DateActivity.CONCERT_TYPE_TAG;
+		}
+		return DateActivity.PARTY_TYPE_TAG;
+			
 	}
-	*/
 
 	/**
 	 * Checks if there is a corresponding link for the clubName parameter

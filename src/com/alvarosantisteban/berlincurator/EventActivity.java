@@ -133,6 +133,7 @@ public class EventActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 		if (!event.getDescription().equals("")){
 			//description.setMovementMethod(LinkMovementMethod.getInstance());
 			description.setText(Html.fromHtml(event.getDescription()));
+			description.append(event.getThemaTag() + " - " +event.getTypeTag());
 		}
 		
 		// Get the the links, if any

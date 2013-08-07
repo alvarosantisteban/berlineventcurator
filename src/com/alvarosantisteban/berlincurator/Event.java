@@ -100,6 +100,18 @@ public class Event implements Serializable{
 	@DatabaseField(useGetSet = true)
 	private String eventsOrigin = "";
 	
+	/**
+	 * The tag for the thema of this event
+	 */
+	@DatabaseField(useGetSet = true)
+	private String themaTag = "";
+	
+	/**
+	 * The tag for the type of event
+	 */
+	@DatabaseField(useGetSet = true)
+	private String typeTag = "";
+	
 	public int getId(){
 		return this.id;
 	}
@@ -237,6 +249,22 @@ public class Event implements Serializable{
 	
 	public void setEventsOrigin(String websiteName){
 		this.eventsOrigin = websiteName;
+	}
+	
+	public String getThemaTag(){
+		return this.themaTag;
+	}
+	
+	public void setThemaTag(String newThemaTag){
+		this.themaTag = newThemaTag;
+	}
+	
+	public String getTypeTag(){
+		return this.typeTag;
+	}
+	
+	public void setTypeTag(String newTypeTag){
+		this.typeTag = newTypeTag;
 	}
 	
 	public void print() {
