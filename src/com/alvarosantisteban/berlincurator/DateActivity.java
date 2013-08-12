@@ -17,6 +17,7 @@ import java.util.Set;
 import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
 import com.j256.ormlite.stmt.DeleteBuilder;
+import com.j256.ormlite.stmt.SelectArg;
 
 import android.app.ActionBar;
 import android.content.Context;
@@ -329,11 +330,18 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 		System.out.println("Deleted groups:"+deleted.size());
 		RuntimeExceptionDao<Event, Integer> eventDao = getHelper().getEventDataDao();
 		DeleteBuilder<Event, Integer> deleteBuilder = eventDao.deleteBuilder();
+
+		
 		for (int i=0; i<deleted.size(); i++){
 			try {
 				System.out.println("eventsOrigin:"+deleted.get(i));
-				deleteBuilder.where().eq("eventsOrigin", deleted.get(i));
+				//deleteBuilder.where().eq("eventsOrigin", deleted.get(i));
 				//http://ormlite.com/javadoc/ormlite-core/doc-files/ormlite_3.html#Building-Statements
+				//deleteBuilder.delete();
+				
+				// create our argument which uses a SQL ?
+				SelectArg deletedArg = new SelectArg(deleted.get(i));
+				deleteBuilder.where().eq("eventsOrigin", deletedArg);
 				deleteBuilder.delete();
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
