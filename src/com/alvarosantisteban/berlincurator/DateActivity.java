@@ -79,6 +79,8 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 	public static final String EVENTS_RESULT_DATA = "result data";
 	
 	public String[] lastSelection;
+	
+	private static Toast toast;
 			
 	/**
 	 * Used for logging purposes
@@ -172,6 +174,8 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 		
 		System.out.println(tag +" onCreate-----------------");
 		
+		toast = Toast.makeText(this, "", Toast.LENGTH_LONG);
+		
 		// Get the default shared preferences
 		sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
 		
@@ -222,7 +226,8 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 			}else if (choosenDate.equals(getTomorrow())){
 				displayedDate.setText(R.string.events_for_tomorrow);
 			}else{
-				displayedDate.setText(R.string.events_for_a +choosenDate);
+				displayedDate.setText(R.string.events_for_a);
+				displayedDate.append(" " +choosenDate);
 			}
 		}	
 		
@@ -258,9 +263,10 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 		//expandableSitesList.setOnGroupExpandListener(myExpandedGroup);
 		
 		if(numEvents == 0){
-			Toast toast = Toast.makeText(getBaseContext(), "There are no events for this day. Refresh or go to another day.", Toast.LENGTH_LONG);
-	    	toast.setGravity(Gravity.TOP, 0, FirstTimeActivity.actionBarHeight);
-	    	toast.show();
+			displayToast("There are no events for this day. Refresh or go to another day.");
+			//toast = Toast.makeText(getBaseContext(), "There are no events for this day. Refresh or go to another day.", Toast.LENGTH_LONG);
+	    	//toast.setGravity(Gravity.TOP, 0, FirstTimeActivity.actionBarHeight);
+	    	//toast.show();
 		}
 		System.out.println("----- NEW SELECTION ----- ");
 		for (int i=0; i<FirstTimeActivity.websNames.length; i++){
@@ -344,7 +350,6 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 				deleteBuilder.where().eq("eventsOrigin", deletedArg);
 				deleteBuilder.delete();
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -515,9 +520,10 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 			  HeaderInfo headerInfo = websitesList.get(groupPosition);
 			  // If the group does not contain events, tell the user
 			  if(headerInfo.getEventsNumber() == 0){
-				  Toast toast = Toast.makeText(getBaseContext(), "There are no events to show for " + headerInfo.getName(), Toast.LENGTH_SHORT);
-				  toast.setGravity(Gravity.TOP, 0, FirstTimeActivity.actionBarHeight);
-				  toast.show();
+				  displayToast("There are no events to show for " + headerInfo.getName());
+				  //Toast toast = Toast.makeText(getBaseContext(), "There are no events to show for " + headerInfo.getName(), Toast.LENGTH_SHORT);
+				  //toast.setGravity(Gravity.TOP, 0, FirstTimeActivity.actionBarHeight);
+				  //toast.show();
 				  // Avoid propagation = the group is not expanded/collapsed
 				  return true;
 			  }
@@ -574,9 +580,10 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 				download.execute(FirstTimeActivity.websNames);
 		    } else {
 		    	// Inform the user that there is no network connection available
-		    	Toast toast = Toast.makeText(getBaseContext(), R.string.no_network, Toast.LENGTH_LONG);
-		    	toast.setGravity(Gravity.TOP, 0, FirstTimeActivity.actionBarHeight);
-		    	toast.show();
+		    	displayToast(getString(R.string.no_network));
+		    	//Toast toast = Toast.makeText(getBaseContext(), R.string.no_network, Toast.LENGTH_LONG);
+		    	//toast.setGravity(Gravity.TOP, 0, FirstTimeActivity.actionBarHeight);
+		    	//toast.show();
 		        System.out.println(R.string.no_network);
 		    }
 		}else if (item.getItemId() == R.id.menu_settings) {
@@ -673,6 +680,13 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 	    }
 	    return databaseHelper;
 	}*/
+	
+	private void displayToast(final String message) {
+	    //toast.cancel();
+	    toast.setText(message); 
+	    toast.setGravity(Gravity.TOP, 0, FirstTimeActivity.actionBarHeight);
+	    toast.show();
+	}
 	
 	/** 
      * Uses AsyncTask to create a task away from the main UI thread. 
@@ -800,22 +814,26 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 		protected void onProgressUpdate(String... progress) {
     		System.out.println("Estoy en onProgressUpdate:"+progress[0]);
     		if (progress[0].equals("Start")){
-    			Toast toast = Toast.makeText(context, R.string.searching, Toast.LENGTH_LONG);
-    			toast.setGravity(Gravity.TOP, 0, FirstTimeActivity.actionBarHeight);
-		    	toast.show();
+    			displayToast(getString(R.string.searching));
+    			//Toast toast = Toast.makeText(context, R.string.searching, Toast.LENGTH_SHORT);
+    			//toast.setGravity(Gravity.TOP, 0, FirstTimeActivity.actionBarHeight);
+		    	//toast.show();
     		}else if (progress[0].equals("Exception")){
-    			Toast toast = Toast.makeText(context, "There were problems downloading the content from: " +progress[1] +" It's events won't be displayed.", Toast.LENGTH_LONG);
-    			toast.setGravity(Gravity.TOP, 0, FirstTimeActivity.actionBarHeight);
-		    	toast.show();
+    			displayToast("There were problems downloading the content from: " +progress[1] +" It's events won't be displayed.");
+    			//Toast toast = Toast.makeText(context, "There were problems downloading the content from: " +progress[1] +" It's events won't be displayed.", Toast.LENGTH_LONG);
+    			//toast.setGravity(Gravity.TOP, 0, FirstTimeActivity.actionBarHeight);
+		    	//toast.show();
     		}else if (progress[0].equals("Finish")){
     			if (Integer.parseInt(progress[1]) > 0){
-    				Toast toast = Toast.makeText(context, progress[1] +R.string.new_events, Toast.LENGTH_LONG);
-        			toast.setGravity(Gravity.TOP, 0, FirstTimeActivity.actionBarHeight);
-    		    	toast.show();
+    				displayToast("Added " +progress[1] +" new events");
+    				//Toast toast = Toast.makeText(context, "Added " +progress[1] +" new events", Toast.LENGTH_LONG);
+        			//toast.setGravity(Gravity.TOP, 0, FirstTimeActivity.actionBarHeight);
+    		    	//toast.show();
     			}else{
-    				Toast toast = Toast.makeText(context, R.string.no_new_events, Toast.LENGTH_LONG);
-        			toast.setGravity(Gravity.TOP, 0, FirstTimeActivity.actionBarHeight);
-    		    	toast.show();
+    				displayToast(getString(R.string.no_new_events));
+    				//Toast toast = Toast.makeText(context, R.string.no_new_events, Toast.LENGTH_LONG);
+        			//toast.setGravity(Gravity.TOP, 0, FirstTimeActivity.actionBarHeight);
+    		    	//toast.show();
     			}
     		}
     		//loadProgressBar.setProgress(progress[0].intValue());

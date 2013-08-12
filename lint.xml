@@ -3,4 +3,7 @@
     <issue id="NewApi">
         <ignore path="src/com/alvarosantisteban/berlincurator/DateActivity.java" />
     </issue>
+    <issue id="ShowToast">
+        <ignore path="src/com/alvarosantisteban/berlincurator/DateActivity.java" />
+    </issue>
 </lint>

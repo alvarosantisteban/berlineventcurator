@@ -17,11 +17,10 @@
     <!-- Date Activity -->
     <string name="events_for_today">These are the events for today</string>
     <string name="events_for_tomorrow">These are the events for tomorrow</string>
-    <string name="events_for_a">The events for </string>
+    <string name="events_for_a">The events for the</string>
     <string name="no_network">No network connection available</string>
     <string name="searching">Searching for new events</string>
     <string name="no_new_events">There are no new events to be added</string>
-    <string name="new_events"> new events added</string>
 
     <!-- Event Activity -->
     <string name="events_name">Name of the event</string>
