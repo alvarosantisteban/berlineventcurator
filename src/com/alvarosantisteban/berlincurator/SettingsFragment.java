@@ -2,6 +2,7 @@ package com.alvarosantisteban.berlincurator;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 import android.content.Intent;
@@ -61,12 +62,24 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 		if (key.equals(KEY_PREF_MULTILIST_SITES)) {
         	System.out.println("key multilist changed");
             MultiSelectListPreference connectionPref = (MultiSelectListPreference) findPreference(key);
+            // Save the old values
+            Editor editor = sharedPreferences.edit();
+            editor.putStringSet("lastSelection", new HashSet<String>(Arrays.asList(FirstTimeActivity.websNames)));
+            editor.commit();
             // Get the new values
             Set<String> set = sharedPreferences.getStringSet(key, null);
             // Set the new values on the list
     		FirstTimeActivity.websNames = set.toArray(new String[0]);
     		// Set the values on the shown list
             connectionPref.setValues(set);
+            // Remove the events from the non selected
+            Iterator<String> iter = set.iterator();
+            while (iter.hasNext()) {
+              System.out.println(iter.next());
+            }
+            Intent i = new Intent(getActivity(), DateActivity.class);
+			startActivity(i);
+			
         }
 		
 	}

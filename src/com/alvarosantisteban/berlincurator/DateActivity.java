@@ -1,5 +1,6 @@
 package com.alvarosantisteban.berlincurator;
 
+import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -15,6 +16,7 @@ import java.util.Set;
 
 import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
+import com.j256.ormlite.stmt.DeleteBuilder;
 
 import android.app.ActionBar;
 import android.content.Context;
@@ -74,6 +76,8 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 	private static final int INTENT_RETURN_CODE = 1;
 	public static final int RESULT_UPDATE = 1;
 	public static final String EVENTS_RESULT_DATA = "result data";
+	
+	public String[] lastSelection;
 			
 	/**
 	 * Used for logging purposes
@@ -174,6 +178,7 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 		// Know if its the first time the user uses the app
 		// --------------------------------------------------
 		boolean isFirstTimeApp = sharedPref.getBoolean("isFirstTimeApp", true);
+		lastSelection = sharedPref.getStringSet("lastSelection", new HashSet<String>(Arrays.asList(FirstTimeActivity.websNames))).toArray(new String[0]);
 		
 		Intent intent;
 		//isFirstTimeApp = true;
@@ -255,6 +260,85 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 			Toast toast = Toast.makeText(getBaseContext(), "There are no events for this day. Refresh or go to another day.", Toast.LENGTH_LONG);
 	    	toast.setGravity(Gravity.TOP, 0, FirstTimeActivity.actionBarHeight);
 	    	toast.show();
+		}
+		System.out.println("----- NEW SELECTION ----- ");
+		for (int i=0; i<FirstTimeActivity.websNames.length; i++){
+			System.out.println(FirstTimeActivity.websNames[i]);
+		}
+		System.out.println("----- LAST SELECTION ----- ");
+		for (int i=0; i<lastSelection.length; i++){
+			System.out.println(lastSelection[i]);
+		}
+		if(!Arrays.equals(FirstTimeActivity.websNames, lastSelection)){
+			checkDifferencesBetweenSelection(FirstTimeActivity.websNames, lastSelection);
+			//checkDifferencesBetweenSelection(new HashSet<String>(Arrays.asList(FirstTimeActivity.websNames)), new HashSet<String>(Arrays.asList(lastSelection)));
+			lastSelection = FirstTimeActivity.websNames;
+			Editor editor = sharedPref.edit();
+            editor.putStringSet("lastSelection", new HashSet<String>(Arrays.asList(FirstTimeActivity.websNames)));
+            editor.commit();
+		}
+	}
+	
+/*
+	private void checkDifferencesBetweenSelection(HashSet<String> newSelection, HashSet<String> oldSelection) {
+		//Set.difference(newSelection, oldSelection);
+		
+	}*/
+
+	private void checkDifferencesBetweenSelection(String[] newSelection, String[] oldSelection) {
+		System.out.println("checkDifferencesBetweenSelection");
+		// Check the added groups
+		List<String> added = new ArrayList<String>();
+		for(int i=0; i<newSelection.length;i++){
+			for(int j=0; j<oldSelection.length;j++){
+				if(newSelection[i].equals(oldSelection[j])){
+					j = oldSelection.length;
+				}else{
+					if(j == oldSelection.length-1){
+						added.add(newSelection[i]);
+					}
+				}
+			}
+		}
+		// Download the events of the new added thema/type
+		System.out.println("New added groups:"+added.size());
+		// Create a connection
+		ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+		// Check if is possible to establish a connection
+		if (networkInfo != null && networkInfo.isConnected()) {
+			DownloadWebpageTask2 download = new DownloadWebpageTask2();
+			// Execute the asyncronous task of downloading the websites
+			download.execute(added.toArray(new String[added.size()]));
+		}
+		// Check the deleted groups
+		List<String> deleted = new ArrayList<String>();
+		for(int i=0; i<oldSelection.length;i++){
+			for(int j=0; j<newSelection.length;j++){
+				if(oldSelection[i].equals(newSelection[j])){
+					j = newSelection.length;
+				}else{
+					if(j == newSelection.length-1){
+						deleted.add(oldSelection[i]);
+					}
+				}
+			}
+		}
+		
+		// Remove from the database the old ones
+		System.out.println("Deleted groups:"+deleted.size());
+		RuntimeExceptionDao<Event, Integer> eventDao = getHelper().getEventDataDao();
+		DeleteBuilder<Event, Integer> deleteBuilder = eventDao.deleteBuilder();
+		for (int i=0; i<deleted.size(); i++){
+			try {
+				System.out.println("eventsOrigin:"+deleted.get(i));
+				deleteBuilder.where().eq("eventsOrigin", deleted.get(i));
+				//http://ormlite.com/javadoc/ormlite-core/doc-files/ormlite_3.html#Building-Statements
+				deleteBuilder.delete();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -479,7 +563,7 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 		    if (networkInfo != null && networkInfo.isConnected()) {
 				DownloadWebpageTask2 download = new DownloadWebpageTask2();
 				// Execute the asyncronous task of downloading the websites
-				download.execute();
+				download.execute(FirstTimeActivity.websNames);
 		    } else {
 		    	// Inform the user that there is no network connection available
 		    	Toast toast = Toast.makeText(getBaseContext(), R.string.no_network, Toast.LENGTH_LONG);
@@ -587,7 +671,7 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
      * This task takes the creates several HttpUrlConnection to download the html from different websites. 
      * Afterwards, the several lists of Events are created and the execution goes to the Date Activity.
     */
-	public class DownloadWebpageTask2 extends AsyncTask<Void, String, Integer> {
+	public class DownloadWebpageTask2 extends AsyncTask<String, String, Integer> {
 		
 		/**
 		 * Makes the progressBar visible
@@ -605,33 +689,33 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 		 * @return 
 		 * 
 		 */
-		protected Integer doInBackground(Void... params) { 
+		protected Integer doInBackground(String... urls) { 
 			int numOfNewEvents = 0;
 			// Load the events from the selected websites
-			for (int i=0; i<FirstTimeActivity.websNames.length; i++){
+			for (int i=0; i<urls.length; i++){
 				List<Event> eventsFromAWebsite = null;
-				if (FirstTimeActivity.websNames[i].equals("I Heart Berlin")){
+				if (urls[i].equals("I Heart Berlin")){
 					System.out.println("Ihearberlin dentro");
 					eventsFromAWebsite = EventLoaderFactory.newIHeartBerlinEventLoader().load(context);
-				}else if(FirstTimeActivity.websNames[i].equals("Berlin Art Parasites")){
+				}else if(urls[i].equals("Berlin Art Parasites")){
 					System.out.println("artParasites dentro");
 					eventsFromAWebsite = EventLoaderFactory.newArtParasitesEventLoader().load(context);
-				}else if(FirstTimeActivity.websNames[i].equals("Metal Concerts")){
+				}else if(urls[i].equals("Metal Concerts")){
 					System.out.println("metalConcerts dentro");
 					eventsFromAWebsite = EventLoaderFactory.newMetalConcertsEventLoader().load(context);
-				}else if(FirstTimeActivity.websNames[i].equals("White Trash")){
+				}else if(urls[i].equals("White Trash")){
 					System.out.println("whitetrash dentro");
 					eventsFromAWebsite = EventLoaderFactory.newWhiteTrashEventLoader().load(context);
-				}else if(FirstTimeActivity.websNames[i].equals("Köpi's events")){
+				}else if(urls[i].equals("Köpi's events")){
 					System.out.println("koepi dentro");
 					eventsFromAWebsite = EventLoaderFactory.newKoepiEventLoader().load(context);
-				}else if(FirstTimeActivity.websNames[i].equals("Goth Datum")){
+				}else if(urls[i].equals("Goth Datum")){
 					System.out.println("goth dentro");
 					eventsFromAWebsite = EventLoaderFactory.newGothDatumEventLoader().load(context);
-				}else if(FirstTimeActivity.websNames[i].equals("Stress Faktor")){
+				}else if(urls[i].equals("Stress Faktor")){
 					System.out.println("Stresssssss faktor dentro");
 					eventsFromAWebsite = EventLoaderFactory.newStressFaktorEventLoader().load(context);
-				}else if(FirstTimeActivity.websNames[i].equals("Index")){
+				}else if(urls[i].equals("Index")){
 					System.out.println("Index dentro");
 					eventsFromAWebsite = EventLoaderFactory.newIndexEventLoader().load(context);
 				}else{
@@ -640,9 +724,9 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 				// If there was a problem loading the events we tell the user
 				if (eventsFromAWebsite == null){
 					// Distinguish the situation where the event is null because the Berlin Art Parasites website is not checked
-					if(!(FirstTimeActivity.websNames[i].equals("Berlin Art Parasites") && !ArtParasitesEventLoader.isBerlinWeekend())){
+					if(!(urls[i].equals("Berlin Art Parasites") && !ArtParasitesEventLoader.isBerlinWeekend())){
 						System.out.println("Event is null");
-						publishProgress("Exception", FirstTimeActivity.websNames[i]);	
+						publishProgress("Exception", urls[i]);	
 					}
 				}else{
 					// Add the events from this website to the DB
@@ -688,8 +772,15 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 			fieldValues.put("name", event.getName());
 			fieldValues.put("day", event.getDay());
 			fieldValues.put("description", event.getDescription());
-			if(eventDao.queryForFieldValuesArgs(fieldValues) != null){
+			List<Event> foundEvents = eventDao.queryForFieldValuesArgs(fieldValues);
+			/*
+			 * for (int i=0; i<foundEvents.size();i++){
+				System.out.println(foundEvents.get(i).getName());
+			}
+			*/
+			if(foundEvents.size() >= 1){
 				System.out.println("El evento ya existe, no se añade.");
+				
 				return true;
 			}
 			return false;
@@ -735,6 +826,7 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 			}
 			
 		}
+
 	}
 
 }
