@@ -2,6 +2,8 @@ package com.alvarosantisteban.berlincurator;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+
 import android.content.Context;
 
 public class KoepiEventLoader implements EventLoader{
@@ -70,8 +72,48 @@ public class KoepiEventLoader implements EventLoader{
 			}			
 			// Set the origin
 			event.setEventsOrigin(webName);
+			// Set the thema tag
+			event.setThemaTag(extractThemaTag(hourAndName[1]));
+			// Set the type tag
+			event.setTypeTag(extractTypeTag(hourAndName[1]));
 			events.add(event);
 		}
 		return events;
 	}
+	
+	/**
+	 * Extracts the thema tag assuming that the type "exhibition" belong to the tag "Art" and all the others
+	 * to the tag "Going out".
+	 * 
+	 * @param tag the html with the keyword
+	 * @return the thema tag (going out or art)
+	 */
+	private String extractThemaTag(String tag) {
+		String lowerCase = tag.toLowerCase(Locale.getDefault());
+		if (lowerCase.contains("exhibition")){
+			return DateActivity.ART_THEMA_TAG;
+		}else{ 
+			return DateActivity.GOING_OUT_THEMA_TAG;
+		}
+	}
+
+	/**
+	 * Extracts the type tag looking for some keywords. Some keywords such as Vöku, could also be easily recognized but still belong to
+	 * the "Other" type tag.
+	 * 
+	 * @param text the html with the keyword
+	 * @return the type tag 
+	 */
+	private String extractTypeTag(String text) {
+		String lowerCase = text.toLowerCase(Locale.getDefault());
+		if (lowerCase.contains("konzert") || lowerCase.contains("solikonzert") || lowerCase.contains("festival") || lowerCase.contains("20 hahre agh")){
+			return DateActivity.CONCERT_TYPE_TAG;
+		}else if(lowerCase.contains("party") || lowerCase.contains("soliparty") || lowerCase.contains("soli-technoparty")){
+			return DateActivity.PARTY_TYPE_TAG;
+		}else if(lowerCase.contains("exhibition")){
+			return DateActivity.EXHIBITION_TYPE_TAG;
+		}
+		return DateActivity.OTHER_TYPE_TAG;
+	}
+
 }

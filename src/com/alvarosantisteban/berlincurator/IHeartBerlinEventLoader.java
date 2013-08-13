@@ -92,7 +92,7 @@ public class IHeartBerlinEventLoader implements EventLoader {
     }
 
 	/**
-	 * Extracts the thema tag asuming that the types "screening" "party" and "concert" belong to the tag "Going out" and all the others
+	 * Extracts the thema tag assuming that the types "screening" "party" and "concert" belong to the tag "Going out" and all the others
 	 * to the tag "Art".
 	 * 
 	 * @param tag the html with the keyword
