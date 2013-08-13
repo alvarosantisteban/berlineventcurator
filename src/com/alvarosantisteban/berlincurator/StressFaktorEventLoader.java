@@ -2,6 +2,8 @@ package com.alvarosantisteban.berlincurator;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+
 import android.content.Context;
 
 public class StressFaktorEventLoader implements EventLoader {
@@ -70,13 +72,60 @@ public class StressFaktorEventLoader implements EventLoader {
 				// Set the description
 				event.setDescription(description +place[1]);
 				// Set the origin
-				event.setEventsOrigin(webName);
+				event.setEventsOrigin(webName);	
+				// Set the type tag
+				event.setTypeTag(extractTypeTag(nameAndRest[0].replaceFirst(": ", "").trim()));
+				// Set the thema tag
+				event.setThemaTag(extractThemaTag(event.getTypeTag()));
 				events.add(event);
 			}
 		}
 		return events;		
 	}
 
+	/**
+	 * Extracts the thema tag assuming that the type was previously set and that if is of type "talk", it will be a political event
+	 * and if not, a going out event.
+	 * 
+	 * @param tag the type tag for this event
+	 * @return the thema tag (going out or political)
+	 */
+	private String extractThemaTag(String typeTag) {
+		if(typeTag.equals(DateActivity.TALK_TYPE_TAG)){
+			return DateActivity.POLITICAL_THEMA_TAG; 
+		}
+		return DateActivity.GOING_OUT_THEMA_TAG;
+	}
+
+	/**
+	 * Extracts the type tag looking for some keywords. Some keywords such as Vöku, could also be easily recognized but still belong to
+	 * the "Other" type tag.
+	 * 
+	 * @param text the html with the keyword
+	 * @return the type tag 
+	 */
+	private String extractTypeTag(String text) {
+		String lowerCase = text.toLowerCase(Locale.getDefault());
+		if (lowerCase.contains("konzert") || lowerCase.contains("soli-konzert") || lowerCase.contains("festival") || 
+				lowerCase.contains("maschinenraum") || lowerCase.contains("jam session") || lowerCase.contains("rock") || 
+				lowerCase.contains("summerstomp") || lowerCase.contains("guerrilla-slam") || lowerCase.contains("fest")
+				|| lowerCase.contains("kiezfest")){
+			return DateActivity.CONCERT_TYPE_TAG;
+		}else if(lowerCase.contains("party") || lowerCase.contains("soliparty") || lowerCase.contains("ping-pong-bar")
+				|| lowerCase.contains("fiesta") || lowerCase.contains("soli-technoparty")){
+			return DateActivity.PARTY_TYPE_TAG;
+		}else if(lowerCase.contains("workshop") || lowerCase.contains("lesung") || lowerCase.contains("pressekonferenz") ||
+				lowerCase.contains("diskussionskreis") || lowerCase.contains("vortrag") || lowerCase.contains("infoveranstaltung") ||
+				lowerCase.contains("tresen") || lowerCase.contains("montagscafé") || lowerCase.contains("stricktreff") || 
+				lowerCase.contains("talk") || lowerCase.contains("lesebühne")){
+			return DateActivity.TALK_TYPE_TAG;
+		}else if(lowerCase.contains("kino") || lowerCase.contains("videokino") || lowerCase.contains("hofkino") ||
+				lowerCase.contains("solarpowersupercinema") || lowerCase.contains("film") || lowerCase.contains("kurzfilme")
+				|| lowerCase.contains("kino-abend")){
+			return DateActivity.SCREENING_TYPE_TAG;
+		}
+		return DateActivity.OTHER_TYPE_TAG;
+	}
 
 	/**
 	 * Extracts the address and the place where the event from Stress Faktor will take place

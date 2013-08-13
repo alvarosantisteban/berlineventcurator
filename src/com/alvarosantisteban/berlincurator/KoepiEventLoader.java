@@ -106,7 +106,7 @@ public class KoepiEventLoader implements EventLoader{
 	 */
 	private String extractTypeTag(String text) {
 		String lowerCase = text.toLowerCase(Locale.getDefault());
-		if (lowerCase.contains("konzert") || lowerCase.contains("solikonzert") || lowerCase.contains("festival") || lowerCase.contains("20 hahre agh")){
+		if (lowerCase.contains("konzert") || lowerCase.contains("solikonzert") || lowerCase.contains("festival") || lowerCase.contains("20 jahre agh")){
 			return DateActivity.CONCERT_TYPE_TAG;
 		}else if(lowerCase.contains("party") || lowerCase.contains("soliparty") || lowerCase.contains("soli-technoparty")){
 			return DateActivity.PARTY_TYPE_TAG;
