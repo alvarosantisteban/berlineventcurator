@@ -264,10 +264,8 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 		
 		if(numEvents == 0){
 			displayToast("There are no events for this day. Refresh or go to another day.");
-			//toast = Toast.makeText(getBaseContext(), "There are no events for this day. Refresh or go to another day.", Toast.LENGTH_LONG);
-	    	//toast.setGravity(Gravity.TOP, 0, FirstTimeActivity.actionBarHeight);
-	    	//toast.show();
 		}
+		/*
 		System.out.println("----- NEW SELECTION ----- ");
 		for (int i=0; i<FirstTimeActivity.websNames.length; i++){
 			System.out.println(FirstTimeActivity.websNames[i]);
@@ -276,22 +274,23 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 		for (int i=0; i<lastSelection.length; i++){
 			System.out.println(lastSelection[i]);
 		}
+		*/
 		if(!Arrays.equals(FirstTimeActivity.websNames, lastSelection)){
 			checkDifferencesBetweenSelection(FirstTimeActivity.websNames, lastSelection);
-			//checkDifferencesBetweenSelection(new HashSet<String>(Arrays.asList(FirstTimeActivity.websNames)), new HashSet<String>(Arrays.asList(lastSelection)));
 			lastSelection = FirstTimeActivity.websNames;
 			Editor editor = sharedPref.edit();
             editor.putStringSet("lastSelection", new HashSet<String>(Arrays.asList(FirstTimeActivity.websNames)));
             editor.commit();
 		}
 	}
-	
-/*
-	private void checkDifferencesBetweenSelection(HashSet<String> newSelection, HashSet<String> oldSelection) {
-		//Set.difference(newSelection, oldSelection);
-		
-	}*/
 
+	/**
+	 * Checks the differences between two string arrays to determinate which groups have elements that have to be deleted and which groups
+	 * have events that have to be downloaded.
+	 * 
+	 * @param newSelection the new selection of the user
+	 * @param oldSelection the old selection of the user
+	 */
 	private void checkDifferencesBetweenSelection(String[] newSelection, String[] oldSelection) {
 		System.out.println("checkDifferencesBetweenSelection");
 		// Check the added groups
@@ -307,17 +306,21 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 				}
 			}
 		}
-		// Download the events of the new added thema/type
+		
+		// Download the events of the new added thema/type, if applies
 		System.out.println("New added groups:"+added.size());
-		// Create a connection
-		ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-		NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-		// Check if is possible to establish a connection
-		if (networkInfo != null && networkInfo.isConnected()) {
-			DownloadWebpageTask2 download = new DownloadWebpageTask2();
-			// Execute the asyncronous task of downloading the websites
-			download.execute(added.toArray(new String[added.size()]));
+		if(added.size() > 0){
+			// Create a connection
+			ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+			NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+			// Check if is possible to establish a connection
+			if (networkInfo != null && networkInfo.isConnected()) {
+				DownloadWebpageTask2 download = new DownloadWebpageTask2();
+				// Execute the asyncronous task of downloading the websites
+				download.execute(added.toArray(new String[added.size()]));
+			}
 		}
+		
 		// Check the deleted groups
 		List<String> deleted = new ArrayList<String>();
 		for(int i=0; i<oldSelection.length;i++){
@@ -332,25 +335,21 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 			}
 		}
 		
-		// Remove from the database the old ones
+		// Remove from the database the old ones, if applies
 		System.out.println("Deleted groups:"+deleted.size());
-		RuntimeExceptionDao<Event, Integer> eventDao = getHelper().getEventDataDao();
-		DeleteBuilder<Event, Integer> deleteBuilder = eventDao.deleteBuilder();
-
-		
-		for (int i=0; i<deleted.size(); i++){
-			try {
-				System.out.println("eventsOrigin:"+deleted.get(i));
-				//deleteBuilder.where().eq("eventsOrigin", deleted.get(i));
-				//http://ormlite.com/javadoc/ormlite-core/doc-files/ormlite_3.html#Building-Statements
-				//deleteBuilder.delete();
-				
-				// create our argument which uses a SQL ?
-				SelectArg deletedArg = new SelectArg(deleted.get(i));
-				deleteBuilder.where().eq("eventsOrigin", deletedArg);
-				deleteBuilder.delete();
-			} catch (SQLException e) {
-				e.printStackTrace();
+		if (deleted.size() > 0){
+			RuntimeExceptionDao<Event, Integer> eventDao = getHelper().getEventDataDao();
+			DeleteBuilder<Event, Integer> deleteBuilder = eventDao.deleteBuilder();	
+			for (int i=0; i<deleted.size(); i++){
+				try {
+					System.out.println("eventsOrigin:"+deleted.get(i));
+					// create our argument which uses a SQL ? to avoid having problems with apostrophes
+					SelectArg deletedArg = new SelectArg(deleted.get(i));
+					deleteBuilder.where().eq("eventsOrigin", deletedArg);
+					deleteBuilder.delete();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 	}
@@ -581,9 +580,6 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 		    } else {
 		    	// Inform the user that there is no network connection available
 		    	displayToast(getString(R.string.no_network));
-		    	//Toast toast = Toast.makeText(getBaseContext(), R.string.no_network, Toast.LENGTH_LONG);
-		    	//toast.setGravity(Gravity.TOP, 0, FirstTimeActivity.actionBarHeight);
-		    	//toast.show();
 		        System.out.println(R.string.no_network);
 		    }
 		}else if (item.getItemId() == R.id.menu_settings) {
@@ -815,25 +811,13 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
     		System.out.println("Estoy en onProgressUpdate:"+progress[0]);
     		if (progress[0].equals("Start")){
     			displayToast(getString(R.string.searching));
-    			//Toast toast = Toast.makeText(context, R.string.searching, Toast.LENGTH_SHORT);
-    			//toast.setGravity(Gravity.TOP, 0, FirstTimeActivity.actionBarHeight);
-		    	//toast.show();
     		}else if (progress[0].equals("Exception")){
     			displayToast("There were problems downloading the content from: " +progress[1] +" It's events won't be displayed.");
-    			//Toast toast = Toast.makeText(context, "There were problems downloading the content from: " +progress[1] +" It's events won't be displayed.", Toast.LENGTH_LONG);
-    			//toast.setGravity(Gravity.TOP, 0, FirstTimeActivity.actionBarHeight);
-		    	//toast.show();
     		}else if (progress[0].equals("Finish")){
     			if (Integer.parseInt(progress[1]) > 0){
     				displayToast("Added " +progress[1] +" new events");
-    				//Toast toast = Toast.makeText(context, "Added " +progress[1] +" new events", Toast.LENGTH_LONG);
-        			//toast.setGravity(Gravity.TOP, 0, FirstTimeActivity.actionBarHeight);
-    		    	//toast.show();
     			}else{
     				displayToast(getString(R.string.no_new_events));
-    				//Toast toast = Toast.makeText(context, R.string.no_new_events, Toast.LENGTH_LONG);
-        			//toast.setGravity(Gravity.TOP, 0, FirstTimeActivity.actionBarHeight);
-    		    	//toast.show();
     			}
     		}
     		//loadProgressBar.setProgress(progress[0].intValue());
@@ -849,10 +833,7 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 			if (result > 0){
 				Intent intent = new Intent(context, DateActivity.class);
 				startActivity(intent);
-			}
-			
+			}			
 		}
-
 	}
-
 }
