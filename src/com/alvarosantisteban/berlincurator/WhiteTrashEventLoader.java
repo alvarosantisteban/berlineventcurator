@@ -2,6 +2,8 @@ package com.alvarosantisteban.berlincurator;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+
 import android.content.Context;
 
 public class WhiteTrashEventLoader implements EventLoader{
@@ -75,9 +77,28 @@ public class WhiteTrashEventLoader implements EventLoader{
 				event.setLocation("White Trash, Schoenhauser Allee 6-7, Berlin");
 				// Set the origin
 				event.setEventsOrigin(webName);
+				// Set the thema tag
+				event.setThemaTag(DateActivity.GOING_OUT_THEMA_TAG);
+				// Set the type tag
+				event.setTypeTag(extractTypeTag(nameAndRest[0]));
 				events.add(event);
 			}
 		}
 		return events;
     }
+	
+	/**
+	 * Extracts the type tag looking for some keywords. Some keywords such as Vöku, could also be easily recognized but still belong to
+	 * the "Other" type tag.
+	 * 
+	 * @param text the html with the keyword
+	 * @return the type tag 
+	 */
+	private String extractTypeTag(String text) {
+		String lowerCase = text.toLowerCase(Locale.getDefault());
+		if (lowerCase.contains("live")){
+			return DateActivity.CONCERT_TYPE_TAG;
+		}
+		return DateActivity.PARTY_TYPE_TAG;
+	}
 }

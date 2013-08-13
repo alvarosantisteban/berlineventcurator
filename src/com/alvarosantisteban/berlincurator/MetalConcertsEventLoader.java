@@ -67,6 +67,10 @@ public class MetalConcertsEventLoader implements EventLoader{
 			}
 			// Set the origin
 			event.setEventsOrigin(webName);
+			// Set the thema tag
+			event.setThemaTag(DateActivity.GOING_OUT_THEMA_TAG);
+			// Set the type tag
+			event.setTypeTag(DateActivity.CONCERT_TYPE_TAG);
 			events.add(event);
 		}
 		return events;
