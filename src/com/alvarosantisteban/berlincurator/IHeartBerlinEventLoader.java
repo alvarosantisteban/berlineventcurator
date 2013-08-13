@@ -81,18 +81,50 @@ public class IHeartBerlinEventLoader implements EventLoader {
 				}
 				// Set the origin
 				event.setEventsOrigin(webName);
+				// Set the thema tag
+				event.setThemaTag(extractThemaTag(nameAndRest[0].trim()));
 				// Set the type tag
-				event.setTypeTag(extractTag(nameAndRest[0].trim()));
+				event.setTypeTag(extractTypeTag(nameAndRest[0].trim()));
 				events.add(event);
 			}
 		}
 		return events;
     }
 
-	private String extractTag(String text) {
-		System.out.println("text:"+text);
-		if (text.toLowerCase(Locale.getDefault()).contains("screening")){
+	/**
+	 * Extracts the thema tag asuming that the types "screening" "party" and "concert" belong to the tag "Going out" and all the others
+	 * to the tag "Art".
+	 * 
+	 * @param tag the html with the keyword
+	 * @return the thema tag (going out or art)
+	 */
+	private String extractThemaTag(String tag) {
+		String lowerCase = tag.toLowerCase(Locale.getDefault());
+		if (lowerCase.contains("movie") || lowerCase.contains("party") || lowerCase.contains("music")){
+			return DateActivity.GOING_OUT_THEMA_TAG;
+		}else{ 
+			return DateActivity.ART_THEMA_TAG;
+		}
+	}
+
+	/**
+	 * Extracts the type tag looking for the keywords used by the creators of I Heart Berlin
+	 * 
+	 * @param text the html with the keyword
+	 * @return the type tag 
+	 */
+	private String extractTypeTag(String text) {
+		//System.out.println("text:"+text);
+		if (text.toLowerCase(Locale.getDefault()).contains("movie")){
 			return DateActivity.SCREENING_TYPE_TAG;
+		}else if(text.toLowerCase(Locale.getDefault()).contains("art")){
+			return DateActivity.EXHIBITION_TYPE_TAG;
+		}else if(text.toLowerCase(Locale.getDefault()).contains("party")){
+			return DateActivity.PARTY_TYPE_TAG;
+		}else if(text.toLowerCase(Locale.getDefault()).contains("reading")){
+			return DateActivity.TALK_TYPE_TAG;
+		}else if(text.toLowerCase(Locale.getDefault()).contains("music")){
+			return DateActivity.CONCERT_TYPE_TAG;
 		}
 		return DateActivity.OTHER_TYPE_TAG;
 	}

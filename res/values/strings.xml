@@ -55,7 +55,7 @@
     <string name="email">Contact me at:</string>
     <string name="email_address">alvarosantisteban@gmail.com</string>
     <string name="code">Code available at:</string>
-    <string name="code_url">https://github.com/alvarosantisteban/curator</string>
+    <string name="code_url">https://github.com/alvarosantisteban/berlineventcurator</string>
 
     <!-- Menu item name -->
     <string name="menu_settings">Settings</string>
