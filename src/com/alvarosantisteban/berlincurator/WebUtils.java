@@ -48,7 +48,8 @@ public class WebUtils {
    	   		String contentType = conn.getContentType();
    	   		// Convert the InputStream into a string
    	   		String contentAsString = "";
-   	   		if (contentType.equals("text/html; charset=ISO-8859-1") || myurl.equals("http://stressfaktor.squat.net/termine.php?display=7")){
+   	   		if (contentType.equals("text/html; charset=ISO-8859-1") || myurl.equals("http://stressfaktor.squat.net/termine.php?display=7")
+   	   			|| myurl.equals("http://www.goth-city-radio.com/dsb/dates.php")){
    	   			contentAsString = convert(is);
    	   		}else{
    	   			//contentAsString = convertStreamToString(is);

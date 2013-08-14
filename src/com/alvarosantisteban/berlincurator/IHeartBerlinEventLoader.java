@@ -117,10 +117,10 @@ public class IHeartBerlinEventLoader implements EventLoader {
 		//System.out.println("text:"+text);
 		if (text.toLowerCase(Locale.getDefault()).contains("movie")){
 			return DateActivity.SCREENING_TYPE_TAG;
-		}else if(text.toLowerCase(Locale.getDefault()).contains("art")){
-			return DateActivity.EXHIBITION_TYPE_TAG;
 		}else if(text.toLowerCase(Locale.getDefault()).contains("party")){
 			return DateActivity.PARTY_TYPE_TAG;
+		}else if(text.toLowerCase(Locale.getDefault()).contains("art")){
+			return DateActivity.EXHIBITION_TYPE_TAG;
 		}else if(text.toLowerCase(Locale.getDefault()).contains("reading")){
 			return DateActivity.TALK_TYPE_TAG;
 		}else if(text.toLowerCase(Locale.getDefault()).contains("music")){

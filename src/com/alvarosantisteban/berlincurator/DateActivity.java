@@ -113,6 +113,11 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 	public String choosenDate;
 	
 	/**
+	 * The last total number of events for a choosenDate 
+	 */
+	int numLastEvents = 0;
+	
+	/**
 	 * The total number of events for a choosenDate
 	 */
 	int numEvents = 0;
@@ -833,7 +838,8 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 			if (result > 0){
 				Intent intent = new Intent(context, DateActivity.class);
 				startActivity(intent);
-			}			
+			}
+			
 		}
 	}
 }
