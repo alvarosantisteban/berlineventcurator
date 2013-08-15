@@ -34,6 +34,7 @@
     <string name="events_location">There is no known location for this event</string>
     <string name="mark_event">You marked this event as interesting</string>
     <string name="unmark_event">You unmarked this event</string>
+    <string name="events_origin">Event taken from</string>
 
     <!-- Settings Activity -->
     <string name="multilist_title">Events sources</string>

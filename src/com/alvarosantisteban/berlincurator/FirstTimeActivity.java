@@ -42,7 +42,7 @@ public class FirstTimeActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 	public static final String EXTRA_HTML = "com.alvarosantisteban.berlincurator.html";
 	//public static List<List<Event>> events = (ArrayList)new ArrayList <ArrayList<Event>>();
 	
-	String tag = "MainActivity";
+	String tag = "First time Activity";
 	/**
 	 * The map with the events.
 	 * The key is the date and the value its corresponding list of events.
@@ -66,27 +66,27 @@ public class FirstTimeActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 	/**
 	 * The total set of webs where the events can be extracted
 	 */
-	public static String[] websNames = {IHeartBerlinEventLoader.webName, 
-									ArtParasitesEventLoader.webName, 
-									MetalConcertsEventLoader.webName, 
-									WhiteTrashEventLoader.webName, 
-									KoepiEventLoader.webName, 
-									GothDatumEventLoader.webName, 
-									StressFaktorEventLoader.webName, 
-									IndexEventLoader.webName};
+	public static String[] websNames = {IHeartBerlinEventLoader.WEBSITE_NAME, 
+									ArtParasitesEventLoader.WEBSITE_NAME, 
+									MetalConcertsEventLoader.WEBSITE_NAME, 
+									WhiteTrashEventLoader.WEBSITE_NAME, 
+									KoepiEventLoader.WEBSITE_NAME, 
+									GothDatumEventLoader.WEBSITE_NAME, 
+									StressFaktorEventLoader.WEBSITE_NAME, 
+									IndexEventLoader.WEBSITE_NAME};
 
 
 	/**
 	 * The set of urls from where the html will be downloaded
 	 */
-   	public static String[] stringUrls = {IHeartBerlinEventLoader.websiteURL,
-				   			ArtParasitesEventLoader.websiteURL,
-				   			MetalConcertsEventLoader.websiteURL,
-				   			WhiteTrashEventLoader.websiteURL,
-				   			KoepiEventLoader.websiteURL,
-				   			GothDatumEventLoader.websiteURL,
-				   			StressFaktorEventLoader.websiteURL,
-				   			IndexEventLoader.websiteURL};
+   	public static String[] stringUrls = {IHeartBerlinEventLoader.WEBSITE_URL,
+				   			ArtParasitesEventLoader.WEBSITE_URL,
+				   			MetalConcertsEventLoader.WEBSITE_URL,
+				   			WhiteTrashEventLoader.WEBSITE_URL,
+				   			KoepiEventLoader.WEBSITE_URL,
+				   			GothDatumEventLoader.WEBSITE_URL,
+				   			StressFaktorEventLoader.WEBSITE_URL,
+				   			IndexEventLoader.WEBSITE_URL};
    	/**
    	 * The progress bar for downloading and extracting the events
    	 */

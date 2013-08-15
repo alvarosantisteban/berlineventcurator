@@ -8,12 +8,12 @@ import android.content.Context;
 
 public class StressFaktorEventLoader implements EventLoader {
 	
-	public final static String websiteURL = "http://stressfaktor.squat.net/termine.php?display=7";
-	public final static String webName = "Stress Faktor";
+	public final static String WEBSITE_URL = "http://stressfaktor.squat.net/termine.php?display=7";
+	public final static String WEBSITE_NAME = "Stress Faktor";
 
 	@Override
 	public List<Event> load(Context context) {
-		String html = WebUtils.downloadHtml(websiteURL, context);
+		String html = WebUtils.downloadHtml(WEBSITE_URL, context);
 		if(html.equals("Exception")){
 			return null;
 		}
@@ -72,7 +72,9 @@ public class StressFaktorEventLoader implements EventLoader {
 				// Set the description
 				event.setDescription(description +place[1]);
 				// Set the origin
-				event.setEventsOrigin(webName);	
+				event.setEventsOrigin(WEBSITE_NAME);
+				// Set the origin's website
+				event.setOriginsWebsite(WEBSITE_URL);	
 				// Set the type tag
 				event.setTypeTag(extractTypeTag(nameAndRest[0].replaceFirst(": ", "").trim()));
 				// Set the thema tag

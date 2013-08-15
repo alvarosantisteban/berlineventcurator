@@ -7,13 +7,13 @@ import android.content.Context;
 
 public class ArtParasitesEventLoader implements EventLoader {
 	
-	public final static String websiteURL = "http://www.berlin-artparasites.com/recommended";
-	public final static String webName = "Berlin Art Parasites";
+	public final static String WEBSITE_URL = "http://www.berlin-artparasites.com/recommended";
+	public final static String WEBSITE_NAME = "Berlin Art Parasites";
 
 	@Override
 	public List<Event> load(Context context) {	
 		if(isBerlinWeekend()){
-			String html = WebUtils.downloadHtml(websiteURL, context);
+			String html = WebUtils.downloadHtml(WEBSITE_URL, context);
 			System.out.println("Is Berlin Weeeeeeekend");
 			try{
 				String subUrl = extractUrlFromMainArtParasites(html);
@@ -110,7 +110,9 @@ public class ArtParasitesEventLoader implements EventLoader {
 				event.setDescription(description);
 				
 				// Set the origin
-				event.setEventsOrigin(webName);
+				event.setEventsOrigin(WEBSITE_NAME);
+				// Set the origin's website
+				event.setOriginsWebsite(WEBSITE_URL);
 				events.add(event);
 			}
 		}

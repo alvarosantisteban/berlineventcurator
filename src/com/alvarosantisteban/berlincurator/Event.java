@@ -101,6 +101,12 @@ public class Event implements Serializable{
 	private String eventsOrigin = "";
 	
 	/**
+	 * The url of the website where the event comes from
+	 */
+	@DatabaseField(useGetSet = true)
+	private String originsWebsite = "";
+	
+	/**
 	 * The tag for the thema of this event
 	 */
 	@DatabaseField(useGetSet = true)
@@ -111,6 +117,10 @@ public class Event implements Serializable{
 	 */
 	@DatabaseField(useGetSet = true)
 	private String typeTag = "";
+	
+	//////////////////////
+	// GET AND SETS
+	//////////////////////
 	
 	public int getId(){
 		return this.id;
@@ -265,6 +275,14 @@ public class Event implements Serializable{
 	
 	public void setTypeTag(String newTypeTag){
 		this.typeTag = newTypeTag;
+	}
+	
+	public String getOriginsWebsite() {
+		return this.originsWebsite;
+	}
+
+	public void setOriginsWebsite(String theOriginsWebsite) {
+		this.originsWebsite = theOriginsWebsite;
 	}
 	
 	public void print() {

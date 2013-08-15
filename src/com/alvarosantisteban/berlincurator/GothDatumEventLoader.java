@@ -13,8 +13,9 @@ import android.content.Context;
 
 public class GothDatumEventLoader implements EventLoader {
 	
-	public final static String websiteURL = "http://www.goth-city-radio.com/dsb/dates.php";
-	public final static String webName = "Goth Datum";
+	public final static String WEBSITE_URL = "http://www.goth-city-radio.com/dsb/dates.php";
+	public final static String WEBSITE_URL_HTML = "<a href=\"http://www.goth-city-radio.com/dsb/dates.php\">Goth Datum</a>";
+	public final static String WEBSITE_NAME = "Goth Datum";
 	//
 	
 	/**
@@ -50,7 +51,7 @@ public class GothDatumEventLoader implements EventLoader {
 
 	@Override
 	public List<Event> load(Context context) {
-		String html = WebUtils.downloadHtml(websiteURL, context);
+		String html = WebUtils.downloadHtml(WEBSITE_URL, context);
 		if(html.equals("Exception")){
 			return null;
 		}
@@ -107,7 +108,9 @@ public class GothDatumEventLoader implements EventLoader {
 					event.setLink(link);
 				}
 				// Set the origin
-				event.setEventsOrigin(webName);
+				event.setEventsOrigin(WEBSITE_NAME);
+				// Set the origin's website
+				event.setOriginsWebsite(WEBSITE_URL);
 				// Set the thema tag
 				event.setThemaTag(DateActivity.GOING_OUT_THEMA_TAG);
 				// Set the type tag

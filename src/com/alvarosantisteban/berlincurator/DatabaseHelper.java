@@ -22,7 +22,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 	private static final String DATABASE_NAME = "berlincurator.db";
 	// any time you make changes to your database objects, you may have to increase the database version
 	//private static final int DATABASE_VERSION = 1;
-	private static final int DATABASE_VERSION = 2;
+	private static final int DATABASE_VERSION = 3;
 
 	// the DAO object we use to access the Events table
 	private Dao<Event, Integer> eventDao = null;
@@ -80,6 +80,13 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 			// we added the themaTag and typeTag column in version 2
 			dao.executeRaw("ALTER TABLE `events` ADD COLUMN themaTag VARCHAR;");
 			dao.executeRaw("ALTER TABLE `events` ADD COLUMN typeTag VARCHAR;");
+		}*/
+		/*
+		if (oldVersion == 2) {
+			System.out.println("Y YO ESTOY AQUI ESPERANDOTEEEEEEE");
+			RuntimeExceptionDao<Event, Integer> dao = getEventDataDao();
+			// we added the origin's website column in version 2
+			dao.executeRaw("ALTER TABLE `events` ADD COLUMN originsWebsite VARCHAR;");
 		}*/
 	}
 

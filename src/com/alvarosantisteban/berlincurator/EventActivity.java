@@ -53,6 +53,7 @@ public class EventActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 	TextView time;
 	TextView link;
 	TextView description;
+	TextView origin;
 	TextView location;
 	CheckBox interestingCheck;
 	
@@ -97,6 +98,7 @@ public class EventActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 		time = (TextView)findViewById(R.id.events_time);
 		link = (TextView)findViewById(R.id.events_link);
 		description = (TextView)findViewById(R.id.events_description);
+		origin = (TextView)findViewById(R.id.events_origin);
 		location = (TextView)findViewById(R.id.events_location);
 		//mapita = (MapView) findViewById(R.id.map);
 
@@ -131,10 +133,13 @@ public class EventActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 		
 		// Get the description, if any
 		if (!event.getDescription().equals("")){
-			//description.setMovementMethod(LinkMovementMethod.getInstance());
 			description.setText(Html.fromHtml(event.getDescription()));
-			description.append(event.getThemaTag() + " - " +event.getTypeTag());
+			description.append("\n" +event.getThemaTag() + " | " +event.getTypeTag());
+			
 		}
+		origin.setText(Html.fromHtml("Event taken from: <a href=\"" +event.getOriginsWebsite() + "\">" +event.getEventsOrigin()  + "</a>"));
+		//origin.setClickable(true);
+		origin.setMovementMethod (LinkMovementMethod.getInstance());
 		
 		// Get the the links, if any
 		if (!event.getLink().equals("")){

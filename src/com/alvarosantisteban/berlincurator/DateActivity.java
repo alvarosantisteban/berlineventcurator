@@ -300,13 +300,19 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 		System.out.println("checkDifferencesBetweenSelection");
 		// Check the added groups
 		List<String> added = new ArrayList<String>();
-		for(int i=0; i<newSelection.length;i++){
-			for(int j=0; j<oldSelection.length;j++){
-				if(newSelection[i].equals(oldSelection[j])){
-					j = oldSelection.length;
-				}else{
-					if(j == oldSelection.length-1){
-						added.add(newSelection[i]);
+		if(oldSelection.length == 0){
+			for(int i=0; i<newSelection.length;i++){
+				added.add(newSelection[i]);
+			}
+		}else{
+			for(int i=0; i<newSelection.length;i++){
+				for(int j=0; j<oldSelection.length;j++){
+					if(newSelection[i].equals(oldSelection[j])){
+						j = oldSelection.length;
+					}else{
+						if(j == oldSelection.length-1){
+							added.add(newSelection[i]);
+						}
 					}
 				}
 			}
@@ -327,14 +333,22 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 		}
 		
 		// Check the deleted groups
+		System.out.println("Oldselection: "+oldSelection.length);
+		System.out.println("newselection: "+newSelection.length);
 		List<String> deleted = new ArrayList<String>();
-		for(int i=0; i<oldSelection.length;i++){
-			for(int j=0; j<newSelection.length;j++){
-				if(oldSelection[i].equals(newSelection[j])){
-					j = newSelection.length;
-				}else{
-					if(j == newSelection.length-1){
-						deleted.add(oldSelection[i]);
+		if(newSelection.length == 0){
+			for(int i=0; i<oldSelection.length;i++){
+				deleted.add(oldSelection[i]);
+			}
+		}else{
+			for(int i=0; i<oldSelection.length;i++){
+				for(int j=0; j<newSelection.length;j++){
+					if(oldSelection[i].equals(newSelection[j])){
+						j = newSelection.length;
+					}else{
+						if(j == newSelection.length-1){
+							deleted.add(oldSelection[i]);
+						}
 					}
 				}
 			}
@@ -347,7 +361,7 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 			DeleteBuilder<Event, Integer> deleteBuilder = eventDao.deleteBuilder();	
 			for (int i=0; i<deleted.size(); i++){
 				try {
-					System.out.println("eventsOrigin:"+deleted.get(i));
+					System.out.println("deleted eventsOrigin:"+deleted.get(i));
 					// create our argument which uses a SQL ? to avoid having problems with apostrophes
 					SelectArg deletedArg = new SelectArg(deleted.get(i));
 					deleteBuilder.where().eq("eventsOrigin", deletedArg);

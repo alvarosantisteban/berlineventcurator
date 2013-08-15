@@ -6,13 +6,13 @@ import android.content.Context;
 
 public class MetalConcertsEventLoader implements EventLoader{
 	
-	public final static String websiteURL = "http://berlinmetal.lima-city.de/index.php/index.php?id=start";
-	public final static String webName = "Metal Concerts";
+	public final static String WEBSITE_URL = "http://berlinmetal.lima-city.de/index.php/index.php?id=start";
+	public final static String WEBSITE_NAME = "Metal Concerts";
 	private final static String ACTUAL_YEAR = "2013";
 
 	@Override
 	public List<Event> load(Context context) {
-		String html = WebUtils.downloadHtml(websiteURL, context);
+		String html = WebUtils.downloadHtml(WEBSITE_URL, context);
 		if(html.equals("Exception")){
 			return null;
 		}
@@ -66,7 +66,9 @@ public class MetalConcertsEventLoader implements EventLoader{
 				event.setLocation("<a href=\"https://maps.google.es/maps?q=" +concertPlace.replace(' ', '+') +",+Berlin\">" +concertPlace +"</a>");
 			}
 			// Set the origin
-			event.setEventsOrigin(webName);
+			event.setEventsOrigin(WEBSITE_NAME);
+			// Set the origin's website
+			event.setOriginsWebsite(WEBSITE_URL);
 			// Set the thema tag
 			event.setThemaTag(DateActivity.GOING_OUT_THEMA_TAG);
 			// Set the type tag
