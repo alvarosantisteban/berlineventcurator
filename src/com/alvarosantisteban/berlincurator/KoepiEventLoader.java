@@ -44,12 +44,11 @@ public class KoepiEventLoader implements EventLoader{
 			// Remove the left part of ", "
 			String[] twoParts = result[i].split(", ", 2); // We want just the first
 			// Remove useless code
-			String[] dateAndRest = twoParts[1].split("</span><br />");
+			String[] dateAndRest = twoParts[1].split("</span><br />",2);
 			// Format the date and set it to the event
 			event.setDay(dateAndRest[0].replace('.', '/'));
 			// Separate the first paragraph
 			String[] paragraphs = dateAndRest[1].split("<br />", 2);
-			
 			// Get the time and name
 			String[] hourAndName = paragraphs[0].split(" Uhr: ", 2);
 			// Set the time to the event
@@ -57,7 +56,10 @@ public class KoepiEventLoader implements EventLoader{
 			// Set the name to the event
 			event.setName(hourAndName[1]);
 			// Set the description (with lots of html code)
-			event.setDescription(paragraphs[1]);
+			String descriptionWithoutExtraLine = paragraphs[1].trim();
+			int lastNewLine = descriptionWithoutExtraLine.lastIndexOf("<br />");
+			descriptionWithoutExtraLine = descriptionWithoutExtraLine.substring(0, lastNewLine).trim();
+			event.setDescription(descriptionWithoutExtraLine);
 			
 			// Set the location
 			//event.setLocation("<a href=\"https://maps.google.es/maps?q=Koepenicker+139,+Berlin\">Köpi</a>");

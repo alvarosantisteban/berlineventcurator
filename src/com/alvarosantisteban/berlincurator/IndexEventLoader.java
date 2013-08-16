@@ -73,9 +73,11 @@ public class IndexEventLoader implements EventLoader {
 				}
 				String[] description = placeAndRest[1].split("<br />",2);
 				String[] description2 = description[1].split("<div class=\"cal-holder\">");
-				
+				String descriptionWithoutExtraLine = description2[0].replace("<strong>", "Artist/s: ").replace("</strong>", "");
+				int lastNewLine = descriptionWithoutExtraLine.lastIndexOf("<br />");
+				descriptionWithoutExtraLine = descriptionWithoutExtraLine.substring(0, lastNewLine).trim();
 				// Set the description
-				event.setDescription(description2[0].replace("<strong>", "Artist/s: ").replace("</strong>", ""));
+				event.setDescription(descriptionWithoutExtraLine);
 				// Set the origin
 				event.setEventsOrigin(WEBSITE_NAME);
 				// Set the origin's website
