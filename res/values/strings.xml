@@ -44,6 +44,16 @@
     <string name="about_summary">General information about Berlin Event Curator</string>
     <string name="legal_title">Legal Notices</string>
     <string name="legal_summary">Legal attributions to services that Berlin Event Curator uses</string>
+    <string name="general_selection_title">Selection</string>
+    <string name="general_selection_summary">Decide the types of events that you want to see</string>
+    <string name="multilist_thema_title">Selection of topics</string>
+    <string name="multilist_thema_summary">Choose the topics that interest you</string>
+    <string name="multilist_thema_dialog">Active topics</string>
+    <string name="multilist_type_title">Selection of types</string>
+    <string name="multilist_type_summary">Choose the kinds of events that interest you</string>
+    <string name="multilist_type_dialog">Active types</string>
+    <string name="possible_organizations_title">Organization of the events</string>
+    <string name="possible_organizations_summary">Choose the way you want the information to be organized</string>
 
     <!-- Legal Noticies Activity -->
     <string name="googleplay_tag">Google Play services attribution:</string>
@@ -84,6 +94,7 @@
     </string-array>
     <string-array name="default_sites_array">
         <item>I Heart Berlin</item>
+        <item>Metal Concerts</item>
         <item>White Trash</item>
         <item>Köpi\'s events</item>
         <item>Goth Datum</item>
@@ -99,6 +110,42 @@
         <item>Goth Datum</item>
         <item>Stress Faktor</item>
         <item>Index</item>
+    </string-array>
+    <string-array name="themas_array">
+        <item>Art</item>
+        <item>Politics</item>
+        <item>Going out</item>
+    </string-array>
+    <string-array name="themas_array_values">
+        <item>Art</item>
+        <item>Politics</item>
+        <item>Going out</item>
+    </string-array>
+    <string-array name="types_array">
+        <item>Exhibition</item>
+        <item>Talk</item>
+        <item>Party</item>
+        <item>Screening</item>
+        <item>Concert</item>
+        <item>Other</item>
+    </string-array>
+    <string-array name="types_array_values">
+        <item>Exhibition</item>
+        <item>Talk</item>
+        <item>Party</item>
+        <item>Screening</item>
+        <item>Concert</item>
+        <item>Other</item>
+    </string-array>
+    <string-array name="possible_organizations_entries">
+        <item>By Topic</item>
+        <item>By Type</item>
+        <item>By Origin</item>
+    </string-array>
+    <string-array name="possible_organizations_values">
+        <item>By Topic</item>
+        <item>By Type</item>
+        <item>By Origin</item>
     </string-array>
 
 </resources>

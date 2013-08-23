@@ -1,13 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <MultiSelectListPreference
-        android:key="multilist_sites"
-        android:dialogTitle="@string/multilist_dialog"
-        android:summary="@string/multilist_summary"        
-        android:title="@string/multilist_title"
-        android:entries="@array/sites_array"
-        android:entryValues="@array/sites_array_values"
-        android:defaultValue="@array/sites_array_values"
+    <com.alvarosantisteban.berlincurator.CustomListPreference
+    	android:entries="@array/possible_organizations_entries" 
+    	android:title="@string/possible_organizations_title" 
+    	android:key="possible_organizations_list" 
+    	android:entryValues="@array/possible_organizations_values" 
+    	android:summary="@string/possible_organizations_summary" 
+    	android:defaultValue="By Type" />
+     <MultiSelectListPreference
+	        android:key="multilist_thema"
+	        android:dialogTitle="@string/multilist_thema_dialog"
+	        android:summary="@string/multilist_thema_summary"        
+	        android:title="@string/multilist_thema_title"
+	        android:entries="@array/themas_array"
+	        android:entryValues="@array/themas_array_values"
+	        android:defaultValue="@array/themas_array_values"
+        />
+        <MultiSelectListPreference
+	        android:key="multilist_type"
+	        android:dialogTitle="@string/multilist_type_dialog"
+	        android:summary="@string/multilist_type_summary"        
+	        android:title="@string/multilist_type_title"
+	        android:entries="@array/types_array"
+	        android:entryValues="@array/types_array_values"
+	        android:defaultValue="@array/types_array_values"
+        />
+     <MultiSelectListPreference
+	        android:key="multilist_sites"
+	        android:dialogTitle="@string/multilist_dialog"
+	        android:summary="@string/multilist_summary"        
+	        android:title="@string/multilist_title"
+	        android:entries="@array/sites_array"
+	        android:entryValues="@array/sites_array_values"
+	        android:defaultValue="@array/sites_array_values"
         />
     <Preference 
         android:key="about"
