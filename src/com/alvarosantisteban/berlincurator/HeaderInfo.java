@@ -11,7 +11,7 @@ import java.util.ArrayList;
 public class HeaderInfo {
   
 	/**
-	 * Name of the website
+	 * Name of the group (website, thema or type)
 	 */
 	private String name;
 	

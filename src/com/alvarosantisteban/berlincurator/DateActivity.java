@@ -36,8 +36,6 @@ import android.view.View;
 import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.ExpandableListView.OnGroupClickListener;
-import android.widget.ExpandableListView.OnGroupCollapseListener;
-import android.widget.ExpandableListView.OnGroupExpandListener;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -79,6 +77,11 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 	public static final String EVENTS_RESULT_DATA = "result data";
 	
 	public String[] lastSelection;
+	
+	public Set<String> typeTags;
+	public Set<String> topicTags;
+	
+	public String[] setOfTags;
 	
 	private static Toast toast;
 			
@@ -128,14 +131,14 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 	ExpandableListView expandableSitesList;
 	
 	/**
-	 * A LinkedHashMap with the name of the website as key and its corresponding HeaderInfo as value. 
+	 * A LinkedHashMap with the name of the tag (from website/thema/type) as key and its corresponding HeaderInfo as value. 
 	 * Used to make the search easier
 	 */
-	private LinkedHashMap<String, HeaderInfo> websitesMap = new LinkedHashMap<String, HeaderInfo>();
+	private LinkedHashMap<String, HeaderInfo> tagsMap = new LinkedHashMap<String, HeaderInfo>();
 	/**
-	 * An ArrayList with the HeaderInfo of each website
+	 * An ArrayList with the HeaderInfo of each group
 	 */
-	private ArrayList<HeaderInfo> websitesList = new ArrayList<HeaderInfo>();
+	private ArrayList<HeaderInfo> groupsList = new ArrayList<HeaderInfo>();
 	 
 	/**
 	 * The adapter for the ExpandableListView
@@ -209,8 +212,33 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 		// Get the sites are meant to be shown
 		Set<String> set = sharedPref.getStringSet(SettingsFragment.KEY_PREF_MULTILIST_SITES, new HashSet<String>(Arrays.asList(FirstTimeActivity.websNames)));
 		FirstTimeActivity.websNames = set.toArray(new String[0]);
-		createHeaderGroups(FirstTimeActivity.websNames);	
-	    
+			
+		
+		// Get the kind of organization
+		String kindOfOrganization = sharedPref.getString(SettingsFragment.KEY_PREF_LIST_ORGANIZATIONS, SettingsFragment.TYPE_ORGANIZATION);
+		String[] chuliSet;
+		String tag;
+		if (kindOfOrganization.equals(SettingsFragment.TYPE_ORGANIZATION)){
+			// Get the set of type tags
+			setOfTags = context.getResources().getStringArray(R.array.types_array_values);
+			typeTags = sharedPref.getStringSet(SettingsFragment.KEY_PREF_MULTILIST_TYPE, new HashSet<String>(Arrays.asList(setOfTags)));
+			setOfTags = typeTags.toArray(new String[0]);
+			createHeaderGroups(setOfTags);	
+			chuliSet = setOfTags;
+			tag = "typeTag";
+		}else if (kindOfOrganization.equals(SettingsFragment.ORIGIN_ORGANIZATION)){
+			createHeaderGroups(FirstTimeActivity.websNames);
+			chuliSet = FirstTimeActivity.websNames;
+			tag = "eventsOrigin";
+		}else{
+			setOfTags = context.getResources().getStringArray(R.array.themas_array_values);
+			topicTags = sharedPref.getStringSet(SettingsFragment.KEY_PREF_MULTILIST_TOPIC, new HashSet<String>(Arrays.asList(setOfTags)));
+			setOfTags = topicTags.toArray(new String[0]);
+			createHeaderGroups(setOfTags);
+			chuliSet = setOfTags;
+			tag ="themaTag";
+		}
+		 
 	    // --------------------------------------------------
 	 	// Display the right date
 	    // --------------------------------------------------
@@ -248,12 +276,12 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 		// --------------------------------------------------
 		
 		// Create the adapter by passing the ArrayList data
-		listAdapter = new ListAdapter(DateActivity.this, websitesList);
+		listAdapter = new ListAdapter(DateActivity.this, groupsList);
 		// Attach the adapter to the expandableList
 		expandableSitesList.setAdapter(listAdapter);
 		
 		// Load the events for the selected websites
-		loadEvents();
+		loadEvents(tag, chuliSet);
 		
 		// Expand the groups with events
 		expandGroupsWithEvents();
@@ -387,7 +415,7 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 
 	/**
 	 * Expand all groups
-	 */
+	 *
 	private void expandAll() {
 		int count = listAdapter.getGroupCount();
 		for (int i = 0; i < count; i++){
@@ -397,13 +425,14 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 	
 	/**
 	 * Collapse all groups
-	 */
+	 *
 	private void collapseAll() {
 		int count = listAdapter.getGroupCount();
 		for (int i = 0; i < count; i++){
 			expandableSitesList.collapseGroup(i);
 		}
 	}
+	*/
 	
 	/**
 	 * Expand the groups with events on it
@@ -422,7 +451,7 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 	
 	/**
 	 * Loads the events from the selected websites into the list if the day is the right one
-	 */
+	 *
 	private void loadEvents(){ 
 		System.out.println("LOAD EVENTS");
 		System.out.println("-----------------------------");
@@ -445,26 +474,83 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 				addEvent(FirstTimeActivity.websNames[i],eventsFromWebsite.get(j));
 			}
 		}
+	}*/
+	
+	/**
+	 * Loads the events from the selected websites into the list if the day is the right one
+	 *
+	private void loadEvents(){ 
+		System.out.println("LOAD EVENTS");
+		System.out.println("-----------------------------");
+		// Get our dao
+		RuntimeExceptionDao<Event, Integer> eventDao = getHelper().getEventDataDao();
+		for (int i=0; i<typeTags.length; i++){
+			System.out.println(typeTags[i]);
+			List<Event> eventsFromWebsite = null;
+			try {
+				Map<String, Object> fieldValues = new HashMap<String,Object>();
+				fieldValues.put("typeTag", typeTags[i]);
+				fieldValues.put("day", choosenDate);
+				eventsFromWebsite = eventDao.queryForFieldValuesArgs(fieldValues);
+			//} catch (SQLException e) {
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.out.println("DB exception while retrieving the events from the website " +typeTags[i]);
+			}
+			for (int j = 0; j < eventsFromWebsite.size(); j++) {
+				addEvent(typeTags[i],eventsFromWebsite.get(j));
+			}
+		}
+	}*/
+	
+	/**
+	 * Loads the events from the DB that match the choosenDate and the set of tags for the kind of organization passed as parameters
+	 * 
+	 * @param kindOfOrganization the kind of organization (By Type, Thema, Origin)
+	 * @param setOfTags the set of tags that the event has to match in order to be extracted from the DB
+	 */
+	private void loadEvents(String kindOfOrganization, String[] setOfTags){ 
+		System.out.println("LOAD EVENTS");
+		System.out.println("-----------------------------");
+		// Get our dao
+		RuntimeExceptionDao<Event, Integer> eventDao = getHelper().getEventDataDao();
+		for (int i=0; i<setOfTags.length; i++){
+			System.out.println(setOfTags[i]);
+			List<Event> eventsFromWebsite = null;
+			try {
+				Map<String, Object> fieldValues = new HashMap<String,Object>();
+				fieldValues.put(kindOfOrganization, setOfTags[i]);
+				fieldValues.put("day", choosenDate);
+				eventsFromWebsite = eventDao.queryForFieldValuesArgs(fieldValues);
+			//} catch (SQLException e) {
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.out.println("DB exception while retrieving the events from the website " +setOfTags[i]);
+			}
+			for (int j = 0; j < eventsFromWebsite.size(); j++) {
+				addEvent(setOfTags[i],eventsFromWebsite.get(j));
+			}
+		}
 	}
 	
 	/**
-	 * Add an event to its corresponding group (site where it comes from)
+	 * Add an event to its corresponding group 
 	 * 
-	 * @param websiteName String with the name of the website from where the event comes from
+	 * @param theTag The tag to whom the the event belongs
 	 * @param newEvent The event to be attached
 	 * @return the position of group where the event was added
 	 */
-	private int addEvent(String websiteName, Event newEvent){
+	private int addEvent(String theTag, Event newEvent){
 		int groupPosition = 0;
 	   
 		// Check in the hash map if the group already exists
-		HeaderInfo headerInfo = websitesMap.get(websiteName);
+		HeaderInfo headerInfo = tagsMap.get(theTag);
 		// Add the group if doesn't exists
 		if(headerInfo == null){
 			headerInfo = new HeaderInfo();
-			headerInfo.setName(websiteName);
-			websitesMap.put(websiteName, headerInfo);
-			websitesList.add(headerInfo);
+			headerInfo.setName(theTag);
+			tagsMap.put(theTag, headerInfo);
+			groupsList.add(headerInfo);
 		}
 	 
 		// Get the children (events) for the group
@@ -483,25 +569,24 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 		headerInfo.setEventsList(eventsList);
 		headerInfo.setEventsNumber(listSize);
 		
-		 
 		//find the group position inside the list
-		groupPosition = websitesList.indexOf(headerInfo);
+		groupPosition = groupsList.indexOf(headerInfo);
 		return groupPosition;
 	}
 	
 	/**
-	 * Populates the {@link websites} and the {@link websitesList} by creating {@link HeaderInfo} using the array of names of sites passed
+	 * Populates the {@link websites} and the {@link websitesList} by creating {@link HeaderInfo} using the array of tags passed
 	 * in the parameter.
 	 * 
-	 * @param sitesNames the names of the sites which contain the events
+	 * @param tagsNames the set of tags used to classified events
 	 */
-	private void createHeaderGroups(String[] sitesNames) {
+	private void createHeaderGroups(String[] tagsNames) {
 		//System.out.println("createHeaderGroups");
-		for (int i=0; i<sitesNames.length; i++){
+		for (int i=0; i<tagsNames.length; i++){
 			HeaderInfo headerInfo = new HeaderInfo();
-			headerInfo.setName(sitesNames[i]);
-			websitesMap.put(sitesNames[i], headerInfo);
-			websitesList.add(headerInfo);
+			headerInfo.setName(tagsNames[i]);
+			tagsMap.put(tagsNames[i], headerInfo);
+			groupsList.add(headerInfo);
 		}
 	}
 	
@@ -513,7 +598,7 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 		  public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
 	    
 			  // Get the group header 
-			  HeaderInfo headerInfo = websitesList.get(groupPosition);
+			  HeaderInfo headerInfo = groupsList.get(groupPosition);
 			  // Get the child info
 			  Event clickedEvent =  headerInfo.getEventsList().get(childPosition);
 			  // Update the last touched group and child position
@@ -535,7 +620,7 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 		  public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
 			  System.out.println("onGroupClick");
 			  // Get the group header
-			  HeaderInfo headerInfo = websitesList.get(groupPosition);
+			  HeaderInfo headerInfo = groupsList.get(groupPosition);
 			  // If the group does not contain events, tell the user
 			  if(headerInfo.getEventsNumber() == 0){
 				  displayToast("There are no events to show for " + headerInfo.getName());
@@ -552,7 +637,7 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 	
 	/**
 	 * The group collapse listener 
-	 */
+	 *
 	private OnGroupCollapseListener myCollapsedGroup = new OnGroupCollapseListener(){
 		
 		public void onGroupCollapse(int groupPosition){
@@ -562,15 +647,14 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 	
 	/**
 	 * The group expand listener
-	 */
+	 *
 	private OnGroupExpandListener myExpandedGroup = new OnGroupExpandListener(){
 		
 		public void onGroupExpand(int groupPosition){
 			System.out.println("onGroupExpand");
 		}
 	};
-	
-	
+	*/	
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -681,10 +765,10 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 	 */
 	private void replaceAnEvent(Event changedEvent) {		
 		// Get the group header of the touched event
-		HeaderInfo headerInfo = websitesList.get(lastTouchedGroupPosition);
+		HeaderInfo headerInfo = groupsList.get(lastTouchedGroupPosition);
 		// Substitute the old event for the new one
 		headerInfo.getEventsList().set(lastTouchedChildPosition, changedEvent);
-		websitesList.set(lastTouchedGroupPosition, headerInfo);
+		groupsList.set(lastTouchedGroupPosition, headerInfo);
 	}
 
 	/*

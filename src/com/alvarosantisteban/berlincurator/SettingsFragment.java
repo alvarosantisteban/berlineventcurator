@@ -2,7 +2,7 @@ package com.alvarosantisteban.berlincurator;
 
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 
 import android.content.Intent;
@@ -16,7 +16,6 @@ import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
-import android.widget.ExpandableListView.OnChildClickListener;
 
 /**
  * Creates the settings 
@@ -26,23 +25,40 @@ import android.widget.ExpandableListView.OnChildClickListener;
  */
 public class SettingsFragment extends PreferenceFragment implements OnSharedPreferenceChangeListener {
 
+	
 	 //public static final String PREFS_FILE_NAME = "multilist_sites"; I think is not needed
-	 public static final String KEY_PREF_MULTILIST_SITES = "multilist_sites";
-	 public static final String KEY_PREF_MULTILIST_TOPIC = "multilist_thema";
-	 public static final String KEY_PREF_MULTILIST_TYPE = "multilist_type";
-	 public static final String KEY_PREF_MULTILIST_LAST_SELECTION = "lastSelection";
-	 public static final String KEY_PREF_LIST_ORGANIZATIONS = "possible_organizations_list";
+	/**
+	 * Preference for the multilist with the selection of sites (origin)
+	 */
+	public static final String KEY_PREF_MULTILIST_SITES = "multilist_sites";
+	/**
+	 * Preference for the multilist with the selection of tags for topic
+	 */
+	public static final String KEY_PREF_MULTILIST_TOPIC = "multilist_thema";
+	/**
+	 * Preference for the multilist with the selection of tags for type
+	 */
+	public static final String KEY_PREF_MULTILIST_TYPE = "multilist_type";
+	/**
+	 * Preference for the multilist with the last selection of sites, used to compare it with the actual and know which changed
+	 */
+	public static final String KEY_PREF_MULTILIST_LAST_SELECTION = "lastSelection";
+	/**
+	 * Preference for the list with possible organizations
+	 */
+	public static final String KEY_PREF_LIST_ORGANIZATIONS = "possible_organizations_list";
 	 
-	 public static final String KEY_PREF_TYPE = "By Type";
-	 public static final String KEY_PREF_TOPIC = "By Topic";
-	 public static final String KEY_PREF_ORIGIN = "By Origin";
-	 
-	 //Set<String> selectedWebsites;
+	// -----------
+	// CONSTANTS
+	// -----------
+	public static final String TYPE_ORGANIZATION = "By Type";
+	public static final String TOPIC_ORGANIZATION = "By Topic";
+	public static final String ORIGIN_ORGANIZATION = "By Origin";
 
-	 ListPreference organizationList; 
-	 MultiSelectListPreference topicList;
-	 MultiSelectListPreference typeList;
-	 MultiSelectListPreference originList;
+	ListPreference organizationList; 
+	MultiSelectListPreference topicList;
+	MultiSelectListPreference typeList;
+	MultiSelectListPreference originList;
 	
 	 /**
 	  * Loads the preferences from the XML file
@@ -59,10 +75,8 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
         typeList = (MultiSelectListPreference) findPreference(KEY_PREF_MULTILIST_TYPE);
         originList = (MultiSelectListPreference) findPreference(KEY_PREF_MULTILIST_SITES);
         
-        // Check which organization is the active one.
-        String activeOrganization = organizationList.getValue();
         // Enable the active multilist and disable the other two 
-        enableActiveOrganization(activeOrganization);
+        enableActiveOrganization(organizationList.getValue());
         
         // Get the set of active websites
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
@@ -89,6 +103,12 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
             Editor editor = sharedPreferences.edit();
             editor.putStringSet(KEY_PREF_MULTILIST_LAST_SELECTION, new HashSet<String>(Arrays.asList(FirstTimeActivity.websNames)));
             editor.commit();
+            
+       
+            //editor.putStringSet(KEY_PREF_MULTILIST_SITES, originList.getValues());
+            //editor.commit();
+            
+            
             // Get the new values
             Set<String> set = sharedPreferences.getStringSet(key, null);
             // Set the new values on the list
@@ -97,30 +117,30 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
             originList.setValues(set);
             // Go to Date Activity
             Intent i = new Intent(getActivity(), DateActivity.class);
-			startActivity(i);
-			
-        }else if (key.equals(KEY_PREF_LIST_ORGANIZATIONS)){
-        	System.out.println("key=possible_organizations_list changed");
-        	String kindOfOrganization = sharedPreferences.getString(key, KEY_PREF_TYPE);
-        	if(kindOfOrganization.equals(KEY_PREF_TYPE)){
-        		System.out.println("Selected By Type");
-        		restoreDefaultWebsitesSelection(sharedPreferences);
-        	}else if(kindOfOrganization.equals(KEY_PREF_TOPIC)){
-        		System.out.println("Selected By Topic");
-        		restoreDefaultWebsitesSelection(sharedPreferences);
-        	}else if(kindOfOrganization.equals(KEY_PREF_ORIGIN)){
-        		System.out.println("Selected By Origin");
-        	}
+			startActivity(i);	
         }else if (key.equals(KEY_PREF_MULTILIST_TYPE)){
         	System.out.println("key=multilist type changed");
+        	Editor editor = sharedPreferences.edit();
+            editor.putStringSet(KEY_PREF_MULTILIST_TYPE, typeList.getValues());
+            editor.commit();
         	// Go to Date Activity
             Intent i = new Intent(getActivity(), DateActivity.class);
 			startActivity(i);
         }else if (key.equals(KEY_PREF_MULTILIST_TOPIC)){
         	System.out.println("key=multilist topic changed");
+        	Editor editor = sharedPreferences.edit();
+            editor.putStringSet(KEY_PREF_MULTILIST_TOPIC, topicList.getValues());
+            editor.commit();
         	// Go to Date Activity
             Intent i = new Intent(getActivity(), DateActivity.class);
 			startActivity(i);
+        }else if (key.equals(KEY_PREF_LIST_ORGANIZATIONS)){
+        	System.out.println("key=possible_organizations_list changed");
+        	String kindOfOrganization = sharedPreferences.getString(key, TYPE_ORGANIZATION);
+        	if(kindOfOrganization.equals(TYPE_ORGANIZATION) || kindOfOrganization.equals(TOPIC_ORGANIZATION)){
+        		System.out.println("Selected By Type or By Topic. Restore default websites selection");
+        		restoreDefaultWebsitesSelection(sharedPreferences);
+        	}
         }
 	}
 
@@ -161,11 +181,11 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 	 * @param activeOrganization the key that identifies the active kind of organization
 	 */
 	private void enableActiveOrganization(String activeOrganization) {
-		if (activeOrganization.equals(KEY_PREF_TYPE)){
+		if (activeOrganization.equals(TYPE_ORGANIZATION)){
 	    	topicList.setEnabled(false);
 	    	typeList.setEnabled(true);
 	    	originList.setEnabled(false);
-	    }else if(activeOrganization.equals(KEY_PREF_TOPIC)){
+	    }else if(activeOrganization.equals(TOPIC_ORGANIZATION)){
 	    	topicList.setEnabled(true);
 	    	typeList.setEnabled(false);
 	    	originList.setEnabled(false);
@@ -193,5 +213,20 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 	    getPreferenceScreen().getSharedPreferences()
 	            .unregisterOnSharedPreferenceChangeListener(this);
 	}
+	
+	/**
+	 * Prints out all preferences
+	 * 
+	 * @param sharedPref the shared preferences
+	 */
+	@SuppressWarnings("unused")
+	private void printAllPreferences(SharedPreferences sharedPref) {
+		Map<String,?> keys = sharedPref.getAll();
 
+        System.out.println("------START--------");
+        for(Map.Entry<String,?> entry : keys.entrySet()){
+        	System.out.println("map values: " +entry.getKey() + ": " + entry.getValue().toString());            
+         }
+        System.out.println("-------END-------");
+	}
 }
