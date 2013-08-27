@@ -27,6 +27,10 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 
 	
 	 //public static final String PREFS_FILE_NAME = "multilist_sites"; I think is not needed
+	
+	// -----------
+	// PREFERENCES
+	// -----------
 	/**
 	 * Preference for the multilist with the selection of sites (origin)
 	 */
@@ -56,9 +60,11 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 	public static final String ORIGIN_ORGANIZATION = "By Origin";
 
 	ListPreference organizationList; 
-	MultiSelectListPreference topicList;
-	MultiSelectListPreference typeList;
-	MultiSelectListPreference originList;
+	MultiSelectListPreference topicMultiList;
+	MultiSelectListPreference typeMultiList;
+	MultiSelectListPreference originMultiList;
+	
+	Set<String> setOfSites;
 	
 	 /**
 	  * Loads the preferences from the XML file
@@ -71,17 +77,16 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
         addPreferencesFromResource(R.xml.preferences);
         
         organizationList = (CustomListPreference) findPreference(KEY_PREF_LIST_ORGANIZATIONS); 
-        topicList = (MultiSelectListPreference) findPreference(KEY_PREF_MULTILIST_TOPIC);
-        typeList = (MultiSelectListPreference) findPreference(KEY_PREF_MULTILIST_TYPE);
-        originList = (MultiSelectListPreference) findPreference(KEY_PREF_MULTILIST_SITES);
+        topicMultiList = (MultiSelectListPreference) findPreference(KEY_PREF_MULTILIST_TOPIC);
+        typeMultiList = (MultiSelectListPreference) findPreference(KEY_PREF_MULTILIST_TYPE);
+        originMultiList = (MultiSelectListPreference) findPreference(KEY_PREF_MULTILIST_SITES);
         
         // Enable the active multilist and disable the other two 
         enableActiveOrganization(organizationList.getValue());
         
         // Get the set of active websites
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        Set<String> set = sharedPref.getStringSet(KEY_PREF_MULTILIST_SITES, new HashSet<String>(Arrays.asList(FirstTimeActivity.websNames)));
-        originList.setValues(set);
+        setOfSites = sharedPref.getStringSet(KEY_PREF_MULTILIST_SITES, new HashSet<String>(Arrays.asList(getResources().getStringArray(R.array.default_sites_array))));
         
         // Set the intent for the About preference (triggered when clicked)
         findPreference("about").setIntent(new Intent(getActivity(), AboutActivity.class));
@@ -101,27 +106,20 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
         	System.out.println("key=multilist sites changed");
             // Save the old values
             Editor editor = sharedPreferences.edit();
-            editor.putStringSet(KEY_PREF_MULTILIST_LAST_SELECTION, new HashSet<String>(Arrays.asList(FirstTimeActivity.websNames)));
+            editor.putStringSet(KEY_PREF_MULTILIST_LAST_SELECTION, setOfSites);
             editor.commit();
             
-       
-            //editor.putStringSet(KEY_PREF_MULTILIST_SITES, originList.getValues());
-            //editor.commit();
+            // Set the new values
+            setOfSites = originMultiList.getValues();
+            editor.putStringSet(KEY_PREF_MULTILIST_SITES, setOfSites);
+            editor.commit();
             
-            
-            // Get the new values
-            Set<String> set = sharedPreferences.getStringSet(key, null);
-            // Set the new values on the list
-    		FirstTimeActivity.websNames = set.toArray(new String[0]);
-    		// Set the values on the shown list
-            originList.setValues(set);
-            // Go to Date Activity
             Intent i = new Intent(getActivity(), DateActivity.class);
 			startActivity(i);	
         }else if (key.equals(KEY_PREF_MULTILIST_TYPE)){
         	System.out.println("key=multilist type changed");
         	Editor editor = sharedPreferences.edit();
-            editor.putStringSet(KEY_PREF_MULTILIST_TYPE, typeList.getValues());
+            editor.putStringSet(KEY_PREF_MULTILIST_TYPE, typeMultiList.getValues());
             editor.commit();
         	// Go to Date Activity
             Intent i = new Intent(getActivity(), DateActivity.class);
@@ -129,7 +127,7 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
         }else if (key.equals(KEY_PREF_MULTILIST_TOPIC)){
         	System.out.println("key=multilist topic changed");
         	Editor editor = sharedPreferences.edit();
-            editor.putStringSet(KEY_PREF_MULTILIST_TOPIC, topicList.getValues());
+            editor.putStringSet(KEY_PREF_MULTILIST_TOPIC, topicMultiList.getValues());
             editor.commit();
         	// Go to Date Activity
             Intent i = new Intent(getActivity(), DateActivity.class);
@@ -144,20 +142,15 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
         }
 	}
 
-	private void restoreDefaultWebsitesSelection(SharedPreferences sharedPreferences) {
-		// Save old values
-		Editor editor = sharedPreferences.edit();
-		editor.putStringSet(KEY_PREF_MULTILIST_LAST_SELECTION, new HashSet<String>(Arrays.asList(FirstTimeActivity.websNames)));
-		// Save new values
-		editor.putStringSet(KEY_PREF_MULTILIST_SITES, new HashSet<String>(Arrays.asList(getResources().getStringArray(R.array.default_sites_array))));
-		editor.commit();
-		
-		// Set all origin values on the list of websites
-		FirstTimeActivity.websNames = getResources().getStringArray(R.array.default_sites_array);
-		
+	private void restoreDefaultWebsitesSelection(SharedPreferences sharedPreferences) {		
+		// Get the default sites selection
+		Set<String> defaultSitesSelection = new HashSet<String>(Arrays.asList(getResources().getStringArray(R.array.default_sites_array)));
 		// Set the values on the shown list
-		Set<String> set = sharedPreferences.getStringSet(KEY_PREF_MULTILIST_SITES, null);
-		originList.setValues(set);
+		originMultiList.setValues(defaultSitesSelection);
+		// Save the new values
+		Editor editor = sharedPreferences.edit();
+		editor.putStringSet(KEY_PREF_MULTILIST_SITES, defaultSitesSelection);
+		editor.commit();
 		
 		Intent i = new Intent(getActivity(), SettingsActivity.class);
 		startActivity(i);
@@ -182,17 +175,17 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 	 */
 	private void enableActiveOrganization(String activeOrganization) {
 		if (activeOrganization.equals(TYPE_ORGANIZATION)){
-	    	topicList.setEnabled(false);
-	    	typeList.setEnabled(true);
-	    	originList.setEnabled(false);
+	    	topicMultiList.setEnabled(false);
+	    	typeMultiList.setEnabled(true);
+	    	originMultiList.setEnabled(false);
 	    }else if(activeOrganization.equals(TOPIC_ORGANIZATION)){
-	    	topicList.setEnabled(true);
-	    	typeList.setEnabled(false);
-	    	originList.setEnabled(false);
+	    	topicMultiList.setEnabled(true);
+	    	typeMultiList.setEnabled(false);
+	    	originMultiList.setEnabled(false);
 	    }else{
-	    	topicList.setEnabled(false);
-	    	typeList.setEnabled(false);
-	    	originList.setEnabled(true);
+	    	topicMultiList.setEnabled(false);
+	    	typeMultiList.setEnabled(false);
+	    	originMultiList.setEnabled(true);
 	    }
 	}
 	

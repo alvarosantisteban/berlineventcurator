@@ -14,11 +14,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
-import com.j256.ormlite.dao.RuntimeExceptionDao;
-import com.j256.ormlite.stmt.DeleteBuilder;
-import com.j256.ormlite.stmt.SelectArg;
-
 import android.app.ActionBar;
 import android.content.Context;
 import android.content.Intent;
@@ -39,6 +34,11 @@ import android.widget.ExpandableListView.OnGroupClickListener;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
+import com.j256.ormlite.dao.RuntimeExceptionDao;
+import com.j256.ormlite.stmt.DeleteBuilder;
+import com.j256.ormlite.stmt.SelectArg;
 
 /**
  * Displays a list with the events for a concrete day organized by the origin of the website and the time.
@@ -76,10 +76,11 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 	public static final int RESULT_UPDATE = 1;
 	public static final String EVENTS_RESULT_DATA = "result data";
 	
-	public String[] lastSelection;
+	public Set<String> lastSelection;
 	
 	public Set<String> typeTags;
 	public Set<String> topicTags;
+	public Set<String> originTags;
 	
 	public String[] setOfTags;
 	
@@ -191,7 +192,7 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 		// Know if its the first time the user uses the app
 		// --------------------------------------------------
 		boolean isFirstTimeApp = sharedPref.getBoolean("isFirstTimeApp", true);
-		lastSelection = sharedPref.getStringSet("lastSelection", new HashSet<String>(Arrays.asList(FirstTimeActivity.websNames))).toArray(new String[0]);
+		lastSelection = sharedPref.getStringSet("lastSelection", new HashSet<String>(Arrays.asList(context.getResources().getStringArray(R.array.default_sites_array))));
 		
 		Intent intent;
 		//isFirstTimeApp = true;
@@ -210,41 +211,36 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 		loadProgressBar = (ProgressBar)findViewById(R.id.progressLoadHtml);	
 		
 		// Get the sites are meant to be shown
-		Set<String> set = sharedPref.getStringSet(SettingsFragment.KEY_PREF_MULTILIST_SITES, new HashSet<String>(Arrays.asList(FirstTimeActivity.websNames)));
-		FirstTimeActivity.websNames = set.toArray(new String[0]);
-			
+		//Set<String> set = sharedPref.getStringSet(SettingsFragment.KEY_PREF_MULTILIST_SITES, new HashSet<String>(Arrays.asList(FirstTimeActivity.websNames)));
+		//Set<String> set = sharedPref.getStringSet(SettingsFragment.KEY_PREF_MULTILIST_SITES, new HashSet<String>(Arrays.asList(context.getResources().getStringArray(R.array.types_array_values))));
+		//FirstTimeActivity.websNames = set.toArray(new String[0]);
+		originTags = sharedPref.getStringSet(SettingsFragment.KEY_PREF_MULTILIST_SITES, new HashSet<String>(Arrays.asList(context.getResources().getStringArray(R.array.default_sites_array))));
 		
 		// Get the kind of organization
 		String kindOfOrganization = sharedPref.getString(SettingsFragment.KEY_PREF_LIST_ORGANIZATIONS, SettingsFragment.TYPE_ORGANIZATION);
-		String[] chuliSet;
-		String tag;
+		String kindOfOrganizationTag;
 		if (kindOfOrganization.equals(SettingsFragment.TYPE_ORGANIZATION)){
 			// Get the set of type tags
-			setOfTags = context.getResources().getStringArray(R.array.types_array_values);
-			typeTags = sharedPref.getStringSet(SettingsFragment.KEY_PREF_MULTILIST_TYPE, new HashSet<String>(Arrays.asList(setOfTags)));
+			typeTags = sharedPref.getStringSet(SettingsFragment.KEY_PREF_MULTILIST_TYPE, new HashSet<String>(Arrays.asList(context.getResources().getStringArray(R.array.types_array_values))));
 			setOfTags = typeTags.toArray(new String[0]);
-			createHeaderGroups(setOfTags);	
-			chuliSet = setOfTags;
-			tag = "typeTag";
-		}else if (kindOfOrganization.equals(SettingsFragment.ORIGIN_ORGANIZATION)){
-			createHeaderGroups(FirstTimeActivity.websNames);
-			chuliSet = FirstTimeActivity.websNames;
-			tag = "eventsOrigin";
-		}else{
-			setOfTags = context.getResources().getStringArray(R.array.themas_array_values);
-			topicTags = sharedPref.getStringSet(SettingsFragment.KEY_PREF_MULTILIST_TOPIC, new HashSet<String>(Arrays.asList(setOfTags)));
+			kindOfOrganizationTag = "typeTag";
+		}else if (kindOfOrganization.equals(SettingsFragment.TOPIC_ORGANIZATION)){
+			// Get the set of topic tags
+			topicTags = sharedPref.getStringSet(SettingsFragment.KEY_PREF_MULTILIST_TOPIC, new HashSet<String>(Arrays.asList(context.getResources().getStringArray(R.array.themas_array_values))));
 			setOfTags = topicTags.toArray(new String[0]);
-			createHeaderGroups(setOfTags);
-			chuliSet = setOfTags;
-			tag ="themaTag";
+			kindOfOrganizationTag ="themaTag";
+		}else{
+			setOfTags = originTags.toArray(new String[0]);
+			kindOfOrganizationTag = "eventsOrigin";
 		}
+		// Create the header groups
+		createHeaderGroups(setOfTags);
 		 
 	    // --------------------------------------------------
 	 	// Display the right date
 	    // --------------------------------------------------
 		
 		intent = getIntent();
-		//eventsList = intent.getExtra(MainActivity.EXTRA_HTML);
 		// Get the choosen date from the calendar or from the event that the user was consulting
 		choosenDate = intent.getStringExtra(CalendarActivity.EXTRA_DATE);
 		choosenDate = intent.getStringExtra(EventActivity.EXTRA_DATE);
@@ -264,7 +260,6 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 			}
 		}	
 		
-		
 		//databaseHelper = getHelper();
 		
 		// Enable the app's icon to act as home
@@ -280,8 +275,8 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 		// Attach the adapter to the expandableList
 		expandableSitesList.setAdapter(listAdapter);
 		
-		// Load the events for the selected websites
-		loadEvents(tag, chuliSet);
+		// Load the events for the selected websites and tags
+		loadEvents(kindOfOrganizationTag, setOfTags);
 		
 		// Expand the groups with events
 		expandGroupsWithEvents();
@@ -308,38 +303,52 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 			System.out.println(lastSelection[i]);
 		}
 		*/
-		if(!Arrays.equals(FirstTimeActivity.websNames, lastSelection)){
-			checkDifferencesBetweenSelection(FirstTimeActivity.websNames, lastSelection);
+		/*if(!Arrays.equals(FirstTimeActivity.websNames, lastSelection)){
+			checkDifferencesBetweenSelection(originTags.toArray(new String[0]), lastSelection);
 			lastSelection = FirstTimeActivity.websNames;
 			Editor editor = sharedPref.edit();
             editor.putStringSet("lastSelection", new HashSet<String>(Arrays.asList(FirstTimeActivity.websNames)));
             editor.commit();
+		}*/
+		
+		//if(!Arrays.equals(originTags.toArray(new String[0]), lastSelection.toArray(new String[0]))){
+		if(!lastSelection.equals(originTags)){
+			checkDifferencesBetweenSelection(originTags, lastSelection);
+			lastSelection = originTags;
+			Editor editor = sharedPref.edit();
+            editor.putStringSet("lastSelection", lastSelection);
+            editor.commit();
 		}
+		
 	}
-
+	
 	/**
 	 * Checks the differences between two string arrays to determinate which groups have elements that have to be deleted and which groups
 	 * have events that have to be downloaded.
 	 * 
 	 * @param newSelection the new selection of the user
 	 * @param oldSelection the old selection of the user
-	 */
-	private void checkDifferencesBetweenSelection(String[] newSelection, String[] oldSelection) {
+	 *
+	private void checkDifferencesBetweenSelection(Set<String> newSelection, Set<String> oldSelection) {
 		System.out.println("checkDifferencesBetweenSelection");
 		// Check the added groups
 		List<String> added = new ArrayList<String>();
-		if(oldSelection.length == 0){
-			for(int i=0; i<newSelection.length;i++){
-				added.add(newSelection[i]);
+		Iterator<String> newSelectionIterator = newSelection.iterator();
+		Iterator<String> oldSelectionIterator = oldSelection.iterator();
+
+		if(oldSelection.size() == 0){
+			while (newSelectionIterator.hasNext()) {
+				//System.out.println(newSelectionIterator.next());
+				added.add(newSelectionIterator.next());
 			}
 		}else{
-			for(int i=0; i<newSelection.length;i++){
-				for(int j=0; j<oldSelection.length;j++){
-					if(newSelection[i].equals(oldSelection[j])){
+			while (newSelectionIterator.hasNext()) {
+				while (oldSelectionIterator.hasNext()) {
+					if(newSelectionIterator.next().equals(oldSelectionIterator.next())){
 						j = oldSelection.length;
 					}else{
 						if(j == oldSelection.length-1){
-							added.add(newSelection[i]);
+							added.add(newSelectionIterator.next());
 						}
 					}
 				}
@@ -400,7 +409,97 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 			}
 		}
 	}
+	*/
+	
 
+	/**
+	 * Checks the differences between two string arrays to determinate which groups have elements that have to be deleted and which groups
+	 * have events that have to be downloaded.
+	 * 
+	 * @param newSelection the new selection of the user
+	 * @param oldSelection the old selection of the user
+	 */
+	//private void checkDifferencesBetweenSelection(String[] newSelection, String[] oldSelection) {
+	private void checkDifferencesBetweenSelection(Set<String> newSelection, Set<String> oldSelection) {
+		//System.out.println("checkDifferencesBetweenSelection. newSelection.size():"+newSelection.size());
+		System.out.println("checkDifferencesBetweenSelection. oldSelection.size():"+oldSelection.size());
+		String[] newSelection1 = newSelection.toArray(new String[0]);
+		String[] oldSelection1 = oldSelection.toArray(new String[0]);
+		// Check the added groups
+		List<String> added = new ArrayList<String>();
+		if(oldSelection1.length == 0){
+			for(int i=0; i<newSelection1.length;i++){
+				added.add(newSelection1[i]);
+			}
+		}else{
+			for(int i=0; i<newSelection1.length;i++){
+				for(int j=0; j<oldSelection1.length;j++){
+					if(newSelection1[i].equals(oldSelection1[j])){
+						j = oldSelection1.length;
+					}else{
+						if(j == oldSelection1.length-1){
+							added.add(newSelection1[i]);
+						}
+					}
+				}
+			}
+		}
+		
+		// Download the events of the new added thema/type, if applies
+		System.out.println("New added groups:"+added.size());
+		if(added.size() > 0){
+			// Create a connection
+			ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+			NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+			// Check if is possible to establish a connection
+			if (networkInfo != null && networkInfo.isConnected()) {
+				DownloadWebpageTask2 download = new DownloadWebpageTask2();
+				// Execute the asyncronous task of downloading the websites
+				download.execute(added.toArray(new String[added.size()]));
+			}
+		}
+		
+		// Check the deleted groups
+		System.out.println("Oldselection: "+oldSelection1.length);
+		System.out.println("newselection: "+newSelection1.length);
+		List<String> deleted = new ArrayList<String>();
+		if(newSelection1.length == 0){
+			for(int i=0; i<oldSelection1.length;i++){
+				deleted.add(oldSelection1[i]);
+			}
+		}else{
+			for(int i=0; i<oldSelection1.length;i++){
+				for(int j=0; j<newSelection1.length;j++){
+					if(oldSelection1[i].equals(newSelection1[j])){
+						j = newSelection1.length;
+					}else{
+						if(j == newSelection1.length-1){
+							deleted.add(oldSelection1[i]);
+						}
+					}
+				}
+			}
+		}
+		
+		// Remove from the database the old ones, if applies
+		System.out.println("Deleted groups:"+deleted.size());
+		if (deleted.size() > 0){
+			RuntimeExceptionDao<Event, Integer> eventDao = getHelper().getEventDataDao();
+			DeleteBuilder<Event, Integer> deleteBuilder = eventDao.deleteBuilder();	
+			for (int i=0; i<deleted.size(); i++){
+				try {
+					System.out.println("deleted eventsOrigin:"+deleted.get(i));
+					// create our argument which uses a SQL ? to avoid having problems with apostrophes
+					SelectArg deletedArg = new SelectArg(deleted.get(i));
+					deleteBuilder.where().eq("eventsOrigin", deletedArg);
+					deleteBuilder.delete();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+	
 	/**
 	 * Returns the date of tomorrow formated like DD/MM/YYYY
 	 * 
@@ -448,60 +547,6 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 			}*/
 		}
 	}
-	
-	/**
-	 * Loads the events from the selected websites into the list if the day is the right one
-	 *
-	private void loadEvents(){ 
-		System.out.println("LOAD EVENTS");
-		System.out.println("-----------------------------");
-		// Get our dao
-		RuntimeExceptionDao<Event, Integer> eventDao = getHelper().getEventDataDao();
-		for (int i=0; i<FirstTimeActivity.websNames.length; i++){
-			System.out.println(FirstTimeActivity.websNames[i]);
-			List<Event> eventsFromWebsite = null;
-			try {
-				Map<String, Object> fieldValues = new HashMap<String,Object>();
-				fieldValues.put("eventsOrigin", FirstTimeActivity.websNames[i]);
-				fieldValues.put("day", choosenDate);
-				eventsFromWebsite = eventDao.queryForFieldValuesArgs(fieldValues);
-			//} catch (SQLException e) {
-			} catch (Exception e) {
-				e.printStackTrace();
-				System.out.println("DB exception while retrieving the events from the website " +FirstTimeActivity.websNames[i]);
-			}
-			for (int j = 0; j < eventsFromWebsite.size(); j++) {
-				addEvent(FirstTimeActivity.websNames[i],eventsFromWebsite.get(j));
-			}
-		}
-	}*/
-	
-	/**
-	 * Loads the events from the selected websites into the list if the day is the right one
-	 *
-	private void loadEvents(){ 
-		System.out.println("LOAD EVENTS");
-		System.out.println("-----------------------------");
-		// Get our dao
-		RuntimeExceptionDao<Event, Integer> eventDao = getHelper().getEventDataDao();
-		for (int i=0; i<typeTags.length; i++){
-			System.out.println(typeTags[i]);
-			List<Event> eventsFromWebsite = null;
-			try {
-				Map<String, Object> fieldValues = new HashMap<String,Object>();
-				fieldValues.put("typeTag", typeTags[i]);
-				fieldValues.put("day", choosenDate);
-				eventsFromWebsite = eventDao.queryForFieldValuesArgs(fieldValues);
-			//} catch (SQLException e) {
-			} catch (Exception e) {
-				e.printStackTrace();
-				System.out.println("DB exception while retrieving the events from the website " +typeTags[i]);
-			}
-			for (int j = 0; j < eventsFromWebsite.size(); j++) {
-				addEvent(typeTags[i],eventsFromWebsite.get(j));
-			}
-		}
-	}*/
 	
 	/**
 	 * Loads the events from the DB that match the choosenDate and the set of tags for the kind of organization passed as parameters
@@ -679,7 +724,8 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 		    if (networkInfo != null && networkInfo.isConnected()) {
 				DownloadWebpageTask2 download = new DownloadWebpageTask2();
 				// Execute the asyncronous task of downloading the websites
-				download.execute(FirstTimeActivity.websNames);
+				//download.execute(FirstTimeActivity.websNames);
+				download.execute(originTags.toArray(new String[0]));
 		    } else {
 		    	// Inform the user that there is no network connection available
 		    	displayToast(getString(R.string.no_network));
