@@ -19,6 +19,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -848,6 +850,7 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 	    	loadProgressBar.setVisibility(View.VISIBLE);
 	    	// Inform the user
 	    	publishProgress("Start", "");
+	    	lockScreenOrientation();
 		}
 		
 		/**
@@ -979,11 +982,24 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 			System.out.println("onPostExecute------------>");
 			loadProgressBar.setVisibility(View.GONE);
 			// Reload the Date Activity if there are new events
+			unlockScreenOrientation();
 			if (result > 0){
 				Intent intent = new Intent(context, DateActivity.class);
 				startActivity(intent);
 			}
-			
+		}
+		
+		private void lockScreenOrientation() {
+		    int currentOrientation = getResources().getConfiguration().orientation;
+		    if (currentOrientation == Configuration.ORIENTATION_PORTRAIT) {
+		        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+		    } else {
+		        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+		    }
+		}
+		 
+		private void unlockScreenOrientation() {
+		    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
 		}
 	}
 }
