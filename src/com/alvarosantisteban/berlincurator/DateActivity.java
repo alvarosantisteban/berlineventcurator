@@ -455,7 +455,8 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 			NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
 			// Check if is possible to establish a connection
 			if (networkInfo != null && networkInfo.isConnected()) {
-				DownloadWebpageTask2 download = new DownloadWebpageTask2();
+				//DownloadWebpageTask2 download = new DownloadWebpageTask2();
+				DownloadWebpageAsyncTask download = new DownloadWebpageAsyncTask(this, loadProgressBar);
 				// Execute the asyncronous task of downloading the websites
 				download.execute(added.toArray(new String[added.size()]));
 			}
@@ -724,9 +725,9 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 		    NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
 		    // Check if is possible to establish a connection
 		    if (networkInfo != null && networkInfo.isConnected()) {
-				DownloadWebpageTask2 download = new DownloadWebpageTask2();
+				//DownloadWebpageTask2 download = new DownloadWebpageTask2();
+		    	DownloadWebpageAsyncTask download = new DownloadWebpageAsyncTask(this,loadProgressBar);
 				// Execute the asyncronous task of downloading the websites
-				//download.execute(FirstTimeActivity.websNames);
 				download.execute(originTags.toArray(new String[0]));
 		    } else {
 		    	// Inform the user that there is no network connection available
@@ -774,11 +775,6 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 	public void onDestroy() {
 	    super.onDestroy();
 	    System.out.println(tag + "In the onDestroy() event");
-	    /*
-	    if (databaseHelper != null) {
-	        OpenHelperManager.releaseHelper();
-	        databaseHelper = null;
-	    }*/
 	}
 	
 	/**
@@ -818,188 +814,11 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 		headerInfo.getEventsList().set(lastTouchedChildPosition, changedEvent);
 		groupsList.set(lastTouchedGroupPosition, headerInfo);
 	}
-
-	/*
-	private DatabaseHelper getHelper() {
-	    if (databaseHelper == null) {
-	        databaseHelper =
-	            OpenHelperManager.getHelper(this, DatabaseHelper.class);
-	    }
-	    return databaseHelper;
-	}*/
 	
 	private void displayToast(final String message) {
 	    //toast.cancel();
 	    toast.setText(message); 
 	    toast.setGravity(Gravity.TOP, 0, FirstTimeActivity.actionBarHeight);
 	    toast.show();
-	}
-	
-	/** 
-     * Uses AsyncTask to create a task away from the main UI thread. 
-     * This task takes the creates several HttpUrlConnection to download the html from different websites. 
-     * Afterwards, the several lists of Events are created and the execution goes to the Date Activity.
-    */
-	public class DownloadWebpageTask2 extends AsyncTask<String, String, Integer> {
-		
-		/**
-		 * Makes the progressBar visible
-		 */
-		protected void onPreExecute(){
-	    	System.out.println("onPreExecute");
-	    	loadProgressBar.setVisibility(View.VISIBLE);
-	    	// Inform the user
-	    	publishProgress("Start", "");
-	    	lockScreenOrientation();
-		}
-		
-		/**
-		 * Downloads the htmls and creates the lists of Events. 
-		 * Detects any possible problem during the download of the website or the extraction of events.
-		 * @return 
-		 * 
-		 */
-		protected Integer doInBackground(String... urls) { 
-			int numOfNewEvents = 0;
-			// Load the events from the selected websites
-			for (int i=0; i<urls.length; i++){
-				List<Event> eventsFromAWebsite = null;
-				if (urls[i].equals("I Heart Berlin")){
-					System.out.println("Ihearberlin dentro");
-					eventsFromAWebsite = EventLoaderFactory.newIHeartBerlinEventLoader().load(context);
-				}else if(urls[i].equals("Berlin Art Parasites")){
-					System.out.println("artParasites dentro");
-					eventsFromAWebsite = EventLoaderFactory.newArtParasitesEventLoader().load(context);
-				}else if(urls[i].equals("Metal Concerts")){
-					System.out.println("metalConcerts dentro");
-					eventsFromAWebsite = EventLoaderFactory.newMetalConcertsEventLoader().load(context);
-				}else if(urls[i].equals("White Trash")){
-					System.out.println("whitetrash dentro");
-					eventsFromAWebsite = EventLoaderFactory.newWhiteTrashEventLoader().load(context);
-				}else if(urls[i].equals("Köpi's events")){
-					System.out.println("koepi dentro");
-					eventsFromAWebsite = EventLoaderFactory.newKoepiEventLoader().load(context);
-				}else if(urls[i].equals("Goth Datum")){
-					System.out.println("goth dentro");
-					eventsFromAWebsite = EventLoaderFactory.newGothDatumEventLoader().load(context);
-				}else if(urls[i].equals("Stress Faktor")){
-					System.out.println("Stresssssss faktor dentro");
-					eventsFromAWebsite = EventLoaderFactory.newStressFaktorEventLoader().load(context);
-				}else if(urls[i].equals("Index")){
-					System.out.println("Index dentro");
-					eventsFromAWebsite = EventLoaderFactory.newIndexEventLoader().load(context);
-				}else{
-					return null;
-				}
-				// If there was a problem loading the events we tell the user
-				if (eventsFromAWebsite == null){
-					// Distinguish the situation where the event is null because the Berlin Art Parasites website is not checked
-					if(!(urls[i].equals("Berlin Art Parasites") && !ArtParasitesEventLoader.isBerlinWeekend())){
-						System.out.println("Event is null");
-						publishProgress("Exception", urls[i]);	
-					}
-				}else{
-					// Add the events from this website to the DB
-					for (int j = 0; j < eventsFromAWebsite.size(); j++) {
-						if(addEventToDB(eventsFromAWebsite.get(j))){
-							numOfNewEvents++;
-						}
-					}
-				}
-			}
-			// Inform the user
-			publishProgress("Finish",Integer.valueOf(numOfNewEvents).toString());
-			return numOfNewEvents;
-		} 
-		
-		/**
-		 * Adds an event to the DB if it does not already exist.
-		 * 
-		 * @param event The event to be added
-		 * @return true if the event was added, false otherwise.
-		 */
-		private boolean addEventToDB(Event event) {
-			// Get our dao
-			RuntimeExceptionDao<Event, Integer> eventDao = getHelper().getEventDataDao();
-			// Check if the event already exists in the DB
-			if(!isEventInDB(eventDao, event)){
-				// Store the event in the database
-				eventDao.create(event);
-				return true;
-			}
-			return false;
-		}
-
-		/**
-		 * Checks if an event is already in the DB. To determinate it, checks the name, day and description of an event.
-		 * 
-		 * @param eventDao Our DAO for the Events table
-		 * @param event The event to be checked its presence in the DB
-		 * @return true if the event is already in the DB
-		 */
-		private boolean isEventInDB(RuntimeExceptionDao<Event, Integer> eventDao, Event event) {
-			Map<String, Object> fieldValues = new HashMap<String,Object>();
-			fieldValues.put("name", event.getName());
-			fieldValues.put("day", event.getDay());
-			fieldValues.put("description", event.getDescription());
-			List<Event> foundEvents = eventDao.queryForFieldValuesArgs(fieldValues);
-			/*
-			 * for (int i=0; i<foundEvents.size();i++){
-				System.out.println(foundEvents.get(i).getName());
-			}
-			*/
-			if(foundEvents.size() >= 1){
-				System.out.println("El evento ya existe, no se añade.");
-				
-				return true;
-			}
-			return false;
-		}
-
-		/**
-		 * Informs the user of the state of the process of events download.
-		 */
-		protected void onProgressUpdate(String... progress) {
-    		System.out.println("Estoy en onProgressUpdate:"+progress[0]);
-    		if (progress[0].equals("Start")){
-    			displayToast(getString(R.string.searching));
-    		}else if (progress[0].equals("Exception")){
-    			displayToast("There were problems downloading the content from: " +progress[1] +" It's events won't be displayed.");
-    		}else if (progress[0].equals("Finish")){
-    			if (Integer.parseInt(progress[1]) > 0){
-    				displayToast("Added " +progress[1] +" new events");
-    			}else{
-    				displayToast(getString(R.string.no_new_events));
-    			}
-    		}
-    		//loadProgressBar.setProgress(progress[0].intValue());
-		}
-		
-		/**
-		* Goes to the Date Activity and hides the progressBar.
-        */
-		protected void onPostExecute(Integer result) {
-			System.out.println("onPostExecute------------>");
-			loadProgressBar.setVisibility(View.GONE);
-			// Reload the Date Activity if there are new events
-			unlockScreenOrientation();
-			if (result > 0){
-				Intent intent = new Intent(context, DateActivity.class);
-				startActivity(intent);
-			}
-		}
-		
-		private void lockScreenOrientation() {
-		    int currentOrientation = getResources().getConfiguration().orientation;
-		    if (currentOrientation == Configuration.ORIENTATION_PORTRAIT) {
-		        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-		    } else {
-		        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-		    }
-		}
-		 
-		private void unlockScreenOrientation() {
-		    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
-		}
-	}
+	}	
 }
