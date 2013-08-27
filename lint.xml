@@ -5,5 +5,6 @@
     </issue>
     <issue id="ShowToast">
         <ignore path="src/com/alvarosantisteban/berlincurator/DateActivity.java" />
+        <ignore path="src/com/alvarosantisteban/berlincurator/FirstTimeActivity.java" />
     </issue>
 </lint>
