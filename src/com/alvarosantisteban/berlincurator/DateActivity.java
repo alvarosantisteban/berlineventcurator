@@ -19,11 +19,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.content.pm.ActivityInfo;
-import android.content.res.Configuration;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.Gravity;
@@ -194,7 +192,15 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 		// Know if its the first time the user uses the app
 		// --------------------------------------------------
 		boolean isFirstTimeApp = sharedPref.getBoolean("isFirstTimeApp", true);
-		lastSelection = sharedPref.getStringSet("lastSelection", new HashSet<String>(Arrays.asList(context.getResources().getStringArray(R.array.default_sites_array))));
+		//lastSelection = sharedPref.getStringSet("lastSelection", new HashSet<String>(Arrays.asList(context.getResources().getStringArray(R.array.default_sites_array))));
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+			lastSelection = sharedPref.getStringSet("lastSelection", new HashSet<String>(Arrays.asList(context.getResources().getStringArray(R.array.default_sites_array))));
+		} else {
+			String s = sharedPref.getString("lastSelection", context.getResources().getString(R.string.sites_pseudoarray_values));
+			if(s != null){
+				lastSelection = new HashSet<String>(Arrays.asList(s.split(",")));
+			}
+		}
 		
 		Intent intent;
 		//isFirstTimeApp = true;
@@ -213,22 +219,44 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 		loadProgressBar = (ProgressBar)findViewById(R.id.progressLoadHtml);	
 		
 		// Get the sites are meant to be shown
-		//Set<String> set = sharedPref.getStringSet(SettingsFragment.KEY_PREF_MULTILIST_SITES, new HashSet<String>(Arrays.asList(FirstTimeActivity.websNames)));
-		//Set<String> set = sharedPref.getStringSet(SettingsFragment.KEY_PREF_MULTILIST_SITES, new HashSet<String>(Arrays.asList(context.getResources().getStringArray(R.array.types_array_values))));
-		//FirstTimeActivity.websNames = set.toArray(new String[0]);
-		originTags = sharedPref.getStringSet(SettingsFragment.KEY_PREF_MULTILIST_SITES, new HashSet<String>(Arrays.asList(context.getResources().getStringArray(R.array.default_sites_array))));
+		//originTags = sharedPref.getStringSet(SettingsFragment.KEY_PREF_MULTILIST_SITES, new HashSet<String>(Arrays.asList(context.getResources().getStringArray(R.array.default_sites_array))));
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+			originTags = sharedPref.getStringSet(SettingsFragment.KEY_PREF_MULTILIST_SITES, new HashSet<String>(Arrays.asList(context.getResources().getStringArray(R.array.default_sites_array))));
+		} else {
+			String s = sharedPref.getString(SettingsFragment.KEY_PREF_MULTILIST_SITES, context.getResources().getString(R.string.sites_pseudoarray_values));
+			if(s != null){
+				originTags = new HashSet<String>(Arrays.asList(s.split(",")));
+			}
+		}
 		
 		// Get the kind of organization
 		String kindOfOrganization = sharedPref.getString(SettingsFragment.KEY_PREF_LIST_ORGANIZATIONS, SettingsFragment.TYPE_ORGANIZATION);
 		String kindOfOrganizationTag;
 		if (kindOfOrganization.equals(SettingsFragment.TYPE_ORGANIZATION)){
 			// Get the set of type tags
-			typeTags = sharedPref.getStringSet(SettingsFragment.KEY_PREF_MULTILIST_TYPE, new HashSet<String>(Arrays.asList(context.getResources().getStringArray(R.array.types_array_values))));
+			//typeTags = sharedPref.getStringSet(SettingsFragment.KEY_PREF_MULTILIST_TYPE, new HashSet<String>(Arrays.asList(context.getResources().getStringArray(R.array.types_array_values))));
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+				typeTags = sharedPref.getStringSet(SettingsFragment.KEY_PREF_MULTILIST_TYPE, new HashSet<String>(Arrays.asList(context.getResources().getStringArray(R.array.types_array_values))));
+			} else {
+				String s = sharedPref.getString(SettingsFragment.KEY_PREF_MULTILIST_TYPE, context.getResources().getString(R.string.types_pseudoarray_values));
+				if(s != null){
+					typeTags = new HashSet<String>(Arrays.asList(s.split(",")));
+				}
+			}
 			setOfTags = typeTags.toArray(new String[0]);
 			kindOfOrganizationTag = "typeTag";
 		}else if (kindOfOrganization.equals(SettingsFragment.TOPIC_ORGANIZATION)){
 			// Get the set of topic tags
-			topicTags = sharedPref.getStringSet(SettingsFragment.KEY_PREF_MULTILIST_TOPIC, new HashSet<String>(Arrays.asList(context.getResources().getStringArray(R.array.themas_array_values))));
+			//topicTags = sharedPref.getStringSet(SettingsFragment.KEY_PREF_MULTILIST_TOPIC, new HashSet<String>(Arrays.asList(context.getResources().getStringArray(R.array.themas_array_values))));
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+				topicTags = sharedPref.getStringSet(SettingsFragment.KEY_PREF_MULTILIST_TOPIC, new HashSet<String>(Arrays.asList(context.getResources().getStringArray(R.array.themas_array_values))));
+			} else {
+				String s = sharedPref.getString(SettingsFragment.KEY_PREF_MULTILIST_TOPIC, context.getResources().getString(R.string.topics_pseudoarray_values));
+				if(s != null){
+					topicTags = new HashSet<String>(Arrays.asList(s.split(",")));
+				}
+			}
+			
 			setOfTags = topicTags.toArray(new String[0]);
 			kindOfOrganizationTag ="themaTag";
 		}else{
@@ -265,8 +293,12 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 		//databaseHelper = getHelper();
 		
 		// Enable the app's icon to act as home
-		ActionBar actionBar = getActionBar();
-		actionBar.setDisplayHomeAsUpEnabled(true);
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+			ActionBar actionBar = getActionBar();
+			actionBar.setDisplayHomeAsUpEnabled(true);
+		} 
+		//ActionBar actionBar = getActionBar();
+		//actionBar.setDisplayHomeAsUpEnabled(true);
 		
 		// --------------------------------------------------
 		// Adapter and loading of events
@@ -318,101 +350,17 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 			checkDifferencesBetweenSelection(originTags, lastSelection);
 			lastSelection = originTags;
 			Editor editor = sharedPref.edit();
-            editor.putStringSet("lastSelection", lastSelection);
+            //editor.putStringSet("lastSelection", lastSelection);
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+				editor.putStringSet("lastSelection", lastSelection);
+			} else {
+				editor.putString("lastSelection", Utils.join(lastSelection, ","));
+			}
             editor.commit();
 		}
 		
 	}
-	
-	/**
-	 * Checks the differences between two string arrays to determinate which groups have elements that have to be deleted and which groups
-	 * have events that have to be downloaded.
-	 * 
-	 * @param newSelection the new selection of the user
-	 * @param oldSelection the old selection of the user
-	 *
-	private void checkDifferencesBetweenSelection(Set<String> newSelection, Set<String> oldSelection) {
-		System.out.println("checkDifferencesBetweenSelection");
-		// Check the added groups
-		List<String> added = new ArrayList<String>();
-		Iterator<String> newSelectionIterator = newSelection.iterator();
-		Iterator<String> oldSelectionIterator = oldSelection.iterator();
-
-		if(oldSelection.size() == 0){
-			while (newSelectionIterator.hasNext()) {
-				//System.out.println(newSelectionIterator.next());
-				added.add(newSelectionIterator.next());
-			}
-		}else{
-			while (newSelectionIterator.hasNext()) {
-				while (oldSelectionIterator.hasNext()) {
-					if(newSelectionIterator.next().equals(oldSelectionIterator.next())){
-						j = oldSelection.length;
-					}else{
-						if(j == oldSelection.length-1){
-							added.add(newSelectionIterator.next());
-						}
-					}
-				}
-			}
-		}
 		
-		// Download the events of the new added thema/type, if applies
-		System.out.println("New added groups:"+added.size());
-		if(added.size() > 0){
-			// Create a connection
-			ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-			NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-			// Check if is possible to establish a connection
-			if (networkInfo != null && networkInfo.isConnected()) {
-				DownloadWebpageTask2 download = new DownloadWebpageTask2();
-				// Execute the asyncronous task of downloading the websites
-				download.execute(added.toArray(new String[added.size()]));
-			}
-		}
-		
-		// Check the deleted groups
-		System.out.println("Oldselection: "+oldSelection.length);
-		System.out.println("newselection: "+newSelection.length);
-		List<String> deleted = new ArrayList<String>();
-		if(newSelection.length == 0){
-			for(int i=0; i<oldSelection.length;i++){
-				deleted.add(oldSelection[i]);
-			}
-		}else{
-			for(int i=0; i<oldSelection.length;i++){
-				for(int j=0; j<newSelection.length;j++){
-					if(oldSelection[i].equals(newSelection[j])){
-						j = newSelection.length;
-					}else{
-						if(j == newSelection.length-1){
-							deleted.add(oldSelection[i]);
-						}
-					}
-				}
-			}
-		}
-		
-		// Remove from the database the old ones, if applies
-		System.out.println("Deleted groups:"+deleted.size());
-		if (deleted.size() > 0){
-			RuntimeExceptionDao<Event, Integer> eventDao = getHelper().getEventDataDao();
-			DeleteBuilder<Event, Integer> deleteBuilder = eventDao.deleteBuilder();	
-			for (int i=0; i<deleted.size(); i++){
-				try {
-					System.out.println("deleted eventsOrigin:"+deleted.get(i));
-					// create our argument which uses a SQL ? to avoid having problems with apostrophes
-					SelectArg deletedArg = new SelectArg(deleted.get(i));
-					deleteBuilder.where().eq("eventsOrigin", deletedArg);
-					deleteBuilder.delete();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-	}
-	*/
-	
 
 	/**
 	 * Checks the differences between two string arrays to determinate which groups have elements that have to be deleted and which groups
@@ -717,8 +665,14 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 	@Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_calendar) {
-			Intent i2 = new Intent(this, CalendarActivity.class);
-			startActivity(i2);
+        	if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+				Intent i2 = new Intent(this, CalendarActivity.class);
+				startActivity(i2);
+        	}else{
+        		Toast toast = Toast.makeText(getBaseContext(), "You need to have an Android with version at least 3.0 to select the day", Toast.LENGTH_SHORT);
+    			toast.setGravity(Gravity.TOP, 0, FirstTimeActivity.actionBarHeight);
+    			toast.show();
+        	}
 		}else if (item.getItemId() == R.id.menu_refresh_events) {
 			// Create a connection
 			ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);

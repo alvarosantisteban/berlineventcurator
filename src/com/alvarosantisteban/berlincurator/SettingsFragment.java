@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.MultiSelectListPreference;
@@ -86,7 +87,15 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
         
         // Get the set of active websites
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        setOfSites = sharedPref.getStringSet(KEY_PREF_MULTILIST_SITES, new HashSet<String>(Arrays.asList(getResources().getStringArray(R.array.default_sites_array))));
+        //setOfSites = sharedPref.getStringSet(KEY_PREF_MULTILIST_SITES, new HashSet<String>(Arrays.asList(getResources().getStringArray(R.array.default_sites_array))));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+        	setOfSites = sharedPref.getStringSet(KEY_PREF_MULTILIST_SITES, new HashSet<String>(Arrays.asList(getResources().getStringArray(R.array.default_sites_array))));
+		} else {
+			String s = sharedPref.getString(KEY_PREF_MULTILIST_SITES, getResources().getString(R.string.sites_pseudoarray_values));
+			if(s != null){
+				setOfSites = new HashSet<String>(Arrays.asList(s.split(",")));
+			}
+		}
         
         // Set the intent for the About preference (triggered when clicked)
         findPreference("about").setIntent(new Intent(getActivity(), AboutActivity.class));
@@ -106,12 +115,22 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
         	System.out.println("key=multilist sites changed");
             // Save the old values
             Editor editor = sharedPreferences.edit();
-            editor.putStringSet(KEY_PREF_MULTILIST_LAST_SELECTION, setOfSites);
+            //editor.putStringSet(KEY_PREF_MULTILIST_LAST_SELECTION, setOfSites);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+				editor.putStringSet(KEY_PREF_MULTILIST_LAST_SELECTION, setOfSites);
+			} else {
+				editor.putString(KEY_PREF_MULTILIST_LAST_SELECTION, Utils.join(setOfSites, ","));
+			}
             editor.commit();
             
             // Set the new values
             setOfSites = originMultiList.getValues();
-            editor.putStringSet(KEY_PREF_MULTILIST_SITES, setOfSites);
+            //editor.putStringSet(KEY_PREF_MULTILIST_SITES, setOfSites);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+				editor.putStringSet(KEY_PREF_MULTILIST_SITES, setOfSites);
+			} else {
+				editor.putString(KEY_PREF_MULTILIST_SITES, Utils.join(setOfSites, ","));
+			}
             editor.commit();
             
             Intent i = new Intent(getActivity(), DateActivity.class);
@@ -119,7 +138,12 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
         }else if (key.equals(KEY_PREF_MULTILIST_TYPE)){
         	System.out.println("key=multilist type changed");
         	Editor editor = sharedPreferences.edit();
-            editor.putStringSet(KEY_PREF_MULTILIST_TYPE, typeMultiList.getValues());
+            //editor.putStringSet(KEY_PREF_MULTILIST_TYPE, typeMultiList.getValues());
+        	if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+				editor.putStringSet(KEY_PREF_MULTILIST_TYPE, typeMultiList.getValues());
+			} else {
+				editor.putString(KEY_PREF_MULTILIST_TYPE, Utils.join(typeMultiList.getValues(), ","));
+			}
             editor.commit();
         	// Go to Date Activity
             Intent i = new Intent(getActivity(), DateActivity.class);
@@ -127,7 +151,12 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
         }else if (key.equals(KEY_PREF_MULTILIST_TOPIC)){
         	System.out.println("key=multilist topic changed");
         	Editor editor = sharedPreferences.edit();
-            editor.putStringSet(KEY_PREF_MULTILIST_TOPIC, topicMultiList.getValues());
+            //editor.putStringSet(KEY_PREF_MULTILIST_TOPIC, topicMultiList.getValues());
+        	if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+				editor.putStringSet(KEY_PREF_MULTILIST_TOPIC, topicMultiList.getValues());
+			} else {
+				editor.putString(KEY_PREF_MULTILIST_TOPIC, Utils.join(topicMultiList.getValues(), ","));
+			}
             editor.commit();
         	// Go to Date Activity
             Intent i = new Intent(getActivity(), DateActivity.class);
@@ -149,7 +178,12 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 		originMultiList.setValues(defaultSitesSelection);
 		// Save the new values
 		Editor editor = sharedPreferences.edit();
-		editor.putStringSet(KEY_PREF_MULTILIST_SITES, defaultSitesSelection);
+		//editor.putStringSet(KEY_PREF_MULTILIST_SITES, defaultSitesSelection);
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+			editor.putStringSet(KEY_PREF_MULTILIST_SITES, defaultSitesSelection);
+		} else {
+			editor.putString(KEY_PREF_MULTILIST_SITES, Utils.join(defaultSitesSelection, ","));
+		}
 		editor.commit();
 		
 		Intent i = new Intent(getActivity(), SettingsActivity.class);

@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Address;
 import android.location.Geocoder;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.CalendarContract;
 import android.provider.CalendarContract.Events;
@@ -87,8 +88,12 @@ public class EventActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 		event = (Event)intent.getSerializableExtra(DateActivity.EXTRA_EVENT);
 		
 		// Enable the app's icon to act as home
-		ActionBar actionBar = getActionBar();
-		actionBar.setDisplayHomeAsUpEnabled(true);
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+			ActionBar actionBar = getActionBar();
+			actionBar.setDisplayHomeAsUpEnabled(true);
+		} 
+		//ActionBar actionBar = getActionBar();
+		//actionBar.setDisplayHomeAsUpEnabled(true);
 		
 		scrollView = (CustomScrollView) findViewById(R.id.scrollViewEvent);
 		eventLayout = (LinearLayout) findViewById(R.id.eventLayout);
@@ -199,26 +204,32 @@ public class EventActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 	 * @param v the View
 	 */
 	public void addToMyGoogleCalendar(View v){
-		Calendar cal = new GregorianCalendar(); 
-		cal.setTime(new Date()); 
-		cal.add(Calendar.MONTH, 2); 
-		Intent intent = new Intent(Intent.ACTION_INSERT); 
-		intent.setData(Events.CONTENT_URI); 
-		intent.putExtra(Events.TITLE, name.getText().toString()); 
-		intent.putExtra(Events.DESCRIPTION, description.getText().toString()); 
-		intent.putExtra(Events.EVENT_LOCATION, location.getText().toString());
-		// If we know when will the event begin 
-		if (!time.getText().toString().equals("")){
-			long startEvent = getTimeInMilliseconds(day.getText().toString(),time.getText().toString());
-			intent.putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, startEvent); 
+		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+			Calendar cal = new GregorianCalendar(); 
+			cal.setTime(new Date()); 
+			cal.add(Calendar.MONTH, 2); 
+			Intent intent = new Intent(Intent.ACTION_INSERT); 
+			intent.setData(Events.CONTENT_URI); 
+			intent.putExtra(Events.TITLE, name.getText().toString()); 
+			intent.putExtra(Events.DESCRIPTION, description.getText().toString()); 
+			intent.putExtra(Events.EVENT_LOCATION, location.getText().toString());
+			// If we know when will the event begin 
+			if (!time.getText().toString().equals("")){
+				long startEvent = getTimeInMilliseconds(day.getText().toString(),time.getText().toString());
+				intent.putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, startEvent); 
+			}else{
+				// If not, we set it to happen during the whole day
+				intent.putExtra(Events.ALL_DAY, true); 
+				long startEvent = getTimeInMilliseconds(day.getText().toString(),"00:00");
+				intent.putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, startEvent); 
+			}
+			
+			startActivity(intent); 
 		}else{
-			// If not, we set it to happen during the whole day
-			intent.putExtra(Events.ALL_DAY, true); 
-			long startEvent = getTimeInMilliseconds(day.getText().toString(),"00:00");
-			intent.putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, startEvent); 
+			Toast toast = Toast.makeText(getBaseContext(), "You need to have an Android with version at least 4.0 to add events to your Google Calendar", Toast.LENGTH_SHORT);
+			toast.setGravity(Gravity.TOP, 0, FirstTimeActivity.actionBarHeight);
+			toast.show();
 		}
-		
-		startActivity(intent); 
 	}
 	
 	/**
@@ -313,8 +324,14 @@ public class EventActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 	@Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_calendar) {
-			Intent i2 = new Intent(this, CalendarActivity.class);
-			startActivity(i2);
+        	if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+				Intent i2 = new Intent(this, CalendarActivity.class);
+				startActivity(i2);
+        	}else{
+        		Toast toast = Toast.makeText(getBaseContext(), "You need to have an Android with version at least 3.0 to select the day", Toast.LENGTH_SHORT);
+    			toast.setGravity(Gravity.TOP, 0, FirstTimeActivity.actionBarHeight);
+    			toast.show();
+        	}
 		} else if (item.getItemId() == android.R.id.home) {
 			// app icon in action bar clicked; go to the DateActivity
             Intent intent = new Intent(this, DateActivity.class);

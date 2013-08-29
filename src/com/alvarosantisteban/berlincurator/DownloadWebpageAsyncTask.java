@@ -205,20 +205,6 @@ public class DownloadWebpageAsyncTask extends AsyncTask<String, String, Integer>
 	    toast.setGravity(Gravity.TOP, 0, FirstTimeActivity.actionBarHeight);
 	    toast.show();
 	}
-	
-	/*
-	 * 
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-		System.out.println("In the onDestroy() event");
-		
-		if (databaseHelper != null) {
-			OpenHelperManager.releaseHelper();
-			databaseHelper = null;
-		}
-	}*/
-
 		
 	private DatabaseHelper getHelper() {
 		if (databaseHelper == null) {

@@ -2,6 +2,7 @@ package com.alvarosantisteban.berlincurator;
 
 import java.util.Date;
 import java.util.Locale;
+import java.util.Set;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
@@ -150,4 +151,25 @@ public class Utils {
 		String total = day+"/"+monthNumber+"/"+monthDayYear[2];
 		return total.trim(); 
 	}
+	
+	/**
+	 * https://gist.github.com/shreeshga/5398506
+	 * @param set
+	 * @param delim
+	 * @return
+	 */
+	public static String join(Set<String> set, String delim) {
+		StringBuilder sb = new StringBuilder();
+		String loopDelim = "";
+		 
+		for (String s : set) {
+		sb.append(loopDelim);
+		sb.append(s);
+		 
+		loopDelim = delim;
+		}
+		 
+		return sb.toString();
+		}
+	
 }

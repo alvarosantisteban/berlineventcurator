@@ -21,6 +21,9 @@
     <string name="no_network">No network connection available</string>
     <string name="searching">Searching for new events</string>
     <string name="no_new_events">There are no new events to be added</string>
+    <string name="types_pseudoarray_values">Exhibition,Talk,Party,Screening,Concert,Other</string>
+    <string name="topics_pseudoarray_values">Art,Politics,Going Out</string>
+    <string name="sites_pseudoarray_values">I Heart Berlin,Metal Concerts,White Trash,Goth Datum,Stress Faktor,Index</string>
 
     <!-- Event Activity -->
     <string name="events_name">Name of the event</string>
@@ -84,10 +87,8 @@
     <string-array name="empty_array" />
     <string-array name="sites_array">
         <item>I Heart Berlin</item>
-        <item>Berlin Art Parasites</item>
         <item>Metal Concerts</item>
         <item>White Trash</item>
-        <item>Köpi\'s events</item>
         <item>Goth Datum</item>
         <item>Stress Faktor</item>
         <item>Index</item>
@@ -96,17 +97,14 @@
         <item>I Heart Berlin</item>
         <item>Metal Concerts</item>
         <item>White Trash</item>
-        <item>Köpi\'s events</item>
         <item>Goth Datum</item>
         <item>Stress Faktor</item>
         <item>Index</item>
     </string-array>
     <string-array name="sites_array_values">
         <item>I Heart Berlin</item>
-        <item>Berlin Art Parasites</item>
         <item>Metal Concerts</item>
         <item>White Trash</item>
-        <item>Köpi\'s events</item>
         <item>Goth Datum</item>
         <item>Stress Faktor</item>
         <item>Index</item>
@@ -147,5 +145,16 @@
         <item>By Type</item>
         <item>By Origin</item>
     </string-array>
-
+	<!-- Old array
+	<string-array name="sites_array_values">
+        <item>I Heart Berlin</item>
+        <item>Berlin Art Parasites</item>
+        <item>Metal Concerts</item>
+        <item>White Trash</item>
+        <item>Köpi\'s events</item>
+        <item>Goth Datum</item>
+        <item>Stress Faktor</item>
+        <item>Index</item>
+    </string-array>
+	 -->
 </resources>

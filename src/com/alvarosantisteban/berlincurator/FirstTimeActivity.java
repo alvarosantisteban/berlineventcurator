@@ -1,23 +1,17 @@
 package com.alvarosantisteban.berlincurator;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
-import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
-import com.j256.ormlite.dao.RuntimeExceptionDao;
+import android.app.ActionBar;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.content.pm.ActivityInfo;
-import android.content.res.Configuration;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.TypedValue;
@@ -29,6 +23,8 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+
+import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
 
 /**
  * Creates the main screen, from where the user can access the Settings, load the events of the current day or 
@@ -60,10 +56,8 @@ public class FirstTimeActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 	 * The total set of webs where the events can be extracted
 	 */
 	public static String[] websNames = {IHeartBerlinEventLoader.WEBSITE_NAME, 
-										ArtParasitesEventLoader.WEBSITE_NAME, 
 										MetalConcertsEventLoader.WEBSITE_NAME, 
 										WhiteTrashEventLoader.WEBSITE_NAME, 
-										KoepiEventLoader.WEBSITE_NAME, 
 										GothDatumEventLoader.WEBSITE_NAME, 
 										StressFaktorEventLoader.WEBSITE_NAME, 
 										IndexEventLoader.WEBSITE_NAME};
@@ -78,7 +72,7 @@ public class FirstTimeActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 	 */
     Button loadButton;
     
-    private static Toast toast;
+    //private static Toast toast;
 	
 	/**
 	 * Loads the elements from the resources
@@ -91,7 +85,7 @@ public class FirstTimeActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 		setContentView(R.layout.activity_first_time);
 		loadButton = (Button) findViewById(R.id.loadButton);
 		loadProgressBar = (ProgressBar)findViewById(R.id.progressLoadHtml);	
-		toast = Toast.makeText(this, "", Toast.LENGTH_LONG);
+		//toast = Toast.makeText(this, "", Toast.LENGTH_LONG);
 		
 		// Get the default shared preferences
 		sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
@@ -115,7 +109,16 @@ public class FirstTimeActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 		 
 		
 		// Get the sites are meant to be shown
-		Set<String> setOfWebsites = sharedPref.getStringSet(SettingsFragment.KEY_PREF_MULTILIST_SITES, new HashSet<String>(Arrays.asList(context.getResources().getStringArray(R.array.default_sites_array))));
+		Set<String> setOfWebsites = null;
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+			setOfWebsites = sharedPref.getStringSet(SettingsFragment.KEY_PREF_MULTILIST_SITES, new HashSet<String>(Arrays.asList(context.getResources().getStringArray(R.array.default_sites_array))));
+		} else {
+			String s = sharedPref.getString(SettingsFragment.KEY_PREF_MULTILIST_SITES, context.getResources().getString(R.string.sites_pseudoarray_values));
+			if(s != null){
+				setOfWebsites = new HashSet<String>(Arrays.asList(s.split(",")));
+			}
+		}
+		//Set<String> setOfWebsites = sharedPref.getStringSet(SettingsFragment.KEY_PREF_MULTILIST_SITES, new HashSet<String>(Arrays.asList(context.getResources().getStringArray(R.array.default_sites_array))));
 		websNames = setOfWebsites.toArray(new String[0]);
 		
 		// Mark that the App has been used
@@ -134,8 +137,12 @@ public class FirstTimeActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 		
 		// Get the height of the action bar
 		TypedValue tv = new TypedValue();
-		context.getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true);
-		actionBarHeight = getResources().getDimensionPixelSize(tv.resourceId);
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+			context.getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true);
+			actionBarHeight = getResources().getDimensionPixelSize(tv.resourceId);
+		} 
+		//context.getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true);
+		//actionBarHeight = getResources().getDimensionPixelSize(tv.resourceId);
 
 		// Listener for the load button
 		loadButton.setOnClickListener(new OnClickListener() {

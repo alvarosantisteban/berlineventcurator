@@ -3,6 +3,7 @@ package com.alvarosantisteban.berlincurator;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
@@ -20,8 +21,12 @@ public class AboutActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_about);
 		// Enable the app's icon to act as home
-	    ActionBar actionBar = getActionBar();
-	    actionBar.setDisplayHomeAsUpEnabled(true);
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+			ActionBar actionBar = getActionBar();
+			actionBar.setDisplayHomeAsUpEnabled(true);
+		} 
+		//ActionBar actionBar = getActionBar();
+	    //actionBar.setDisplayHomeAsUpEnabled(true);
 	    
 	    email = (TextView) findViewById(R.id.email_address);
 	    email.setMovementMethod(LinkMovementMethod.getInstance());
