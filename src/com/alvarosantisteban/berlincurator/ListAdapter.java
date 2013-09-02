@@ -67,7 +67,6 @@ public class ListAdapter extends BaseExpandableListAdapter {
 	 * @return the View corresponding to the event at the specified position 
 	 */
 	public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
-		//System.out.println("GET CHILD VIEWWWWWWWWWWWWWWWWWWW");
 		Event event = (Event) getChild(groupPosition, childPosition);
 		if (convertView == null) {
 			LayoutInflater infalInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);

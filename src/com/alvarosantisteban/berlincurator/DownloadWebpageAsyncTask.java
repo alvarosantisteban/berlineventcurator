@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -30,6 +31,11 @@ public class DownloadWebpageAsyncTask extends AsyncTask<String, String, Integer>
 	* The Database Helper that helps dealing with the db easily
 	*/
 	private DatabaseHelper databaseHelper = null;
+	
+	/**
+	 * Used for logging purposes
+	 */
+	private static final String TAG = "DownloadWebpageAsyncTask";
 
 	public DownloadWebpageAsyncTask(Context context, ProgressBar theLoadProgressBar) {
 	    this.context = context;
@@ -41,7 +47,7 @@ public class DownloadWebpageAsyncTask extends AsyncTask<String, String, Integer>
 	 * Makes the progressBar visible
 	 */
 	protected void onPreExecute(){
-    	System.out.println("onPreExecute");
+    	Log.d(TAG,"onPreExecute");
     	loadProgressBar.setVisibility(View.VISIBLE);
     	// Inform the user
     	publishProgress("Start", "");
@@ -149,8 +155,7 @@ public class DownloadWebpageAsyncTask extends AsyncTask<String, String, Integer>
 		}
 		*/
 		if(foundEvents.size() >= 1){
-			System.out.println("El evento ya existe, no se añade.");
-			
+			Log.d(TAG,"El evento ya existe, no se añade.");
 			return true;
 		}
 		return false;
@@ -160,7 +165,7 @@ public class DownloadWebpageAsyncTask extends AsyncTask<String, String, Integer>
 	 * Informs the user of the state of the process of events download.
 	 */
 	protected void onProgressUpdate(String... progress) {
-		System.out.println("Estoy en onProgressUpdate:"+progress[0]);
+		Log.d(TAG,"Estoy en onProgressUpdate:"+progress[0]);
 		if (progress[0].equals("Start")){
 			displayToast(context.getString(R.string.searching));
 		}else if (progress[0].equals("Exception")){
@@ -179,7 +184,7 @@ public class DownloadWebpageAsyncTask extends AsyncTask<String, String, Integer>
 	* Goes to the Date Activity and hides the progressBar.
     */
 	protected void onPostExecute(Integer result) {
-		System.out.println("onPostExecute------------>");
+		Log.d(TAG,"onPostExecute------------>");
 		loadProgressBar.setVisibility(View.GONE);
 		// Reload the Date Activity if there are new events
 		unlockScreenOrientation();

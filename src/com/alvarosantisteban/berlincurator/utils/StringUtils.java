@@ -6,7 +6,14 @@ import java.util.Set;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
+import android.util.Log;
+
 public final class StringUtils {
+	
+	/**
+	 * Used for logging purposes
+	 */
+	private static final String TAG = "StringUtils";
 	
 	/**
 	 * Converts a string of time in the format of 12hours HH:MMa to 24 hours 
@@ -33,9 +40,9 @@ public final class StringUtils {
 	 * @return the time in the format HH:MM or HH:MM-HH:MM or an empty string if there was no time or a problem arose.
 	 */
 	public static String extractTime(String theTime) {
-		//System.out.println("|"+theTime +"|");
+		//Log.d(TAG,"|"+theTime +"|");
 		theTime = theTime.replace(".", ":");
-		//System.out.println("|"+theTime +"|");
+		//Log.d(TAG,"|"+theTime +"|");
 		String timePeriod = "";
 		// Make sure that there is a time
 		if (theTime.contains("pm")){
@@ -44,7 +51,7 @@ public final class StringUtils {
 			timePeriod = "am";
 		}else{
 			// Is not a time
-			System.out.println("It's not a time. We return an empty string");
+			Log.w(TAG,"It's not a time. We return an empty string");
 			return "";
 		}
 		// Extract the time and set it
@@ -163,13 +170,12 @@ public final class StringUtils {
 		String loopDelim = "";
 		 
 		for (String s : set) {
-		sb.append(loopDelim);
-		sb.append(s);
-		 
-		loopDelim = delim;
+			sb.append(loopDelim);
+			sb.append(s);
+			 
+			loopDelim = delim;
 		}
 		 
 		return sb.toString();
-		}
-	
+	}
 }

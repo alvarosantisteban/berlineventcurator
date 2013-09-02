@@ -13,6 +13,7 @@ import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.Menu;
@@ -46,7 +47,10 @@ public class FirstTimeActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 	public static final String EXTRA_HTML = "com.alvarosantisteban.berlincurator.html";
 	//public static List<List<Event>> events = (ArrayList)new ArrayList <ArrayList<Event>>();
 	
-	String tag = "First time Activity";
+	/**
+	 * Used for logging purposes
+	 */
+	private static final String TAG = "FirstTimeActivity";
 	
 	public static int actionBarHeight;
 	
@@ -87,7 +91,7 @@ public class FirstTimeActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 	 */
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		System.out.println("--------------- BEGIN ------------");
+		Log.d(TAG, "onCreate");
 		// Set the context
 		context = this;
 		setContentView(R.layout.activity_first_time);
@@ -137,11 +141,9 @@ public class FirstTimeActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 		/*
 		 * To check that the websites are there
 		*/
-		System.out.println();
 		for(int i=0;i<websNames.length;i++){
-			System.out.print(websNames[i] + " / ");
+			Log.v(TAG,websNames[i] + " / ");
 		}
-		System.out.println();
 		
 		// Get the height of the action bar
 		TypedValue tv = new TypedValue();
@@ -170,7 +172,7 @@ public class FirstTimeActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 			    NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
 			    // Check if is possible to establish a connection
 			    if (networkInfo != null && networkInfo.isConnected()) {
-					//DownloadWebpageTask download = new DownloadWebpageTask();
+			    	Log.i(TAG, "There is a networ connection available.");
 			    	DownloadWebpageAsyncTask download = new DownloadWebpageAsyncTask(context, loadProgressBar);
 					// Execute the asyncronous task of downloading the websites
 					download.execute(websNames);
@@ -179,7 +181,7 @@ public class FirstTimeActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 			    	toast = Toast.makeText(getBaseContext(), "No network connection available.", Toast.LENGTH_LONG);
 			    	toast.setGravity(Gravity.TOP, 0, FirstTimeActivity.actionBarHeight);
 			    	toast.show();
-			        System.out.println("No network connection available.");
+			        Log.w(TAG, "No network connection available.");
 			    }
 			    
 			}
@@ -188,32 +190,32 @@ public class FirstTimeActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 	
 	public void onStart() {
 		super.onStart();
-		System.out.println(tag +"In the onStart() event");
+		Log.d(TAG, "In the onStart() event");
 	}		   
 
 	public void onRestart() {
 		super.onRestart();
-	    System.out.println(tag + "In the onRestart() event");
+		Log.d(TAG, "In the onRestart() event");
 	}
 	    
 	public void onResume() {
 		super.onResume();
-	    System.out.println(tag +"In the onResume() event");
+		Log.d(TAG, "In the onResume() event");
 	}
 	    
 	public void onPause() {
 	    super.onPause();
-	    System.out.println(tag + "In the onPause() event");
+	    Log.d(TAG, "In the onPause() event");
 	}
 	    
 	public void onStop() {
 	    super.onStop();
-	    System.out.println(tag + "In the onStop() event");
+	    Log.d(TAG, "In the onStop() event");
 	}
 	    
 	public void onDestroy() {
 	    super.onDestroy();
-	    System.out.println(tag + "In the onDestroy() event");
+	    Log.d(TAG, "In the onDestroy() event");
 	}
 
 	

@@ -9,12 +9,18 @@ import com.alvarosantisteban.berlincurator.Event;
 import com.alvarosantisteban.berlincurator.R;
 import com.alvarosantisteban.berlincurator.utils.WebUtils;
 import android.content.Context;
+import android.util.Log;
 
 public class GothDatumEventLoader implements EventLoader {
 	
 	public final static String WEBSITE_URL = "http://www.goth-city-radio.com/dsb/dates.php";
 	public final static String WEBSITE_URL_HTML = "<a href=\"http://www.goth-city-radio.com/dsb/dates.php\">Goth Datum</a>";
 	public final static String WEBSITE_NAME = "Goth Datum";
+	
+	/**
+	 * Used for logging purposes
+	 */
+	private static final String TAG = "GothDatumEventLoader";
 
 
 	//Event's topic tags
@@ -66,11 +72,13 @@ public class GothDatumEventLoader implements EventLoader {
 		String html = WebUtils.downloadHtml(WEBSITE_URL, context);
 		initializeTags(context);
 		if(html.equals("Exception")){
+			Log.w(TAG, "The html equals to Exception");
 			return null;
 		}
 		try{
 			return extractEventsFromGothDatum(html);
 		}catch(ArrayIndexOutOfBoundsException e){
+			Log.e(TAG, "ArrayIndexOutOfBoundsException" +e);
 			return null;
 		}
 	}

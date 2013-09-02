@@ -10,11 +10,17 @@ import com.alvarosantisteban.berlincurator.utils.StringUtils;
 import com.alvarosantisteban.berlincurator.utils.WebUtils;
 
 import android.content.Context;
+import android.util.Log;
 
 public class WhiteTrashEventLoader implements EventLoader{
 	
 	public final static String WEBSITE_URL = "http://www.whitetrashfastfood.com/events/";
 	public final static String WEBSITE_NAME = "White Trash";
+	
+	/**
+	 * Used for logging purposes
+	 */
+	private static final String TAG = "WhiteTrashEventLoader";
 	
 	//Event's topic tags
 	private String GOING_OUT_TOPIC_TAG;
@@ -28,11 +34,12 @@ public class WhiteTrashEventLoader implements EventLoader{
 		String html = WebUtils.downloadHtml(WEBSITE_URL, context);
 		initializeTags(context);
 		if(html.equals("Exception")){
+			Log.w(TAG, "The html equals to Exception");
 			return null;
 		}try{
 			return extractEventsFromWhiteTrash(html);
-		}catch(ArrayIndexOutOfBoundsException exception){
-			System.out.println("Exception catched!!!");
+		}catch(ArrayIndexOutOfBoundsException e){
+			Log.e(TAG, "ArrayIndexOutOfBoundsException" +e);
 			return null;
 		}
 	}

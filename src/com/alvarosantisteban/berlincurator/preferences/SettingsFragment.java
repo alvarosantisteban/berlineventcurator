@@ -21,6 +21,7 @@ import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 /**
  * Creates the settings 
@@ -32,6 +33,11 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 
 	
 	 //public static final String PREFS_FILE_NAME = "multilist_sites"; I think is not needed
+	
+	/**
+	 * Used for logging purposes
+	 */
+	private static final String TAG = "SettingsFragment";
 	
 	// -----------
 	// PREFERENCES
@@ -60,9 +66,8 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 	// -----------
 	// CONSTANTS
 	// -----------
-	private final String TYPE_ORGANIZATION = getResources().getString(R.string.organization_by_type);
-	private final String TOPIC_ORGANIZATION = getResources().getString(R.string.organization_by_topic);
-	//private final String ORIGIN_ORGANIZATION = getResources().getString(R.string.organization_by_origin);
+	private String TYPE_ORGANIZATION;
+	private String TOPIC_ORGANIZATION; 
 
 	ListPreference organizationList; 
 	MultiSelectListPreference topicMultiList;
@@ -77,7 +82,9 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        System.out.println("ON CREATE THE SETTINGS FRAGMENT");
+        Log.d(TAG, "ON CREATE THE SETTINGS FRAGMENT");
+        TYPE_ORGANIZATION = getResources().getString(R.string.organization_by_type);
+        TOPIC_ORGANIZATION = getResources().getString(R.string.organization_by_topic);
         // Load the preferences from an XML resource
         addPreferencesFromResource(R.xml.preferences);
         
@@ -114,9 +121,9 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 	 */
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-		System.out.println("GUEEEEE ON SHARED PREFERENCE CHANGED");
+		Log.d(TAG, "GUEEEEE ON SHARED PREFERENCE CHANGED");
 		if (key.equals(KEY_PREF_MULTILIST_SITES)) {
-        	System.out.println("key=multilist sites changed");
+        	Log.d(TAG,"key=multilist sites changed");
             // Save the old values
             Editor editor = sharedPreferences.edit();
             //editor.putStringSet(KEY_PREF_MULTILIST_LAST_SELECTION, setOfSites);
@@ -140,7 +147,7 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
             Intent i = new Intent(getActivity(), DateActivity.class);
 			startActivity(i);	
         }else if (key.equals(KEY_PREF_MULTILIST_TYPE)){
-        	System.out.println("key=multilist type changed");
+        	Log.d(TAG,"key=multilist type changed");
         	Editor editor = sharedPreferences.edit();
             //editor.putStringSet(KEY_PREF_MULTILIST_TYPE, typeMultiList.getValues());
         	if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
@@ -153,7 +160,7 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
             Intent i = new Intent(getActivity(), DateActivity.class);
 			startActivity(i);
         }else if (key.equals(KEY_PREF_MULTILIST_TOPIC)){
-        	System.out.println("key=multilist topic changed");
+        	Log.d(TAG,"key=multilist topic changed");
         	Editor editor = sharedPreferences.edit();
             //editor.putStringSet(KEY_PREF_MULTILIST_TOPIC, topicMultiList.getValues());
         	if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
@@ -166,10 +173,10 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
             Intent i = new Intent(getActivity(), DateActivity.class);
 			startActivity(i);
         }else if (key.equals(KEY_PREF_LIST_ORGANIZATIONS)){
-        	System.out.println("key=possible_organizations_list changed");
+        	Log.d(TAG,"key=possible_organizations_list changed");
         	String kindOfOrganization = sharedPreferences.getString(key, TYPE_ORGANIZATION);
         	if(kindOfOrganization.equals(TYPE_ORGANIZATION) || kindOfOrganization.equals(TOPIC_ORGANIZATION)){
-        		System.out.println("Selected By Type or By Topic. Restore default websites selection");
+        		Log.d(TAG,"Selected By Type or By Topic. Restore default websites selection");
         		restoreDefaultWebsitesSelection(sharedPreferences);
         	}
         }
@@ -230,7 +237,7 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 	@Override
 	public void onResume() {
 	    super.onResume();
-        System.out.println("ON Resume THE SETTINGS FRAGMENT");
+	    Log.d(TAG,"ON Resume THE SETTINGS FRAGMENT");
 	    // Set up a listener whenever a key changes
 	    getPreferenceScreen().getSharedPreferences()
 	            .registerOnSharedPreferenceChangeListener(this);
@@ -239,7 +246,7 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 	@Override
 	public void onPause() {
 	    super.onPause();
-        System.out.println("ON Pause THE SETTINGS FRAGMENT");
+	    Log.d(TAG,"ON Pause THE SETTINGS FRAGMENT");
 	    // Unregister the listener whenever a key changes
 	    getPreferenceScreen().getSharedPreferences()
 	            .unregisterOnSharedPreferenceChangeListener(this);
@@ -254,10 +261,10 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 	private void printAllPreferences(SharedPreferences sharedPref) {
 		Map<String,?> keys = sharedPref.getAll();
 
-        System.out.println("------START--------");
+		Log.d(TAG,"------START--------");
         for(Map.Entry<String,?> entry : keys.entrySet()){
-        	System.out.println("map values: " +entry.getKey() + ": " + entry.getValue().toString());            
+        	Log.d(TAG,"map values: " +entry.getKey() + ": " + entry.getValue().toString());            
          }
-        System.out.println("-------END-------");
+        Log.d(TAG,"-------END-------");
 	}
 }

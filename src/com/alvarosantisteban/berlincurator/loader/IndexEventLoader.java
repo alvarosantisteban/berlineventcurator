@@ -9,11 +9,17 @@ import com.alvarosantisteban.berlincurator.utils.StringUtils;
 import com.alvarosantisteban.berlincurator.utils.WebUtils;
 
 import android.content.Context;
+import android.util.Log;
 
 public class IndexEventLoader implements EventLoader {
 	
 	public final static String WEBSITE_URL = "http://www.indexberlin.de/openings-and-events";
 	public final static String WEBSITE_NAME = "Index";
+	
+	/**
+	 * Used for logging purposes
+	 */
+	private static final String TAG = "IndexEventLoader";
 	
 	//Event's topic tags
 	private String ART_TOPIC_TAG;
@@ -33,12 +39,13 @@ public class IndexEventLoader implements EventLoader {
 		String html = WebUtils.downloadHtml(WEBSITE_URL, context);
 		initializeTags(context);
 		if(html.equals("Exception")){
+			Log.w(TAG, "The html equals to Exception");
 			return null;
 		}
 		try{
 			return extractEventsFromIndex(html);
-		}catch(ArrayIndexOutOfBoundsException exception){
-			System.out.println("Exception catched extracting the events from Index!");
+		}catch(ArrayIndexOutOfBoundsException e){
+			Log.e(TAG, "ArrayIndexOutOfBoundsException" +e);
 			return null;
 		}
 	}
@@ -149,7 +156,6 @@ public class IndexEventLoader implements EventLoader {
 	 */
 	@SuppressWarnings("unused")
 	private List<Event> extractEventsFromIndexNotMobile(String theHtml) throws ArrayIndexOutOfBoundsException{  
-		//System.out.println("\n\n\n\n"+theHtml);
 		
 		String myPattern = "<tr class=\"venuesItem\">";
 		String[] result = theHtml.split(myPattern);
@@ -157,7 +163,6 @@ public class IndexEventLoader implements EventLoader {
 		// Throw away the first entry of the array because it does not contain an event
 		List<Event> events = new ArrayList<Event>(result.length-1); 
 		for (int i=1; i<result.length; i++){
-			System.out.println("i="+i);
 			Event event = new Event();
 			String[] nothingAndPlace = result[i].split("class=\"aul\">",2);
 			String[] placeAndNothing = nothingAndPlace[1].split("</a>",2);

@@ -18,6 +18,7 @@ import android.provider.CalendarContract.Events;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.text.util.Linkify;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,6 +30,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.alvarosantisteban.berlincurator.utils.DatabaseHelper;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMapOptions;
 import com.google.android.gms.maps.MapView;
@@ -61,7 +64,10 @@ public class EventActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 	Geocoder geocoder = null;  
 	MapView mapita;
 	
-	String tag = "EventActivity";
+	/**
+	 * Used for logging purposes
+	 */
+	private static final String TAG = "EventActivity";
 	
 	/**
 	 * The event being displayed
@@ -73,15 +79,14 @@ public class EventActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		/*
+		Log.d(TAG,"In the onCreate() event");
+		
 		int availabilityCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getApplicationContext());
 		if(availabilityCode == ConnectionResult.SUCCESS){
-			System.out.println("SUCCESSS");
+			Log.i(TAG, "GooglePlayServices is available :)");
 		}
-		*/
-	    System.out.println(tag + "In the onCreate() event");
-		setContentView(R.layout.activity_event);
 		
+		setContentView(R.layout.activity_event);
 		
 		// Get the intent with the Event
 		Intent intent = getIntent();
@@ -92,8 +97,6 @@ public class EventActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 			ActionBar actionBar = getActionBar();
 			actionBar.setDisplayHomeAsUpEnabled(true);
 		} 
-		//ActionBar actionBar = getActionBar();
-		//actionBar.setDisplayHomeAsUpEnabled(true);
 		
 		scrollView = (CustomScrollView) findViewById(R.id.scrollViewEvent);
 		eventLayout = (LinearLayout) findViewById(R.id.eventLayout);
@@ -177,7 +180,6 @@ public class EventActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 			List<Address> addressList = geocoder.getFromLocationName(event.getLocation(), 1); 
 			//System.out.println("addressList.size()" +addressList.size());
 			if (addressList != null && addressList.size() > 0) {
-				//System.out.println("estoy dentro, chicos");
                 double lat = addressList.get(0).getLatitude();  
                 double lng = addressList.get(0).getLongitude();  
                 GoogleMapOptions options = new GoogleMapOptions();
@@ -193,7 +195,7 @@ public class EventActivity extends OrmLiteBaseActivity<DatabaseHelper> {
         		}
             }  
 		} catch (IOException e) {
-			System.out.println("Problem getting the Address for the map.");
+			Log.e(TAG,"Problem getting the Address for the map.");
 			e.printStackTrace();
 		}
 	}
@@ -266,7 +268,7 @@ public class EventActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 	    // Is the view now checked?
 	    boolean checked = ((CheckBox) view).isChecked();
 	    event.markEventAsInteresting(checked);
-	    System.out.println(event.getName() +"with id:" +event.getId() +" is interesting =" +event.isTheEventInteresting());
+	    Log.d(TAG,event.getName() +"with id:" +event.getId() +" is interesting =" +event.isTheEventInteresting());
 	    if (view.getId() == R.id.checkbox_interesting) {
 	    	Toast toast;
 			if (checked){
@@ -347,12 +349,12 @@ public class EventActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 	
 	public void onStart() {
 		super.onStart();
-		System.out.println(tag +"In the onStart() event");
+		Log.d(TAG, "In the onStart() event");
 	}		   
 
 	public void onRestart() {
 		super.onRestart();
-	    System.out.println(tag + "In the onRestart() event");
+		Log.d(TAG, "In the onRestart() event");
 	}
 	    
 	public void onResume() {
@@ -360,7 +362,7 @@ public class EventActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 		if (mapita != null){
 			mapita.onResume();
 		}
-	    System.out.println(tag +"In the onResume() event");
+		Log.d(TAG, "In the onResume() event");
 	}
 	    
 	public void onPause() {
@@ -368,12 +370,12 @@ public class EventActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 	    if (mapita != null){
 	    	mapita.onPause();
 	    }
-	    System.out.println(tag + "In the onPause() event");
+	    Log.d(TAG, "In the onPause() event");
 	}
 	    
 	public void onStop() {
 	    super.onStop();
-	    System.out.println(tag + "In the onStop() event");
+	    Log.d(TAG, "In the onStop() event");
 	}
 	    
 	public void onDestroy() {
@@ -381,7 +383,7 @@ public class EventActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 	    if (mapita != null){
 	    	mapita.onDestroy();
 	    }
-	    System.out.println(tag + "In the onDestroy() event");
+	    Log.d(TAG, "In the onDestroy() event");
 	}
 	
 	public void onSaveInstanceState(Bundle savedInstanceState){

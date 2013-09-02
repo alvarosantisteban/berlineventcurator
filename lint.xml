@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <lint>
+    <issue id="DefaultLocale">
+        <ignore path="src/com/alvarosantisteban/berlincurator/loader/ArtParasitesEventLoader.java" />
+    </issue>
     <issue id="InlinedApi">
         <ignore path="src/com/alvarosantisteban/berlincurator/EventActivity.java" />
         <ignore path="src/com/alvarosantisteban/berlincurator/FirstTimeActivity.java" />

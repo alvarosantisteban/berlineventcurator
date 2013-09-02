@@ -10,11 +10,17 @@ import com.alvarosantisteban.berlincurator.utils.StringUtils;
 import com.alvarosantisteban.berlincurator.utils.WebUtils;
 
 import android.content.Context;
+import android.util.Log;
 
 public class IHeartBerlinEventLoader implements EventLoader {
 	
 	public final static String WEBSITE_URL = "http://www.iheartberlin.de/events/";
 	public final static String WEBSITE_NAME = "I Heart Berlin";
+	
+	/**
+	 * Used for logging purposes
+	 */
+	private static final String TAG = "IHeartBerlinEventLoader";
 	
 	//Event's topic tags
 	private String ART_TOPIC_TAG;
@@ -34,12 +40,13 @@ public class IHeartBerlinEventLoader implements EventLoader {
 		String html = WebUtils.downloadHtml(WEBSITE_URL, context);
 		initializeTags(context);
 		if(html.equals("Exception")){
+			Log.w(TAG, "The html equals to Exception");
 			return null;
 		}
 		try{
 			return extractEventsFromIHeartBerlin(html);
-		}catch(ArrayIndexOutOfBoundsException exception){
-			System.out.println("Exception catched!!!");
+		}catch(ArrayIndexOutOfBoundsException e){
+			Log.e(TAG, "ArrayIndexOutOfBoundsException" +e);
 			return null;
 		}
 	}
@@ -202,24 +209,18 @@ public class IHeartBerlinEventLoader implements EventLoader {
 		}
 		if (!pattern.equals("")){
 			try{
-				//System.out.println("description:" +description);
 				String streetName = description.substring(0, street);
 				String streetNumber = description.substring(street);
-				//System.out.println("streetName:" +streetName);
-				//System.out.println("streetNumber:" +streetNumber);
 				int startOfStreet = streetName.lastIndexOf(" ");
-				//System.out.println("startOfStreet:" +startOfStreet);
 				int i = 0;
 				while (!Character.isDigit(streetNumber.charAt(i))) i++;
-				//System.out.println("i:"+i);
 				int j = i;
 				while (j < streetNumber.length() && Character.isDigit(streetNumber.charAt(j))) j++;
-				//System.out.println("startOfStreet:"+startOfStreet +" j:" +j);
+				//Log.v(TAG, "startOfStreet:"+startOfStreet +" j:" +j);
 				String fullStreet = description.substring(startOfStreet,street+j);
-				//return "<a href=\"https://maps.google.es/maps?q="+fullStreet.replace(' ', '+') +",+Berlin\">" +fullStreet +"</a>";
 				return fullStreet +", Berlin";
 			}catch(Exception e){
-				System.out.println("\nException in extractLocation.\n" +e);
+				Log.e(TAG, "Exception in extractLocation.\n" +e);
 			}
 		}
 		return "";

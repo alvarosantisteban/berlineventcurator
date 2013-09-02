@@ -9,11 +9,17 @@ import com.alvarosantisteban.berlincurator.R;
 import com.alvarosantisteban.berlincurator.utils.WebUtils;
 
 import android.content.Context;
+import android.util.Log;
 
 public class StressFaktorEventLoader implements EventLoader {
 	
 	public final static String WEBSITE_URL = "http://stressfaktor.squat.net/termine.php?display=7";
 	public final static String WEBSITE_NAME = "Stress Faktor";
+	
+	/**
+	 * Used for logging purposes
+	 */
+	private static final String TAG = "StressFaktorEventLoader";
 	
 	//Event's topic tags
 	private String POLITICAL_TOPIC_TAG;
@@ -31,12 +37,13 @@ public class StressFaktorEventLoader implements EventLoader {
 		String html = WebUtils.downloadHtml(WEBSITE_URL, context);
 		initializeTags(context);
 		if(html.equals("Exception")){
+			Log.w(TAG, "The html equals to Exception");
 			return null;
 		}
 		try{
 			return extractEventsFromStressFaktor(html);
-		}catch(ArrayIndexOutOfBoundsException exception){
-			System.out.println("Exception catched!!!");
+		}catch(ArrayIndexOutOfBoundsException e){
+			Log.e(TAG, "ArrayIndexOutOfBoundsException" +e);
 			return null;
 		}
 	}

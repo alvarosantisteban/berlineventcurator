@@ -10,7 +10,7 @@ import android.util.Log;
 
 public final class WebUtils {
 	
-	private static final String DEBUG_TAG = "HttpExample";
+	private static final String TAG = "WebUtils";
 	//private static final String DEFAULT_ENCODING = "UTF-8";// "ISO-8859-1";
 	private static final String DEFAULT_ENCODING = "ISO-8859-1";
 
@@ -35,8 +35,8 @@ public final class WebUtils {
    	   		// Starts the query
    	   		conn.connect();
    	   		int response = conn.getResponseCode();
-   	   		Log.d(DEBUG_TAG, "The response is: " + response);
    	   		if (response == -1){
+   	   			Log.e(TAG, "The response was -1, so the connection failed");
    	   			return "Exception";
    	   		}
    	   		is = conn.getInputStream();
@@ -52,7 +52,7 @@ public final class WebUtils {
    	   		}
    	   		return contentAsString;
    	   	} catch (Exception e){
-   	   		System.out.println("Problems downloading the url: "+myurl +". Exception: "+e);
+   	   		Log.e(TAG,"Problems downloading the url: "+myurl +". Exception: "+e);
    	   		return "Exception";
    	    // Makes sure that the InputStream is closed after the app is finished using it.
    	   	}finally {
@@ -60,7 +60,7 @@ public final class WebUtils {
    	   			try {
 					is.close();
 				} catch (IOException e) {
-					System.out.println("Problem closing the inputstream");
+					Log.e(TAG,"Problem closing the inputstream");
 					e.printStackTrace();
 				}
    	   		} 
@@ -101,7 +101,7 @@ public final class WebUtils {
 	 * @return the resulting String
 	 */
 	public static String convertStreamToString(java.io.InputStream is) {
-		System.out.println("GUAY ---------");
+		Log.d(TAG,"convertStreamToString");
 		java.util.Scanner s = new java.util.Scanner(is, "UTF-8").useDelimiter("\\A");
 		return s.hasNext() ? s.next() : "";
 	}

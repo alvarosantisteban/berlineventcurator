@@ -26,8 +26,6 @@ public class AboutActivity extends Activity {
 			ActionBar actionBar = getActionBar();
 			actionBar.setDisplayHomeAsUpEnabled(true);
 		} 
-		//ActionBar actionBar = getActionBar();
-	    //actionBar.setDisplayHomeAsUpEnabled(true);
 	    
 	    email = (TextView) findViewById(R.id.email_address);
 	    email.setMovementMethod(LinkMovementMethod.getInstance());

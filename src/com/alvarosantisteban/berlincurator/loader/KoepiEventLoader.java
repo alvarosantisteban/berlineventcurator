@@ -9,11 +9,17 @@ import com.alvarosantisteban.berlincurator.R;
 import com.alvarosantisteban.berlincurator.utils.WebUtils;
 
 import android.content.Context;
+import android.util.Log;
 
 public class KoepiEventLoader implements EventLoader{
 	
 	public final static String WEBSITE_URL = "http://www.koepi137.net/eventskonzerte.php";
 	public final static String WEBSITE_NAME = "Köpi's events";
+	
+	/**
+	 * Used for logging purposes
+	 */
+	private static final String TAG = "KoepiEventLoader";
 	
 	//Event's topic tags
 	private String ART_TOPIC_TAG;
@@ -33,12 +39,13 @@ public class KoepiEventLoader implements EventLoader{
 		String html = WebUtils.downloadHtml(WEBSITE_URL, context);
 		initializeTags(context);
 		if(html.equals("Exception")){
+			Log.w(TAG, "The html equals to Exception");
 			return null;
 		}
 		try {
 			return extractEventsFromKoepi(html);
-		}catch(ArrayIndexOutOfBoundsException exception){
-			System.out.println("Exception catched!!!");
+		}catch(ArrayIndexOutOfBoundsException e){
+			Log.e(TAG, "ArrayIndexOutOfBoundsException" +e);
 			return null;
 		}
 	}

@@ -31,9 +31,7 @@ public class CalendarActivity extends Activity {
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 			ActionBar actionBar = getActionBar();
 			actionBar.setDisplayHomeAsUpEnabled(true);
-		} 
-		//ActionBar actionBar = getActionBar();
-		//actionBar.setDisplayHomeAsUpEnabled(true);
+		}
 		
 		calendar = (MyCalendarView) findViewById(R.id.calendarView);
 		
@@ -70,7 +68,6 @@ public class CalendarActivity extends Activity {
 
 			@Override
 			public void onClick(View arg0) {
-				System.out.println("ecooooo2------------");
 				Toast toast = Toast.makeText(getApplicationContext(), "View=" +((CalendarView) arg0).getDate(), Toast.LENGTH_LONG);
                 toast.setGravity(Gravity.TOP, 0, FirstTimeActivity.actionBarHeight);
 				toast.show();

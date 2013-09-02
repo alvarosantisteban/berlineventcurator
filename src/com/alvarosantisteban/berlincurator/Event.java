@@ -283,6 +283,7 @@ public class Event implements Serializable{
 		this.originsWebsite = theOriginsWebsite;
 	}
 	
+	/*
 	public void print() {
 		System.out.println("Name:"+getName());
 		System.out.println("Day:"+getDay());
@@ -294,4 +295,5 @@ public class Event implements Serializable{
 			System.out.println("Link["+i +"]:"+links[i]);
 		}
 	}
+	*/
 }

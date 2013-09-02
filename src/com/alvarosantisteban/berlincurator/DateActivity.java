@@ -24,6 +24,7 @@ import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -52,9 +53,8 @@ import com.j256.ormlite.stmt.SelectArg;
  */
 public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 	
-	private final String TYPE_ORGANIZATION = getResources().getString(R.string.organization_by_type);
-	private final String TOPIC_ORGANIZATION = getResources().getString(R.string.organization_by_topic);
-	//private final String ORIGIN_ORGANIZATION = getResources().getString(R.string.organization_by_origin);
+	private String TYPE_ORGANIZATION;
+	private String TOPIC_ORGANIZATION;
 	
 	public static final String EXTRA_EVENT = "com.alvarosantisteban.berlincurator.event";
 	// Settings
@@ -78,7 +78,7 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 	/**
 	 * Used for logging purposes
 	 */
-	String tag = "DateActivity";
+	private static final String TAG = "DateActivity";
 	
 	/**
 	 * Format of the date
@@ -169,9 +169,10 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 	 */
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		Log.d(TAG, "onCreate");
 		
-		System.out.println(tag +" onCreate-----------------");
-		
+		TYPE_ORGANIZATION = getResources().getString(R.string.organization_by_type);
+		TOPIC_ORGANIZATION = getResources().getString(R.string.organization_by_topic);
 		toast = Toast.makeText(this, "", Toast.LENGTH_LONG);
 		
 		// Get the default shared preferences
@@ -360,8 +361,7 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 	 */
 	//private void checkDifferencesBetweenSelection(String[] newSelection, String[] oldSelection) {
 	private void checkDifferencesBetweenSelection(Set<String> newSelection, Set<String> oldSelection) {
-		//System.out.println("checkDifferencesBetweenSelection. newSelection.size():"+newSelection.size());
-		System.out.println("checkDifferencesBetweenSelection. oldSelection.size():"+oldSelection.size());
+		Log.d(TAG,"checkDifferencesBetweenSelection. oldSelection.size():"+oldSelection.size());
 		String[] newSelection1 = newSelection.toArray(new String[0]);
 		String[] oldSelection1 = oldSelection.toArray(new String[0]);
 		// Check the added groups
@@ -385,7 +385,7 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 		}
 		
 		// Download the events of the new added thema/type, if applies
-		System.out.println("New added groups:"+added.size());
+		Log.d(TAG,"New added groups:"+added.size());
 		if(added.size() > 0){
 			// Create a connection
 			ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -400,8 +400,8 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 		}
 		
 		// Check the deleted groups
-		System.out.println("Oldselection: "+oldSelection1.length);
-		System.out.println("newselection: "+newSelection1.length);
+		Log.d(TAG,"Oldselection: "+oldSelection1.length);
+		Log.d(TAG,"newselection: "+newSelection1.length);
 		List<String> deleted = new ArrayList<String>();
 		if(newSelection1.length == 0){
 			for(int i=0; i<oldSelection1.length;i++){
@@ -422,13 +422,13 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 		}
 		
 		// Remove from the database the old ones, if applies
-		System.out.println("Deleted groups:"+deleted.size());
+		Log.d(TAG,"Deleted groups:"+deleted.size());
 		if (deleted.size() > 0){
 			RuntimeExceptionDao<Event, Integer> eventDao = getHelper().getEventDataDao();
 			DeleteBuilder<Event, Integer> deleteBuilder = eventDao.deleteBuilder();	
 			for (int i=0; i<deleted.size(); i++){
 				try {
-					System.out.println("deleted eventsOrigin:"+deleted.get(i));
+					Log.d(TAG,"deleted eventsOrigin:"+deleted.get(i));
 					// create our argument which uses a SQL ? to avoid having problems with apostrophes
 					SelectArg deletedArg = new SelectArg(deleted.get(i));
 					deleteBuilder.where().eq("eventsOrigin", deletedArg);
@@ -495,22 +495,20 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 	 * @param setOfTags the set of tags that the event has to match in order to be extracted from the DB
 	 */
 	private void loadEvents(String kindOfOrganization, String[] setOfTags){ 
-		System.out.println("LOAD EVENTS");
-		System.out.println("-----------------------------");
+		Log.d(TAG,"LOAD EVENTS");
 		// Get our dao
 		RuntimeExceptionDao<Event, Integer> eventDao = getHelper().getEventDataDao();
 		for (int i=0; i<setOfTags.length; i++){
-			System.out.println(setOfTags[i]);
+			Log.d(TAG,setOfTags[i]);
 			List<Event> eventsFromWebsite = null;
 			try {
 				Map<String, Object> fieldValues = new HashMap<String,Object>();
 				fieldValues.put(kindOfOrganization, setOfTags[i]);
 				fieldValues.put("day", choosenDate);
 				eventsFromWebsite = eventDao.queryForFieldValuesArgs(fieldValues);
-			//} catch (SQLException e) {
 			} catch (Exception e) {
 				e.printStackTrace();
-				System.out.println("DB exception while retrieving the events from the website " +setOfTags[i]);
+				Log.e(TAG,"DB exception while retrieving the events from the website " +setOfTags[i]);
 			}
 			for (int j = 0; j < eventsFromWebsite.size(); j++) {
 				addEvent(setOfTags[i],eventsFromWebsite.get(j));
@@ -566,7 +564,6 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 	 * @param tagsNames the set of tags used to classified events
 	 */
 	private void createHeaderGroups(String[] tagsNames) {
-		//System.out.println("createHeaderGroups");
 		for (int i=0; i<tagsNames.length; i++){
 			HeaderInfo headerInfo = new HeaderInfo();
 			headerInfo.setName(tagsNames[i]);
@@ -603,7 +600,6 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 	private OnGroupClickListener myListGroupClicked =  new OnGroupClickListener() {
 		 
 		  public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
-			  System.out.println("onGroupClick");
 			  // Get the group header
 			  HeaderInfo headerInfo = groupsList.get(groupPosition);
 			  // If the group does not contain events, tell the user
@@ -639,7 +635,7 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 			System.out.println("onGroupExpand");
 		}
 	};
-	*/	
+	*/
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -675,7 +671,7 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 		    } else {
 		    	// Inform the user that there is no network connection available
 		    	displayToast(getString(R.string.no_network));
-		        System.out.println(R.string.no_network);
+		        Log.w(TAG,getString(R.string.no_network));
 		    }
 		}else if (item.getItemId() == R.id.menu_settings) {
 			Intent i = new Intent(this, SettingsActivity.class);
@@ -692,32 +688,32 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 	
 	public void onStart() {
 		super.onStart();
-		System.out.println(tag +"In the onStart() event");
+		Log.d(TAG,"In the onStart() event");
 	}		   
 
 	public void onRestart() {
 		super.onRestart();
-	    System.out.println(tag + "In the onRestart() event");
+		Log.d(TAG, "In the onRestart() event");
 	}
 	    
 	public void onResume() {
 		super.onResume();
-	    System.out.println(tag +"In the onResume() event");
+		Log.d(TAG,"In the onResume() event");
 	}
 	    
 	public void onPause() {
 	    super.onPause();
-	    System.out.println(tag + "In the onPause() event");
+	    Log.d(TAG,"In the onPause() event");
 	}
 	    
 	public void onStop() {
 	    super.onStop();
-	    System.out.println(tag + "In the onStop() event");
+	    Log.d(TAG, "In the onStop() event");
 	}
 	    
 	public void onDestroy() {
 	    super.onDestroy();
-	    System.out.println(tag + "In the onDestroy() event");
+	    Log.d(TAG, "In the onDestroy() event");
 	}
 	
 	/**
@@ -734,7 +730,8 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 	 */
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-	    System.out.println(tag + "In the onActivityResult() event");
+		Log.d(TAG, "In the onActivityResult() event");
+	    
 		if (requestCode == INTENT_RETURN_CODE) {
 			if(resultCode == RESULT_UPDATE){      
 		        // The event was updated

@@ -26,13 +26,11 @@ public class SettingsActivity extends Activity  {
         getFragmentManager().beginTransaction()
                 .replace(android.R.id.content, new SettingsFragment())
                 .commit();
-	    // Enable the app's icon to act as home
-        
-			ActionBar actionBar = getActionBar();
-			actionBar.setDisplayHomeAsUpEnabled(true);
+	   
+        // Enable the app's icon to act as home
+		ActionBar actionBar = getActionBar();
+		actionBar.setDisplayHomeAsUpEnabled(true);
 		} 
-        //ActionBar actionBar = getActionBar();
-	    //actionBar.setDisplayHomeAsUpEnabled(true);
 
     }
 	

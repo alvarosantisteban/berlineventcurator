@@ -5,20 +5,25 @@ import com.google.android.gms.maps.MapView;
 import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.widget.ScrollView;
 
 public class CustomScrollView extends ScrollView{
 	
-	MapView map;
+	/**
+	 * Used for logging purposes
+	 */
+	private static final String TAG = "CustomScrollView";
 	
+	MapView map;
 	
 	public CustomScrollView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 	}
 	
 	public void setMap(MapView theMap) {
-		System.out.println("setMap");
+		Log.v(TAG,"setMap");
 		map = theMap;
 	}
 
@@ -34,7 +39,7 @@ public class CustomScrollView extends ScrollView{
 	    	map.getHitRect(bound);
 			//printSeveralCoordinates(ev, bound);
 	    	if(bound.contains(Math.round(ev.getX()), Math.round(ev.getY())+getScrollY())){
-	    		System.out.println("El rectangulo del mapa contiene el punto tocado");
+	    		Log.v(TAG,"El rectangulo del mapa contiene el punto tocado");
 	    		return false;
 	    	}
 		}
@@ -42,10 +47,10 @@ public class CustomScrollView extends ScrollView{
 	}
 
 	@SuppressWarnings("unused")
-	private void printSeveralCoordinates(MotionEvent ev, Rect bound) {
-		System.out.println("mapita X:"+map.getX() +"mapita Y:"+map.getY());
-		System.out.println("coordenadas mapita:"+bound.top);
-		System.out.println("ev.getX(): "+ev.getX() +" / ev.getY(): "+ev.getY());
-		System.out.println("getScrollY (): "+getScrollY());
+	private void printSeveralCoordinates(MotionEvent ev, Rect bound) {		
+		Log.v(TAG,"mapita X:"+map.getX() +"mapita Y:"+map.getY());
+		Log.v(TAG,"coordenadas mapita:"+bound.top);
+		Log.v(TAG,"ev.getX(): "+ev.getX() +" / ev.getY(): "+ev.getY());
+		Log.v(TAG,"getScrollY (): "+getScrollY());
 	}	
 }
