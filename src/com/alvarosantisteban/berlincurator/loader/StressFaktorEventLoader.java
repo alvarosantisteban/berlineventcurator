@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import com.alvarosantisteban.berlincurator.DateActivity;
 import com.alvarosantisteban.berlincurator.Event;
+import com.alvarosantisteban.berlincurator.R;
 import com.alvarosantisteban.berlincurator.utils.WebUtils;
 
 import android.content.Context;
@@ -14,10 +14,22 @@ public class StressFaktorEventLoader implements EventLoader {
 	
 	public final static String WEBSITE_URL = "http://stressfaktor.squat.net/termine.php?display=7";
 	public final static String WEBSITE_NAME = "Stress Faktor";
+	
+	//Event's topic tags
+	private String POLITICAL_TOPIC_TAG;
+	private String GOING_OUT_TOPIC_TAG;
+				
+	// Event's type tags
+	private String CONCERT_TYPE_TAG;
+	private String PARTY_TYPE_TAG;
+	private String TALK_TYPE_TAG;
+	private String SCREENING_TYPE_TAG;
+	private String OTHER_TYPE_TAG;		
 
 	@Override
 	public List<Event> load(Context context) {
 		String html = WebUtils.downloadHtml(WEBSITE_URL, context);
+		initializeTags(context);
 		if(html.equals("Exception")){
 			return null;
 		}
@@ -27,6 +39,22 @@ public class StressFaktorEventLoader implements EventLoader {
 			System.out.println("Exception catched!!!");
 			return null;
 		}
+	}
+	
+	/**
+	 * Initialize the tags used to categorize the topic and the type of each event
+	 * 
+	 * @param context
+	 */
+	private void initializeTags(Context context) {
+		POLITICAL_TOPIC_TAG = context.getResources().getString(R.string.politics_topic_tag);
+		GOING_OUT_TOPIC_TAG = context.getResources().getString(R.string.goingout_topic_tag);
+		
+		CONCERT_TYPE_TAG = context.getResources().getString(R.string.concert_type_tag);
+		PARTY_TYPE_TAG = context.getResources().getString(R.string.party_type_tag);
+		TALK_TYPE_TAG = context.getResources().getString(R.string.talk_type_tag);
+		SCREENING_TYPE_TAG = context.getResources().getString(R.string.screening_type_tag);
+		OTHER_TYPE_TAG = context.getResources().getString(R.string.other_type_tag);
 	}
 
 	/**
@@ -97,10 +125,10 @@ public class StressFaktorEventLoader implements EventLoader {
 	 * @return the thema tag (going out or political)
 	 */
 	private String extractThemaTag(String typeTag) {
-		if(typeTag.equals(DateActivity.TALK_TYPE_TAG)){
-			return DateActivity.POLITICAL_THEMA_TAG; 
+		if(typeTag.equals(TALK_TYPE_TAG)){
+			return POLITICAL_TOPIC_TAG; 
 		}
-		return DateActivity.GOING_OUT_THEMA_TAG;
+		return GOING_OUT_TOPIC_TAG;
 	}
 
 	/**
@@ -116,21 +144,21 @@ public class StressFaktorEventLoader implements EventLoader {
 				lowerCase.contains("maschinenraum") || lowerCase.contains("jam session") || lowerCase.contains("rock") || 
 				lowerCase.contains("summerstomp") || lowerCase.contains("guerrilla-slam") || lowerCase.contains("fest")
 				|| lowerCase.contains("kiezfest")){
-			return DateActivity.CONCERT_TYPE_TAG;
+			return CONCERT_TYPE_TAG;
 		}else if(lowerCase.contains("party") || lowerCase.contains("soliparty") || lowerCase.contains("ping-pong-bar")
 				|| lowerCase.contains("fiesta") || lowerCase.contains("soli-technoparty")){
-			return DateActivity.PARTY_TYPE_TAG;
+			return PARTY_TYPE_TAG;
 		}else if(lowerCase.contains("workshop") || lowerCase.contains("lesung") || lowerCase.contains("pressekonferenz") ||
 				lowerCase.contains("diskussionskreis") || lowerCase.contains("vortrag") || lowerCase.contains("infoveranstaltung") ||
 				lowerCase.contains("tresen") || lowerCase.contains("montagscafé") || lowerCase.contains("stricktreff") || 
 				lowerCase.contains("talk") || lowerCase.contains("lesebühne")){
-			return DateActivity.TALK_TYPE_TAG;
+			return TALK_TYPE_TAG;
 		}else if(lowerCase.contains("kino") || lowerCase.contains("videokino") || lowerCase.contains("hofkino") ||
 				lowerCase.contains("solarpowersupercinema") || lowerCase.contains("film") || lowerCase.contains("kurzfilme")
 				|| lowerCase.contains("kino-abend")){
-			return DateActivity.SCREENING_TYPE_TAG;
+			return SCREENING_TYPE_TAG;
 		}
-		return DateActivity.OTHER_TYPE_TAG;
+		return OTHER_TYPE_TAG;
 	}
 
 	/**

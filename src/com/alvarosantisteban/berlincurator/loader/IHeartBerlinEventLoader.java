@@ -4,22 +4,35 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import com.alvarosantisteban.berlincurator.DateActivity;
 import com.alvarosantisteban.berlincurator.Event;
+import com.alvarosantisteban.berlincurator.R;
 import com.alvarosantisteban.berlincurator.utils.StringUtils;
 import com.alvarosantisteban.berlincurator.utils.WebUtils;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 
 public class IHeartBerlinEventLoader implements EventLoader {
 	
 	public final static String WEBSITE_URL = "http://www.iheartberlin.de/events/";
 	public final static String WEBSITE_NAME = "I Heart Berlin";
+	
+	//Event's topic tags
+	private String ART_TOPIC_TAG;
+	//private String POLITICAL_TOPIC_TAG;
+	private String GOING_OUT_TOPIC_TAG;
+				
+	// Event's type tags
+	private String CONCERT_TYPE_TAG;
+	private String PARTY_TYPE_TAG;
+	private String EXHIBITION_TYPE_TAG;
+	private String TALK_TYPE_TAG;
+	private String SCREENING_TYPE_TAG;
+	private String OTHER_TYPE_TAG;
 
 	@Override
 	public List<Event> load(Context context) {
 		String html = WebUtils.downloadHtml(WEBSITE_URL, context);
+		initializeTags(context);
 		if(html.equals("Exception")){
 			return null;
 		}
@@ -29,6 +42,23 @@ public class IHeartBerlinEventLoader implements EventLoader {
 			System.out.println("Exception catched!!!");
 			return null;
 		}
+	}
+	
+	/**
+	 * Initialize the tags used to categorize the topic and the type of each event
+	 * 
+	 * @param context
+	 */
+	private void initializeTags(Context context) {
+		ART_TOPIC_TAG = context.getResources().getString(R.string.art_topic_tag);
+		GOING_OUT_TOPIC_TAG = context.getResources().getString(R.string.goingout_topic_tag);
+		
+		CONCERT_TYPE_TAG = context.getResources().getString(R.string.concert_type_tag);
+		PARTY_TYPE_TAG = context.getResources().getString(R.string.party_type_tag);
+		TALK_TYPE_TAG = context.getResources().getString(R.string.talk_type_tag);
+		EXHIBITION_TYPE_TAG = context.getResources().getString(R.string.exhibition_type_tag);
+		SCREENING_TYPE_TAG = context.getResources().getString(R.string.screening_type_tag);
+		OTHER_TYPE_TAG = context.getResources().getString(R.string.other_type_tag);
 	}
 	
 	/**
@@ -108,9 +138,9 @@ public class IHeartBerlinEventLoader implements EventLoader {
 	private String extractThemaTag(String tag) {
 		String lowerCase = tag.toLowerCase(Locale.getDefault());
 		if (lowerCase.contains("movie") || lowerCase.contains("party") || lowerCase.contains("music")){
-			return DateActivity.GOING_OUT_THEMA_TAG;
+			return GOING_OUT_TOPIC_TAG;
 		}else{ 
-			return DateActivity.ART_THEMA_TAG;
+			return ART_TOPIC_TAG;
 		}
 	}
 
@@ -123,17 +153,17 @@ public class IHeartBerlinEventLoader implements EventLoader {
 	private String extractTypeTag(String text) {
 		//System.out.println("text:"+text);
 		if (text.toLowerCase(Locale.getDefault()).contains("movie")){
-			return DateActivity.SCREENING_TYPE_TAG;
+			return SCREENING_TYPE_TAG;
 		}else if(text.toLowerCase(Locale.getDefault()).contains("party")){
-			return DateActivity.PARTY_TYPE_TAG;
+			return PARTY_TYPE_TAG;
 		}else if(text.toLowerCase(Locale.getDefault()).contains("art")){
-			return DateActivity.EXHIBITION_TYPE_TAG;
+			return EXHIBITION_TYPE_TAG;
 		}else if(text.toLowerCase(Locale.getDefault()).contains("reading")){
-			return DateActivity.TALK_TYPE_TAG;
+			return TALK_TYPE_TAG;
 		}else if(text.toLowerCase(Locale.getDefault()).contains("music")){
-			return DateActivity.CONCERT_TYPE_TAG;
+			return CONCERT_TYPE_TAG;
 		}
-		return DateActivity.OTHER_TYPE_TAG;
+		return OTHER_TYPE_TAG;
 	}
 
 	/**

@@ -51,25 +51,10 @@ import com.j256.ormlite.stmt.SelectArg;
  *
  */
 public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
-
-	// Event's thema tags
-	public final static String ART_THEMA_TAG = "Art";
-	public final static String POLITICAL_THEMA_TAG = "Political";
-	public final static String GOING_OUT_THEMA_TAG = "Going out";
 	
-	// Event's type tags
-	public final static String CONCERT_TYPE_TAG = "Concert";
-	public final static String PARTY_TYPE_TAG = "Party";
-	public final static String EXHIBITION_TYPE_TAG = "Exhibition";
-	public final static String TALK_TYPE_TAG = "Talk";
-	public final static String SCREENING_TYPE_TAG = "Screening";
-	public final static String OTHER_TYPE_TAG = "Other";
-	
-	public final static String ART_EVENTS = "Art events (Exhibitions, Talks, etc)";
-	public final static String CONCERTS = "Concerts (Rock, Metal and Punk)";
-	public final static String PARTIES = "Parties";
-	public final static String POLITICAL_EVENTS = "Political events";
-	public final static String OTHER_EVENTS = "Other (Screenings, Exhibitions, Talks, etc)";
+	private final String TYPE_ORGANIZATION = getResources().getString(R.string.organization_by_type);
+	private final String TOPIC_ORGANIZATION = getResources().getString(R.string.organization_by_topic);
+	//private final String ORIGIN_ORGANIZATION = getResources().getString(R.string.organization_by_origin);
 	
 	public static final String EXTRA_EVENT = "com.alvarosantisteban.berlincurator.event";
 	// Settings
@@ -234,9 +219,9 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 		}
 		
 		// Get the kind of organization
-		String kindOfOrganization = sharedPref.getString(SettingsFragment.KEY_PREF_LIST_ORGANIZATIONS, SettingsFragment.TYPE_ORGANIZATION);
+		String kindOfOrganization = sharedPref.getString(SettingsFragment.KEY_PREF_LIST_ORGANIZATIONS, TYPE_ORGANIZATION);
 		String kindOfOrganizationTag;
-		if (kindOfOrganization.equals(SettingsFragment.TYPE_ORGANIZATION)){
+		if (kindOfOrganization.equals(TYPE_ORGANIZATION)){
 			// Get the set of type tags
 			//typeTags = sharedPref.getStringSet(SettingsFragment.KEY_PREF_MULTILIST_TYPE, new HashSet<String>(Arrays.asList(context.getResources().getStringArray(R.array.types_array_values))));
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
@@ -249,7 +234,7 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 			}
 			setOfTags = typeTags.toArray(new String[0]);
 			kindOfOrganizationTag = "typeTag";
-		}else if (kindOfOrganization.equals(SettingsFragment.TOPIC_ORGANIZATION)){
+		}else if (kindOfOrganization.equals(TOPIC_ORGANIZATION)){
 			// Get the set of topic tags
 			//topicTags = sharedPref.getStringSet(SettingsFragment.KEY_PREF_MULTILIST_TOPIC, new HashSet<String>(Arrays.asList(context.getResources().getStringArray(R.array.themas_array_values))));
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
@@ -575,7 +560,7 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 	}
 	
 	/**
-	 * Populates the {@link websites} and the {@link websitesList} by creating {@link HeaderInfo} using the array of tags passed
+	 * Populates the {@link tagsMap} and the {@link groupsList} by creating {@link HeaderInfo} using the array of tags passed
 	 * in the parameter.
 	 * 
 	 * @param tagsNames the set of tags used to classified events

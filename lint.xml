@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <lint>
+    <issue id="InlinedApi">
+        <ignore path="src/com/alvarosantisteban/berlincurator/EventActivity.java" />
+        <ignore path="src/com/alvarosantisteban/berlincurator/FirstTimeActivity.java" />
+    </issue>
     <issue id="NewApi" severity="ignore">
         <ignore path="src/com/alvarosantisteban/berlincurator/CalendarActivity.java" />
         <ignore path="src/com/alvarosantisteban/berlincurator/DateActivity.java" />

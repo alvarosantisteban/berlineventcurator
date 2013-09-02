@@ -41,6 +41,7 @@ public class CustomScrollView extends ScrollView{
 		return super.onInterceptTouchEvent(ev);
 	}
 
+	@SuppressWarnings("unused")
 	private void printSeveralCoordinates(MotionEvent ev, Rect bound) {
 		System.out.println("mapita X:"+map.getX() +"mapita Y:"+map.getY());
 		System.out.println("coordenadas mapita:"+bound.top);

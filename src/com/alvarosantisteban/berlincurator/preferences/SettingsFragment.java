@@ -7,9 +7,6 @@ import java.util.Set;
 
 import com.alvarosantisteban.berlincurator.DateActivity;
 import com.alvarosantisteban.berlincurator.R;
-import com.alvarosantisteban.berlincurator.R.array;
-import com.alvarosantisteban.berlincurator.R.string;
-import com.alvarosantisteban.berlincurator.R.xml;
 import com.alvarosantisteban.berlincurator.utils.StringUtils;
 
 import android.content.Intent;
@@ -63,9 +60,9 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 	// -----------
 	// CONSTANTS
 	// -----------
-	public static final String TYPE_ORGANIZATION = "By Type";
-	public static final String TOPIC_ORGANIZATION = "By Topic";
-	public static final String ORIGIN_ORGANIZATION = "By Origin";
+	private final String TYPE_ORGANIZATION = getResources().getString(R.string.organization_by_type);
+	private final String TOPIC_ORGANIZATION = getResources().getString(R.string.organization_by_topic);
+	//private final String ORIGIN_ORGANIZATION = getResources().getString(R.string.organization_by_origin);
 
 	ListPreference organizationList; 
 	MultiSelectListPreference topicMultiList;

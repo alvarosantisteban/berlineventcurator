@@ -8,7 +8,6 @@ import android.util.Log;
 
 import com.alvarosantisteban.berlincurator.Event;
 import com.alvarosantisteban.berlincurator.R;
-import com.alvarosantisteban.berlincurator.R.raw;
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.RuntimeExceptionDao;

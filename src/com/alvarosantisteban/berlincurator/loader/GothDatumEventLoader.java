@@ -5,13 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.alvarosantisteban.berlincurator.DateActivity;
 import com.alvarosantisteban.berlincurator.Event;
+import com.alvarosantisteban.berlincurator.R;
 import com.alvarosantisteban.berlincurator.utils.WebUtils;
-import com.j256.ormlite.android.apptools.OpenHelperManager;
-import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
-import com.j256.ormlite.dao.RuntimeExceptionDao;
-
 import android.content.Context;
 
 public class GothDatumEventLoader implements EventLoader {
@@ -19,7 +15,20 @@ public class GothDatumEventLoader implements EventLoader {
 	public final static String WEBSITE_URL = "http://www.goth-city-radio.com/dsb/dates.php";
 	public final static String WEBSITE_URL_HTML = "<a href=\"http://www.goth-city-radio.com/dsb/dates.php\">Goth Datum</a>";
 	public final static String WEBSITE_NAME = "Goth Datum";
-	//
+
+
+	//Event's topic tags
+	//private String ART_TOPIC_TAG;
+	//private String POLITICAL_TOPIC_TAG;
+	private String GOING_OUT_TOPIC_TAG;
+			
+	// Event's type tags
+	private String CONCERT_TYPE_TAG;
+	private String PARTY_TYPE_TAG;
+	//private String EXHIBITION_TYPE_TAG;
+	private String TALK_TYPE_TAG;
+	//private String SCREENING_TYPE_TAG;
+	//private String OTHER_TYPE_TAG;
 	
 	/**
 	 * The Database Helper that helps dealing with the db easily
@@ -55,6 +64,7 @@ public class GothDatumEventLoader implements EventLoader {
 	@Override
 	public List<Event> load(Context context) {
 		String html = WebUtils.downloadHtml(WEBSITE_URL, context);
+		initializeTags(context);
 		if(html.equals("Exception")){
 			return null;
 		}
@@ -63,6 +73,19 @@ public class GothDatumEventLoader implements EventLoader {
 		}catch(ArrayIndexOutOfBoundsException e){
 			return null;
 		}
+	}
+
+	/**
+	 * Initialize the tags used to categorize the topic and the type of each event
+	 * 
+	 * @param context
+	 */
+	private void initializeTags(Context context) {
+		//ART_TOPIC_TAG = context.getResources().getString(R.string.art_topic_tag);
+		GOING_OUT_TOPIC_TAG = context.getResources().getString(R.string.goingout_topic_tag);
+		CONCERT_TYPE_TAG = context.getResources().getString(R.string.concert_type_tag);
+		PARTY_TYPE_TAG = context.getResources().getString(R.string.party_type_tag);
+		TALK_TYPE_TAG = context.getResources().getString(R.string.talk_type_tag);
 	}
 
 	/**
@@ -115,9 +138,9 @@ public class GothDatumEventLoader implements EventLoader {
 				// Set the origin's website
 				event.setOriginsWebsite(WEBSITE_URL);
 				// Set the thema tag
-				event.setThemaTag(DateActivity.GOING_OUT_THEMA_TAG);
+				event.setThemaTag(GOING_OUT_TOPIC_TAG);
 				// Set the type tag
-				event.setTypeTag(extractTag(nameAndRest[0].trim()));
+				event.setTypeTag(extractTag(nameAndRest[0].trim(), link));
 				events.add(event);
 			}
 		}
@@ -129,13 +152,17 @@ public class GothDatumEventLoader implements EventLoader {
 	 * Warning: The last keyword, "*", is very weak.
 	 * 
 	 * @param eventsName
-	 * @return CONCERTS_TAG if one of the key words is found or PARTIES_TAG otherwise
+	 * @return CONCERTS_TAG if one of the key words is found or PARTIES_TAG otherwise. The only exception is if there is a link
+	 * to a bookstore
 	 */
-	private String extractTag(String eventsName) {
-		if(eventsName.contains("live") || eventsName.contains("Festival") || eventsName.contains("+ Support") || (eventsName.contains("*") && !eventsName.contains("Party"))){
-			return DateActivity.CONCERT_TYPE_TAG;
+	private String extractTag(String eventsName, String link) {
+		if(link.equals("Berlin - Periplaneta Kreativzentrum")){
+			return TALK_TYPE_TAG;
 		}
-		return DateActivity.PARTY_TYPE_TAG;
+		if(eventsName.contains("live") || eventsName.contains("Festival") || eventsName.contains("+ Support") || (eventsName.contains("*") && !eventsName.contains("Party"))){
+			return CONCERT_TYPE_TAG;
+		}
+		return PARTY_TYPE_TAG;
 			
 	}
 

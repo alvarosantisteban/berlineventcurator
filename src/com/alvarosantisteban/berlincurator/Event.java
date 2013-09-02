@@ -1,8 +1,6 @@
 package com.alvarosantisteban.berlincurator;
 
 import java.io.Serializable;
-import java.util.UUID;
-
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;

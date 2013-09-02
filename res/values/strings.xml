@@ -57,6 +57,23 @@
     <string name="multilist_type_dialog">Active types</string>
     <string name="possible_organizations_title">Organization of the events</string>
     <string name="possible_organizations_summary">Choose the way you want the information to be organized</string>
+    <string name="organization_by_type">By Type</string>
+    <string name="organization_by_topic">By Topic</string>
+    <string name="organization_by_origin">By Origin</string>
+    
+    <!-- Tags for organization by topic -->
+    <string name="art_topic_tag">Art</string>
+    <string name="goingout_topic_tag">Going out</string>
+    <string name="politics_topic_tag">Politics</string>
+    
+    <!-- Tags for organization by type -->
+    <string name="concert_type_tag">Concert</string>
+    <string name="party_type_tag">Party</string>
+    <string name="exhibition_type_tag">Exhibition</string>
+    <string name="talk_type_tag">Talk</string>
+    <string name="screening_type_tag">Screening</string>
+    <string name="other_type_tag">Other</string>
+ 
 
     <!-- Legal Noticies Activity -->
     <string name="googleplay_tag">Google Play services attribution:</string>

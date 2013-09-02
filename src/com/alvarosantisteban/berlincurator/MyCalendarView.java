@@ -1,12 +1,5 @@
 package com.alvarosantisteban.berlincurator;
 
-import java.util.Calendar;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
-import java.util.Map.Entry;
-
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
@@ -14,14 +7,10 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.graphics.Paint.Style;
-import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
-import android.view.View;
 import android.widget.CalendarView;
-import android.widget.ListView;
-import android.widget.TextView;
 
 public class MyCalendarView extends CalendarView{
 	
@@ -44,7 +33,7 @@ public class MyCalendarView extends CalendarView{
 	private static final int UNSCALED_WEEK_SEPARATOR_LINE_WIDTH = 1;
 	// The number of days + a spot for week number if it is displayed
 	private int mNumCells = 8;
-	private int mDateTextSize; // = dateTextAppearance.getDimensionPixelSize(R.styleable.TextAppearance_textSize, DEFAULT_DATE_TEXT_SIZE);
+	//private int mDateTextSize; // = dateTextAppearance.getDimensionPixelSize(R.styleable.TextAppearance_textSize, DEFAULT_DATE_TEXT_SIZE);
 	// Quick lookup for checking which days are in the focus month
 	private boolean[] mFocusDay;
 	private int mFocusedMonthDateColor; // = attributesArray.getColor(R.styleable.CalendarView_focusedMonthDateColor, 0);
@@ -151,7 +140,8 @@ public class MyCalendarView extends CalendarView{
      *
      * @param canvas The canvas to draw on
      */
-    private void drawEventsNumbers(Canvas canvas) {		
+    @SuppressWarnings("unused")
+	private void drawEventsNumbers(Canvas canvas) {		
     	System.out.println("drawEventsNumbers()");
         final float textHeight = mDrawPaint.getTextSize();
         final int y = (int) ((mHeight + textHeight) / 2) - mWeekSeperatorLineWidth;

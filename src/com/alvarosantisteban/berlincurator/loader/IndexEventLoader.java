@@ -3,8 +3,8 @@ package com.alvarosantisteban.berlincurator.loader;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.alvarosantisteban.berlincurator.DateActivity;
 import com.alvarosantisteban.berlincurator.Event;
+import com.alvarosantisteban.berlincurator.R;
 import com.alvarosantisteban.berlincurator.utils.StringUtils;
 import com.alvarosantisteban.berlincurator.utils.WebUtils;
 
@@ -14,11 +14,24 @@ public class IndexEventLoader implements EventLoader {
 	
 	public final static String WEBSITE_URL = "http://www.indexberlin.de/openings-and-events";
 	public final static String WEBSITE_NAME = "Index";
-	//public final static String ART = "Art (Exhibitions, Talks, etc)";
+	
+	//Event's topic tags
+	private String ART_TOPIC_TAG;
+	//private String POLITICAL_TOPIC_TAG;
+	//private String GOING_OUT_TOPIC_TAG;
+				
+	// Event's type tags
+	//private String CONCERT_TYPE_TAG;
+	private String PARTY_TYPE_TAG;
+	private String EXHIBITION_TYPE_TAG;
+	private String TALK_TYPE_TAG;
+	private String SCREENING_TYPE_TAG;
+	//private String OTHER_TYPE_TAG;	
 
 	@Override
 	public List<Event> load(Context context) {
 		String html = WebUtils.downloadHtml(WEBSITE_URL, context);
+		initializeTags(context);
 		if(html.equals("Exception")){
 			return null;
 		}
@@ -28,6 +41,20 @@ public class IndexEventLoader implements EventLoader {
 			System.out.println("Exception catched extracting the events from Index!");
 			return null;
 		}
+	}
+	
+	/**
+	 * Initialize the tags used to categorize the topic and the type of each event
+	 * 
+	 * @param context
+	 */
+	private void initializeTags(Context context) {
+		ART_TOPIC_TAG = context.getResources().getString(R.string.art_topic_tag);
+		
+		PARTY_TYPE_TAG = context.getResources().getString(R.string.party_type_tag);
+		TALK_TYPE_TAG = context.getResources().getString(R.string.talk_type_tag);
+		EXHIBITION_TYPE_TAG = context.getResources().getString(R.string.exhibition_type_tag);
+		SCREENING_TYPE_TAG = context.getResources().getString(R.string.screening_type_tag);
 	}
 	
 	/**
@@ -88,7 +115,7 @@ public class IndexEventLoader implements EventLoader {
 				// Set the origin's website
 				event.setOriginsWebsite(WEBSITE_URL);
 				// Set the Thema tag
-				event.setThemaTag(DateActivity.ART_THEMA_TAG);
+				event.setThemaTag(ART_TOPIC_TAG);
 				// Set the type tag
 				event.setTypeTag(extractTypeTag(tagAndMaybeHour[0]));
 				events.add(event);
@@ -100,15 +127,15 @@ public class IndexEventLoader implements EventLoader {
 	
 	private String extractTypeTag(String name) {
 		if(name.contains("Talk")){
-			return DateActivity.TALK_TYPE_TAG;
+			return TALK_TYPE_TAG;
 		}
 		if(name.contains("Screening")){
-			return DateActivity.SCREENING_TYPE_TAG;
+			return SCREENING_TYPE_TAG;
 		}
 		if(name.contains("Party")){
-			return DateActivity.PARTY_TYPE_TAG;
+			return PARTY_TYPE_TAG;
 		}
-		return DateActivity.EXHIBITION_TYPE_TAG;
+		return EXHIBITION_TYPE_TAG;
 	}
 
 	/**
@@ -120,6 +147,7 @@ public class IndexEventLoader implements EventLoader {
 	 * @param theHtml the String containing the html from the Index website
 	 * @return a List of Event with the name, day, description, time, link and tag.
 	 */
+	@SuppressWarnings("unused")
 	private List<Event> extractEventsFromIndexNotMobile(String theHtml) throws ArrayIndexOutOfBoundsException{  
 		//System.out.println("\n\n\n\n"+theHtml);
 		

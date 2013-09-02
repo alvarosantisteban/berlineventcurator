@@ -1,6 +1,8 @@
 package com.alvarosantisteban.berlincurator.loader;
 
+
 public class EventLoaderFactory {
+		
 
 	public static EventLoader newArtParasitesEventLoader() {
 		return new ArtParasitesEventLoader();

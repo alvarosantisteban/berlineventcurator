@@ -3,15 +3,10 @@ package com.alvarosantisteban.berlincurator.utils;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.List;
-import java.util.Map;
-
 import android.content.Context;
 import android.util.Log;
-import android.widget.Toast;
 
 public final class WebUtils {
 	

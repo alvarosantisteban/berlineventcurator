@@ -3,8 +3,8 @@ package com.alvarosantisteban.berlincurator.loader;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.alvarosantisteban.berlincurator.DateActivity;
 import com.alvarosantisteban.berlincurator.Event;
+import com.alvarosantisteban.berlincurator.R;
 import com.alvarosantisteban.berlincurator.utils.WebUtils;
 
 import android.content.Context;
@@ -14,10 +14,17 @@ public class MetalConcertsEventLoader implements EventLoader{
 	public final static String WEBSITE_URL = "http://berlinmetal.lima-city.de/index.php/index.php?id=start";
 	public final static String WEBSITE_NAME = "Metal Concerts";
 	private final static String ACTUAL_YEAR = "2013";
+	
+	//Event's topic tags
+	private String GOING_OUT_TOPIC_TAG;
+				
+	// Event's type tags
+	private String CONCERT_TYPE_TAG;
 
 	@Override
 	public List<Event> load(Context context) {
 		String html = WebUtils.downloadHtml(WEBSITE_URL, context);
+		initializeTags(context);
 		if(html.equals("Exception")){
 			return null;
 		}
@@ -27,6 +34,17 @@ public class MetalConcertsEventLoader implements EventLoader{
 			System.out.println("Exception catched!!!");
 			return null;
 		}
+	}
+	
+	/**
+	 * Initialize the tags used to categorize the topic and the type of each event
+	 * 
+	 * @param context
+	 */
+	private void initializeTags(Context context) {
+		GOING_OUT_TOPIC_TAG = context.getResources().getString(R.string.goingout_topic_tag);
+		
+		CONCERT_TYPE_TAG = context.getResources().getString(R.string.concert_type_tag);
 	}
 
 	/**
@@ -75,9 +93,9 @@ public class MetalConcertsEventLoader implements EventLoader{
 			// Set the origin's website
 			event.setOriginsWebsite(WEBSITE_URL);
 			// Set the thema tag
-			event.setThemaTag(DateActivity.GOING_OUT_THEMA_TAG);
+			event.setThemaTag(GOING_OUT_TOPIC_TAG);
 			// Set the type tag
-			event.setTypeTag(DateActivity.CONCERT_TYPE_TAG);
+			event.setTypeTag(CONCERT_TYPE_TAG);
 			events.add(event);
 		}
 		return events;

@@ -1,10 +1,6 @@
 package com.alvarosantisteban.berlincurator.preferences;
 
 import com.alvarosantisteban.berlincurator.R;
-import com.alvarosantisteban.berlincurator.R.id;
-import com.alvarosantisteban.berlincurator.R.layout;
-import com.alvarosantisteban.berlincurator.R.menu;
-
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;

@@ -15,7 +15,6 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.alvarosantisteban.berlincurator.loader.ArtParasitesEventLoader;
 import com.alvarosantisteban.berlincurator.loader.EventLoaderFactory;
 import com.alvarosantisteban.berlincurator.utils.DatabaseHelper;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
@@ -89,11 +88,16 @@ public class DownloadWebpageAsyncTask extends AsyncTask<String, String, Integer>
 			}
 			// If there was a problem loading the events we tell the user
 			if (eventsFromAWebsite == null){
+				publishProgress("Exception", urls[i]);
+				/*
+				 * Si en algun momento vuelvo a tener esa parte activa, recordar que hacer una llamada a isBerlinWeekend  como esta, rompe
+				 * la interfaz de EventLoaderFactory y hay que evitarlo. 
 				// Distinguish the situation where the event is null because the Berlin Art Parasites website is not checked
 				if(!(urls[i].equals("Berlin Art Parasites") && !ArtParasitesEventLoader.isBerlinWeekend())){
 					System.out.println("Event is null");
 					publishProgress("Exception", urls[i]);	
 				}
+				*/
 			}else{
 				// Add the events from this website to the DB
 				for (int j = 0; j < eventsFromAWebsite.size(); j++) {

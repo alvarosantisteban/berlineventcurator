@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import com.alvarosantisteban.berlincurator.DateActivity;
 import com.alvarosantisteban.berlincurator.Event;
+import com.alvarosantisteban.berlincurator.R;
 import com.alvarosantisteban.berlincurator.utils.StringUtils;
 import com.alvarosantisteban.berlincurator.utils.WebUtils;
 
@@ -15,10 +15,18 @@ public class WhiteTrashEventLoader implements EventLoader{
 	
 	public final static String WEBSITE_URL = "http://www.whitetrashfastfood.com/events/";
 	public final static String WEBSITE_NAME = "White Trash";
+	
+	//Event's topic tags
+	private String GOING_OUT_TOPIC_TAG;
+				
+	// Event's type tags
+	private String CONCERT_TYPE_TAG;
+	private String PARTY_TYPE_TAG;
 
 	@Override
 	public List<Event> load(Context context) {
 		String html = WebUtils.downloadHtml(WEBSITE_URL, context);
+		initializeTags(context);
 		if(html.equals("Exception")){
 			return null;
 		}try{
@@ -27,6 +35,18 @@ public class WhiteTrashEventLoader implements EventLoader{
 			System.out.println("Exception catched!!!");
 			return null;
 		}
+	}
+	
+	/**
+	 * Initialize the tags used to categorize the topic and the type of each event
+	 * 
+	 * @param context
+	 */
+	private void initializeTags(Context context) {
+		GOING_OUT_TOPIC_TAG = context.getResources().getString(R.string.goingout_topic_tag);
+		
+		CONCERT_TYPE_TAG = context.getResources().getString(R.string.concert_type_tag);
+		PARTY_TYPE_TAG = context.getResources().getString(R.string.party_type_tag);
 	}
 	
 	/**
@@ -85,7 +105,7 @@ public class WhiteTrashEventLoader implements EventLoader{
 				// Set the origin's website
 				event.setOriginsWebsite(WEBSITE_URL);
 				// Set the thema tag
-				event.setThemaTag(DateActivity.GOING_OUT_THEMA_TAG);
+				event.setThemaTag(GOING_OUT_TOPIC_TAG);
 				// Set the type tag
 				event.setTypeTag(extractTypeTag(nameAndRest[0]));
 				events.add(event);
@@ -104,8 +124,8 @@ public class WhiteTrashEventLoader implements EventLoader{
 	private String extractTypeTag(String text) {
 		String lowerCase = text.toLowerCase(Locale.getDefault());
 		if (lowerCase.contains("live")){
-			return DateActivity.CONCERT_TYPE_TAG;
+			return CONCERT_TYPE_TAG;
 		}
-		return DateActivity.PARTY_TYPE_TAG;
+		return PARTY_TYPE_TAG;
 	}
 }

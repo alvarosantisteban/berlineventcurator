@@ -7,7 +7,6 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 import android.app.ActionBar;
-import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Address;
@@ -294,6 +293,7 @@ public class EventActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 	 * @param key the key to be saved 
 	 * @param value the value to be saved
 	 */
+	@SuppressWarnings("unused")
 	private void saveInSp(String key, boolean value){
         SharedPreferences preferences = getApplicationContext().getSharedPreferences("PROJECT_NAME", android.content.Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
@@ -307,6 +307,7 @@ public class EventActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 	 * @param key the checkbox key
 	 * @return the state of the checkbox 
 	 */
+	@SuppressWarnings("unused")
 	private boolean getFromSP(String key){
         SharedPreferences preferences = getApplicationContext().getSharedPreferences("PROJECT_NAME", android.content.Context.MODE_PRIVATE);
         return preferences.getBoolean(key, false);
