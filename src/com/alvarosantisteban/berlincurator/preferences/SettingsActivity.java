@@ -1,4 +1,6 @@
-package com.alvarosantisteban.berlincurator;
+package com.alvarosantisteban.berlincurator.preferences;
+
+import com.alvarosantisteban.berlincurator.DateActivity;
 
 import android.app.ActionBar;
 import android.app.Activity;

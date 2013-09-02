@@ -1,9 +1,16 @@
-package com.alvarosantisteban.berlincurator;
+package com.alvarosantisteban.berlincurator.preferences;
 
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import com.alvarosantisteban.berlincurator.DateActivity;
+import com.alvarosantisteban.berlincurator.R;
+import com.alvarosantisteban.berlincurator.R.array;
+import com.alvarosantisteban.berlincurator.R.string;
+import com.alvarosantisteban.berlincurator.R.xml;
+import com.alvarosantisteban.berlincurator.utils.StringUtils;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -119,7 +126,7 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 				editor.putStringSet(KEY_PREF_MULTILIST_LAST_SELECTION, setOfSites);
 			} else {
-				editor.putString(KEY_PREF_MULTILIST_LAST_SELECTION, Utils.join(setOfSites, ","));
+				editor.putString(KEY_PREF_MULTILIST_LAST_SELECTION, StringUtils.join(setOfSites, ","));
 			}
             editor.commit();
             
@@ -129,7 +136,7 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 				editor.putStringSet(KEY_PREF_MULTILIST_SITES, setOfSites);
 			} else {
-				editor.putString(KEY_PREF_MULTILIST_SITES, Utils.join(setOfSites, ","));
+				editor.putString(KEY_PREF_MULTILIST_SITES, StringUtils.join(setOfSites, ","));
 			}
             editor.commit();
             
@@ -142,7 +149,7 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
         	if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 				editor.putStringSet(KEY_PREF_MULTILIST_TYPE, typeMultiList.getValues());
 			} else {
-				editor.putString(KEY_PREF_MULTILIST_TYPE, Utils.join(typeMultiList.getValues(), ","));
+				editor.putString(KEY_PREF_MULTILIST_TYPE, StringUtils.join(typeMultiList.getValues(), ","));
 			}
             editor.commit();
         	// Go to Date Activity
@@ -155,7 +162,7 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
         	if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 				editor.putStringSet(KEY_PREF_MULTILIST_TOPIC, topicMultiList.getValues());
 			} else {
-				editor.putString(KEY_PREF_MULTILIST_TOPIC, Utils.join(topicMultiList.getValues(), ","));
+				editor.putString(KEY_PREF_MULTILIST_TOPIC, StringUtils.join(topicMultiList.getValues(), ","));
 			}
             editor.commit();
         	// Go to Date Activity
@@ -182,7 +189,7 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 			editor.putStringSet(KEY_PREF_MULTILIST_SITES, defaultSitesSelection);
 		} else {
-			editor.putString(KEY_PREF_MULTILIST_SITES, Utils.join(defaultSitesSelection, ","));
+			editor.putString(KEY_PREF_MULTILIST_SITES, StringUtils.join(defaultSitesSelection, ","));
 		}
 		editor.commit();
 		

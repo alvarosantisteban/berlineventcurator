@@ -1,4 +1,4 @@
-package com.alvarosantisteban.berlincurator;
+package com.alvarosantisteban.berlincurator.utils;
 
 import java.sql.SQLException;
 
@@ -6,6 +6,9 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import com.alvarosantisteban.berlincurator.Event;
+import com.alvarosantisteban.berlincurator.R;
+import com.alvarosantisteban.berlincurator.R.raw;
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
@@ -74,6 +77,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 			throw new RuntimeException(e);
 		}
 		/*
+		 * Un comment this but then don't drop and create the table, it will update
 		if (oldVersion == 1) {
 			System.out.println("Y YO ESTOY AQUI ESPERANDOTEEEEEEE");
 			RuntimeExceptionDao<Event, Integer> dao = getEventDataDao();
@@ -94,7 +98,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 	 * Returns the Database Access Object (DAO) for our SimpleData class. It will create it or just give the cached
 	 * value.
 	 */
-	public Dao<Event, Integer> getDao() throws SQLException {
+	public Dao<Event, Integer> getEventDao() throws SQLException {
 		if (eventDao == null) {
 			eventDao = getDao(Event.class);
 		}

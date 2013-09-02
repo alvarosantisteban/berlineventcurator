@@ -1,8 +1,13 @@
-package com.alvarosantisteban.berlincurator;
+package com.alvarosantisteban.berlincurator.loader;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+
+import com.alvarosantisteban.berlincurator.Event;
+import com.alvarosantisteban.berlincurator.utils.StringUtils;
+import com.alvarosantisteban.berlincurator.utils.WebUtils;
+
 import android.content.Context;
 
 public class ArtParasitesEventLoader implements EventLoader {
@@ -64,7 +69,7 @@ public class ArtParasitesEventLoader implements EventLoader {
 			for (int j=1; j<=(eventsOfADay.length-1)/2; j++){
 				Event event = new Event();
 				// Format the date and set it
-				String day = Utils.formatDate(dayAndDate[1].replace(",", "").trim());
+				String day = StringUtils.formatDate(dayAndDate[1].replace(",", "").trim());
 				event.setDay(day);
 				
 				System.out.println("eventsOfADay[(j*2)-1]"+eventsOfADay[(j*2)-1]);
@@ -99,7 +104,7 @@ public class ArtParasitesEventLoader implements EventLoader {
 				String[] timeAndRest = linkNameAndRest[1].split("</p>",2);
 				
 				// Extract the hour
-				event.setHour(Utils.extractTime(timeAndRest[0]));
+				event.setHour(StringUtils.extractTime(timeAndRest[0]));
 				
 				String[] nothingAndDescription = timeAndRest[1].split(">", 2);
 				String[] descriptionAndNothing = nothingAndDescription[1].split("</p>",2);

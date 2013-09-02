@@ -52,15 +52,15 @@
             android:label="@string/title_activity_calendar" >
         </activity>
         <activity
-            android:name="com.alvarosantisteban.berlincurator.SettingsActivity"
+            android:name="com.alvarosantisteban.berlincurator.preferences.SettingsActivity"
             android:label="@string/title_activity_settings" >
         </activity>
         <activity
-            android:name="com.alvarosantisteban.berlincurator.AboutActivity"
+            android:name="com.alvarosantisteban.berlincurator.preferences.AboutActivity"
             android:label="@string/title_activity_about" >
         </activity>
         <activity
-            android:name="com.alvarosantisteban.berlincurator.LegalNoticesActivity"
+            android:name="com.alvarosantisteban.berlincurator.preferences.LegalNoticesActivity"
             android:label="@string/title_activity_legal_notices" >
         </activity>
 

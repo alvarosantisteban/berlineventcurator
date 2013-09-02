@@ -1,4 +1,4 @@
-package com.alvarosantisteban.berlincurator;
+package com.alvarosantisteban.berlincurator.utils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -13,7 +13,7 @@ import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
-public class WebUtils {
+public final class WebUtils {
 	
 	private static final String DEBUG_TAG = "HttpExample";
 	//private static final String DEFAULT_ENCODING = "UTF-8";// "ISO-8859-1";

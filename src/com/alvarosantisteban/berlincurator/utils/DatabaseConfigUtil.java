@@ -1,4 +1,4 @@
-package com.alvarosantisteban.berlincurator;
+package com.alvarosantisteban.berlincurator.utils;
 
 import com.j256.ormlite.android.apptools.OrmLiteConfigUtil;
 

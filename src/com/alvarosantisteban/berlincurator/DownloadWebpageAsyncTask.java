@@ -15,6 +15,9 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.alvarosantisteban.berlincurator.loader.ArtParasitesEventLoader;
+import com.alvarosantisteban.berlincurator.loader.EventLoaderFactory;
+import com.alvarosantisteban.berlincurator.utils.DatabaseHelper;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
 

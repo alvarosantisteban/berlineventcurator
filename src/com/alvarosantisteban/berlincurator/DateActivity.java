@@ -35,6 +35,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.alvarosantisteban.berlincurator.preferences.SettingsActivity;
+import com.alvarosantisteban.berlincurator.preferences.SettingsFragment;
+import com.alvarosantisteban.berlincurator.utils.DatabaseHelper;
+import com.alvarosantisteban.berlincurator.utils.StringUtils;
 import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
 import com.j256.ormlite.stmt.DeleteBuilder;
@@ -354,7 +358,7 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 				editor.putStringSet("lastSelection", lastSelection);
 			} else {
-				editor.putString("lastSelection", Utils.join(lastSelection, ","));
+				editor.putString("lastSelection", StringUtils.join(lastSelection, ","));
 			}
             editor.commit();
 		}

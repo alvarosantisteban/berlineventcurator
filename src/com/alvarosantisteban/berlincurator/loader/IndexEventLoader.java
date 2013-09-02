@@ -1,7 +1,12 @@
-package com.alvarosantisteban.berlincurator;
+package com.alvarosantisteban.berlincurator.loader;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.alvarosantisteban.berlincurator.DateActivity;
+import com.alvarosantisteban.berlincurator.Event;
+import com.alvarosantisteban.berlincurator.utils.StringUtils;
+import com.alvarosantisteban.berlincurator.utils.WebUtils;
 
 import android.content.Context;
 
@@ -47,7 +52,7 @@ public class IndexEventLoader implements EventLoader {
 			for (int j=1; j<eventsOfADay.length; j++){
 				Event event = new Event();
 				// Format the date and set it
-				String date = Utils.formatDate(dayAndDate[1].trim());
+				String date = StringUtils.formatDate(dayAndDate[1].trim());
 				event.setDay(date);
 				
 				String[] placeAndRest = eventsOfADay[j].split("</a>",2);
@@ -59,7 +64,7 @@ public class IndexEventLoader implements EventLoader {
 				String[] tagAndMaybeHour = tagAndHour[1].split(",",2);
 				if(tagAndMaybeHour.length > 1){
 					// There is an hour, set it
-					event.setHour(Utils.extractTime(tagAndMaybeHour[1].trim()));
+					event.setHour(StringUtils.extractTime(tagAndMaybeHour[1].trim()));
 				}
 				// Set the tag
 				//event.setTag(tagAndMaybeHour[0]);
@@ -135,10 +140,10 @@ public class IndexEventLoader implements EventLoader {
 			String[] dayTimeAndNothing = nothingAndDayTime2[0].split("<",2);
 			String[] dayAndTime = dayTimeAndNothing[0].split("|");
 			// Set the day
-			event.setDay(Utils.formatDate(dayAndTime[0].trim()));
+			event.setDay(StringUtils.formatDate(dayAndTime[0].trim()));
 			// Set the time, if there is one
 			if (dayAndTime.length >= 3){
-				event.setHour(Utils.convertTo24Hours(Utils.extractTime(dayAndTime[2].trim())));
+				event.setHour(StringUtils.convertTo24Hours(StringUtils.extractTime(dayAndTime[2].trim())));
 			}
 			String[] nothingAndRest = dayTimeAndNothing[1].split("<td class=\"col3\">",2);
 			String[] tagAndRest = nothingAndRest[1].split("<span style=\"color: #777777\">",2);

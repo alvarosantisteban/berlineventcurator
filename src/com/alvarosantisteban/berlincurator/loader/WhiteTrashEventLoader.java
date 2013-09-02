@@ -1,8 +1,13 @@
-package com.alvarosantisteban.berlincurator;
+package com.alvarosantisteban.berlincurator.loader;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+
+import com.alvarosantisteban.berlincurator.DateActivity;
+import com.alvarosantisteban.berlincurator.Event;
+import com.alvarosantisteban.berlincurator.utils.StringUtils;
+import com.alvarosantisteban.berlincurator.utils.WebUtils;
 
 import android.content.Context;
 
@@ -46,7 +51,7 @@ public class WhiteTrashEventLoader implements EventLoader{
 			for (int j=1; j<eventsOfADay.length; j++){
 				Event event = new Event();
 				// Format the date and set it
-				event.setDay(Utils.formatDate(dayAndDate[1]));
+				event.setDay(StringUtils.formatDate(dayAndDate[1]));
 				String[] timeAndRest = eventsOfADay[j].split("</p>",2);
 				// Set the time
 				//System.out.println("timeAndRest[0]" +timeAndRest[0]);

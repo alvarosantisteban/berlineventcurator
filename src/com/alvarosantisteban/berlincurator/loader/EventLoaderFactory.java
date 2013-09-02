@@ -1,4 +1,4 @@
-package com.alvarosantisteban.berlincurator;
+package com.alvarosantisteban.berlincurator.loader;
 
 public class EventLoaderFactory {
 

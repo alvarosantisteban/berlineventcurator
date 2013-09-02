@@ -1,4 +1,4 @@
-package com.alvarosantisteban.berlincurator;
+package com.alvarosantisteban.berlincurator.preferences;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -7,6 +7,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import com.alvarosantisteban.berlincurator.R;
+import com.alvarosantisteban.berlincurator.R.id;
+import com.alvarosantisteban.berlincurator.R.layout;
+import com.alvarosantisteban.berlincurator.R.menu;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 
 public class LegalNoticesActivity extends Activity {

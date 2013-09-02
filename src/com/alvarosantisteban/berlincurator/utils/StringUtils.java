@@ -1,4 +1,4 @@
-package com.alvarosantisteban.berlincurator;
+package com.alvarosantisteban.berlincurator.utils;
 
 import java.util.Date;
 import java.util.Locale;
@@ -6,7 +6,7 @@ import java.util.Set;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
-public class Utils {
+public final class StringUtils {
 	
 	/**
 	 * Converts a string of time in the format of 12hours HH:MMa to 24 hours 
@@ -64,13 +64,13 @@ public class Utils {
 		}else{	
 			String hour24;
 			if (hour.length() == 1){
-				hour24 = Utils.convertTo24Hours("0"+hour+":00"+timePeriod);
+				hour24 = StringUtils.convertTo24Hours("0"+hour+":00"+timePeriod);
 			}else if(hour.length() == 4){
-				hour24 = Utils.convertTo24Hours("0"+hour+timePeriod);
+				hour24 = StringUtils.convertTo24Hours("0"+hour+timePeriod);
 			}else if(hour.length() == 2){
-				hour24 = Utils.convertTo24Hours(hour+":00"+timePeriod);
+				hour24 = StringUtils.convertTo24Hours(hour+":00"+timePeriod);
 			}else{
-				hour24 = Utils.convertTo24Hours(hour+timePeriod);
+				hour24 = StringUtils.convertTo24Hours(hour+timePeriod);
 			}
 			return hour24;
 		}
@@ -91,7 +91,7 @@ public class Utils {
 					hour24[i] = startEnd[i]+":00";
 				}
 			}
-			hour24[i] = Utils.convertTo24Hours(hour24[i]+timePeriod);
+			hour24[i] = StringUtils.convertTo24Hours(hour24[i]+timePeriod);
 		}
 		return hour24[0]+"-"+hour24[1];
 	}

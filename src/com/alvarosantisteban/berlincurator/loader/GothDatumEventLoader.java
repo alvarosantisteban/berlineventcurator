@@ -1,10 +1,13 @@
-package com.alvarosantisteban.berlincurator;
+package com.alvarosantisteban.berlincurator.loader;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.alvarosantisteban.berlincurator.DateActivity;
+import com.alvarosantisteban.berlincurator.Event;
+import com.alvarosantisteban.berlincurator.utils.WebUtils;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
 import com.j256.ormlite.dao.RuntimeExceptionDao;

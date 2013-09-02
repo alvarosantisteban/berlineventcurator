@@ -1,4 +1,4 @@
-package com.alvarosantisteban.berlincurator;
+package com.alvarosantisteban.berlincurator.preferences;
 
 import android.app.AlertDialog;
 import android.content.Context;

@@ -24,6 +24,15 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.alvarosantisteban.berlincurator.loader.GothDatumEventLoader;
+import com.alvarosantisteban.berlincurator.loader.IHeartBerlinEventLoader;
+import com.alvarosantisteban.berlincurator.loader.IndexEventLoader;
+import com.alvarosantisteban.berlincurator.loader.MetalConcertsEventLoader;
+import com.alvarosantisteban.berlincurator.loader.StressFaktorEventLoader;
+import com.alvarosantisteban.berlincurator.loader.WhiteTrashEventLoader;
+import com.alvarosantisteban.berlincurator.preferences.SettingsActivity;
+import com.alvarosantisteban.berlincurator.preferences.SettingsFragment;
+import com.alvarosantisteban.berlincurator.utils.DatabaseHelper;
 import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
 
 /**

@@ -1,7 +1,12 @@
-package com.alvarosantisteban.berlincurator;
+package com.alvarosantisteban.berlincurator.loader;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.alvarosantisteban.berlincurator.DateActivity;
+import com.alvarosantisteban.berlincurator.Event;
+import com.alvarosantisteban.berlincurator.utils.WebUtils;
+
 import android.content.Context;
 
 public class MetalConcertsEventLoader implements EventLoader{
