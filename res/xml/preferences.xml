@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <com.alvarosantisteban.berlincurator.preferences.CustomListPreference
+    <ListPreference        
     	android:entries="@array/possible_organizations_entries" 
     	android:title="@string/possible_organizations_title" 
     	android:key="possible_organizations_list" 

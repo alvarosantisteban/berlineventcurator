@@ -88,7 +88,7 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
         // Load the preferences from an XML resource
         addPreferencesFromResource(R.xml.preferences);
         
-        organizationList = (CustomListPreference) findPreference(KEY_PREF_LIST_ORGANIZATIONS); 
+        organizationList = (ListPreference) findPreference(KEY_PREF_LIST_ORGANIZATIONS); 
         topicMultiList = (MultiSelectListPreference) findPreference(KEY_PREF_MULTILIST_TOPIC);
         typeMultiList = (MultiSelectListPreference) findPreference(KEY_PREF_MULTILIST_TYPE);
         originMultiList = (MultiSelectListPreference) findPreference(KEY_PREF_MULTILIST_SITES);
