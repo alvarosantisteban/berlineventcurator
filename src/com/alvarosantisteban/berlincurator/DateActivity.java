@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -317,30 +318,28 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 		if(numEvents == 0){
 			displayToast("There are no events for this day. Refresh or go to another day.");
 		}
-		/*
-		System.out.println("----- NEW SELECTION ----- ");
-		for (int i=0; i<FirstTimeActivity.websNames.length; i++){
-			System.out.println(FirstTimeActivity.websNames[i]);
-		}
-		System.out.println("----- LAST SELECTION ----- ");
-		for (int i=0; i<lastSelection.length; i++){
-			System.out.println(lastSelection[i]);
-		}
-		*/
-		/*if(!Arrays.equals(FirstTimeActivity.websNames, lastSelection)){
-			checkDifferencesBetweenSelection(originTags.toArray(new String[0]), lastSelection);
-			lastSelection = FirstTimeActivity.websNames;
-			Editor editor = sharedPref.edit();
-            editor.putStringSet("lastSelection", new HashSet<String>(Arrays.asList(FirstTimeActivity.websNames)));
-            editor.commit();
-		}*/
 		
-		//if(!Arrays.equals(originTags.toArray(new String[0]), lastSelection.toArray(new String[0]))){
+		// Check if there were changes in the selection of the groups
 		if(!lastSelection.equals(originTags)){
-			checkDifferencesBetweenSelection(originTags, lastSelection);
+			Log.d(TAG, "The user changed some of the tags.");
+			Set<String> deletedGroups = new HashSet<String>(lastSelection);
+			Set<String> addedGroups = new HashSet<String>(originTags);
+			deletedGroups.removeAll(originTags);
+			addedGroups.removeAll(lastSelection);
+			
+			// Get the events for the new groups
+			if(addedGroups.size() > 0){
+				downloadNewGroups(addedGroups);
+			}
+			
+			// Delete the events for the groups not used anymore
+			if(deletedGroups.size() > 0){
+				removeGroups(deletedGroups);
+			}
+			
+			// Save the new selection
 			lastSelection = originTags;
 			Editor editor = sharedPref.edit();
-            //editor.putStringSet("lastSelection", lastSelection);
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 				editor.putStringSet("lastSelection", lastSelection);
 			} else {
@@ -348,7 +347,47 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 			}
             editor.commit();
 		}
-		
+	}
+
+	/**
+	 * Removes the events from the DB that match the origin of any of the String in the set
+	 * 
+	 * @param deletedGroups Set with the Strings of the origins to be deleted
+	 */
+	private void removeGroups(Set<String> deletedGroups) {
+		Log.d(TAG, "There are " +deletedGroups.size() +" groups deleted");
+		// Get the Event DAO to deleted the entries of the unselected groups
+		RuntimeExceptionDao<Event, Integer> eventDao = getHelper().getEventDataDao();
+		DeleteBuilder<Event, Integer> deleteBuilder = eventDao.deleteBuilder();	
+		Iterator <String> deletedIterator = deletedGroups.iterator();
+		while (deletedIterator.hasNext()){
+			try {
+				// create our argument which uses a SQL ? to avoid having problems with apostrophes
+				SelectArg deletedArg = new SelectArg(deletedIterator.next());
+				deleteBuilder.where().eq("eventsOrigin", deletedArg);
+				deleteBuilder.delete();
+			} catch (SQLException e) {
+				Log.e(TAG, "Error deleting events after checking difference between old and new selection." +e);
+			}
+		}
+	}
+
+	/**
+	 * Downloads the events that match the origin of any of the String in the set
+	 * 
+	 * @param addedGroups Set with the Strings of the origins to be added
+	 */
+	private void downloadNewGroups(Set<String> addedGroups) {
+		Log.d(TAG, "There are " +addedGroups.size() +" new groups added");
+		// Create a connection
+		ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+		// Check if is possible to establish a connection
+		if (networkInfo != null && networkInfo.isConnected()) {
+			DownloadWebpageAsyncTask download = new DownloadWebpageAsyncTask(this, loadProgressBar);
+			// Execute the asyncronous task of downloading the websites
+			download.execute(addedGroups.toArray((new String[addedGroups.size()])));
+		}
 	}
 		
 
@@ -358,8 +397,7 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 	 * 
 	 * @param newSelection the new selection of the user
 	 * @param oldSelection the old selection of the user
-	 */
-	//private void checkDifferencesBetweenSelection(String[] newSelection, String[] oldSelection) {
+	 *
 	private void checkDifferencesBetweenSelection(Set<String> newSelection, Set<String> oldSelection) {
 		Log.d(TAG,"checkDifferencesBetweenSelection. oldSelection.size():"+oldSelection.size());
 		String[] newSelection1 = newSelection.toArray(new String[0]);
@@ -439,6 +477,7 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 			}
 		}
 	}
+	*/
 	
 	/**
 	 * Returns the date of tomorrow formated like DD/MM/YYYY
