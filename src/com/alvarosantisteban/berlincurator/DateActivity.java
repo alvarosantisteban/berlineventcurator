@@ -57,6 +57,11 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 	private String TYPE_ORGANIZATION;
 	private String TOPIC_ORGANIZATION;
 	
+	// Constants to access Preferences
+	private final String LAST_TOTAL_NUM_EVENTS = "lastTotalNumber";
+	private final String LAST_SELECTION = "lastSelection";
+	private final String FIRST_TIME_APP = "isFirstTimeApp";
+	
 	public static final String EXTRA_EVENT = "com.alvarosantisteban.berlincurator.event";
 	// Settings
 	private static final int RESULT_SETTINGS = 1;
@@ -65,6 +70,8 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 	private static final int INTENT_RETURN_CODE = 1;
 	public static final int RESULT_UPDATE = 1;
 	public static final String EVENTS_RESULT_DATA = "result data";
+	
+	private final String EXTRA_DATE = "date";
 	
 	public Set<String> lastSelection;
 	
@@ -108,13 +115,16 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 	
 	/**
 	 * The last total number of events for a choosenDate 
+	 * 
+	 * IS NOT WORKING. The problem is that the AsynTask goes in parallel so it's not easy to know when does it end and therefore when to
+	 * call getTotalChildrenCount of the listAdapter
 	 */
-	int numLastEvents = 0;
+	int lastTotalNumEvents = 0;
 	
 	/**
 	 * The total number of events for a choosenDate
 	 */
-	int numEvents = 0;
+	int totalNumEvents = 0;
 	
 	/**
 	 * The expandable list with the groups and events
@@ -182,17 +192,19 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 		// --------------------------------------------------
 		// Know if its the first time the user uses the app
 		// --------------------------------------------------
-		boolean isFirstTimeApp = sharedPref.getBoolean("isFirstTimeApp", true);
+		boolean isFirstTimeApp = sharedPref.getBoolean(FIRST_TIME_APP, true);
 		//lastSelection = sharedPref.getStringSet("lastSelection", new HashSet<String>(Arrays.asList(context.getResources().getStringArray(R.array.default_sites_array))));
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-			lastSelection = sharedPref.getStringSet("lastSelection", new HashSet<String>(Arrays.asList(context.getResources().getStringArray(R.array.default_sites_array))));
+			lastSelection = sharedPref.getStringSet(LAST_SELECTION, new HashSet<String>(Arrays.asList(context.getResources().getStringArray(R.array.default_sites_array))));
 		} else {
-			String s = sharedPref.getString("lastSelection", context.getResources().getString(R.string.sites_pseudoarray_values));
+			String s = sharedPref.getString(LAST_SELECTION, context.getResources().getString(R.string.sites_pseudoarray_values));
 			if(s != null){
 				lastSelection = new HashSet<String>(Arrays.asList(s.split(",")));
 			}
 		}
 		
+		lastTotalNumEvents = sharedPref.getInt(LAST_TOTAL_NUM_EVENTS, 0);
+		//
 		Intent intent;
 		//isFirstTimeApp = true;
 		if (isFirstTimeApp) {
@@ -263,8 +275,8 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 		
 		intent = getIntent();
 		// Get the choosen date from the calendar or from the event that the user was consulting
-		choosenDate = intent.getStringExtra(CalendarActivity.EXTRA_DATE);
-		choosenDate = intent.getStringExtra(EventActivity.EXTRA_DATE);
+		choosenDate = intent.getStringExtra(EXTRA_DATE);
+		
 		displayedDate = (TextView) findViewById(R.id.date);
 		if (choosenDate == null){	
 			// The user did not select anything, the default date is today
@@ -287,9 +299,7 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 			ActionBar actionBar = getActionBar();
 			actionBar.setDisplayHomeAsUpEnabled(true);
-		} 
-		//ActionBar actionBar = getActionBar();
-		//actionBar.setDisplayHomeAsUpEnabled(true);
+		}
 		
 		// --------------------------------------------------
 		// Adapter and loading of events
@@ -306,6 +316,9 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 		// Expand the groups with events
 		expandGroupsWithEvents();
 		
+		// Get the number of events
+		totalNumEvents = listAdapter.getTotalChildrenCount();
+		
 		// Listener for the events
 		expandableSitesList.setOnChildClickListener(myEventClicked);
 		// Listener for the sites
@@ -315,7 +328,7 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 		// Listener for the expanded group
 		//expandableSitesList.setOnGroupExpandListener(myExpandedGroup);
 		
-		if(numEvents == 0){
+		if(totalNumEvents == 0){
 			displayToast("There are no events for this day. Refresh or go to another day.");
 		}
 		
@@ -327,24 +340,41 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 			deletedGroups.removeAll(originTags);
 			addedGroups.removeAll(lastSelection);
 			
+			int totalChildrenCount = totalNumEvents;
 			// Get the events for the new groups
 			if(addedGroups.size() > 0){
 				downloadNewGroups(addedGroups);
+				//Log.d(TAG, "totalChildrenCount:"+totalChildrenCount);
+				totalChildrenCount = listAdapter.getTotalChildrenCount();
+				//Log.d(TAG, "totalChildrenCount:"+totalChildrenCount);
+				// Inform about how many new events are for the day
+				int difference = totalChildrenCount-totalNumEvents;
+				if(difference == 1){
+					displayToast("There is 1 new event for this day.");
+				}else if(difference > 1){
+					displayToast("There are " +difference +" new events for this day.");
+				}
 			}
 			
 			// Delete the events for the groups not used anymore
 			if(deletedGroups.size() > 0){
 				removeGroups(deletedGroups);
+				totalChildrenCount = listAdapter.getTotalChildrenCount();
 			}
+			
+			// Get the total number of events
+			lastTotalNumEvents = totalNumEvents;
+			totalNumEvents = totalChildrenCount;
 			
 			// Save the new selection
 			lastSelection = originTags;
 			Editor editor = sharedPref.edit();
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-				editor.putStringSet("lastSelection", lastSelection);
+				editor.putStringSet(LAST_SELECTION, lastSelection);
 			} else {
-				editor.putString("lastSelection", StringUtils.join(lastSelection, ","));
+				editor.putString(LAST_SELECTION, StringUtils.join(lastSelection, ","));
 			}
+			editor.putInt(LAST_TOTAL_NUM_EVENTS, lastTotalNumEvents);
             editor.commit();
 		}
 	}
@@ -384,7 +414,7 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 		NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
 		// Check if is possible to establish a connection
 		if (networkInfo != null && networkInfo.isConnected()) {
-			DownloadWebpageAsyncTask download = new DownloadWebpageAsyncTask(this, loadProgressBar);
+			DownloadWebpageAsyncTask download = new DownloadWebpageAsyncTask(this, loadProgressBar, choosenDate);
 			// Execute the asyncronous task of downloading the websites
 			download.execute(addedGroups.toArray((new String[addedGroups.size()])));
 		}
@@ -581,7 +611,7 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 		int listSize = eventsList.size();
 		// Add to the counters
 		listSize++;
-		numEvents++;
+		//totalNumEvents++;
 	 
 		// Set the sequence for the event
 		newEvent.setSequence(String.valueOf(listSize));
@@ -704,7 +734,7 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 		    // Check if is possible to establish a connection
 		    if (networkInfo != null && networkInfo.isConnected()) {
 				//DownloadWebpageTask2 download = new DownloadWebpageTask2();
-		    	DownloadWebpageAsyncTask download = new DownloadWebpageAsyncTask(this,loadProgressBar);
+		    	DownloadWebpageAsyncTask download = new DownloadWebpageAsyncTask(this,loadProgressBar, choosenDate);
 				// Execute the asyncronous task of downloading the websites
 				download.execute(originTags.toArray(new String[0]));
 		    } else {

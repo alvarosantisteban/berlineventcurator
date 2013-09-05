@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +21,7 @@ import android.widget.TextView;
 public class ListAdapter extends BaseExpandableListAdapter {
 	
 	private Context context;
+	private Typeface tf;
 	/**
 	 * The ArrayList used to get the information 
 	 */
@@ -83,6 +85,7 @@ public class ListAdapter extends BaseExpandableListAdapter {
 	    	childItem.setTextColor(Color.parseColor("#427212"));
 	    }else{
 	    	childItem.setTextColor(Color.BLACK);
+	    	//childItem.setTextColor(Color.WHITE);
 	    }
 		return convertView;
 	}
@@ -154,12 +157,54 @@ public class ListAdapter extends BaseExpandableListAdapter {
 		if (headerInfo.getEventsNumber() == 1){
 			singPl =" event";
 		}
-		heading.setText(headerInfo.getName().trim() +" - " +headerInfo.getEventsNumber() +singPl);
+		heading.setText(getGroupName(headerInfo.getName().trim()) +" - " +headerInfo.getEventsNumber() +singPl);
+		//heading.setTextColor(Color.WHITE);
 		// If there are no events, make the header's color gray
 		if(headerInfo.getEventsNumber() == 0){
 			heading.setTextColor(Color.GRAY);
 		}
+		tf = Typeface.createFromAsset(context.getAssets(), "font/Berylium.ttf");
+		heading.setTypeface(tf);
 		return convertView;
+	}
+	
+	/**
+	 * Changes the headerName 
+	 * 
+	 * @param headerName
+	 * @return
+	 */
+	private String getGroupName(String headerName){
+		String sentence = "Error";
+		if(headerName.equals("Exhibition")){
+			sentence = "Expand my conscience";
+		}else if(headerName.equals("Talk")){
+			sentence = "Adquire some knowledge";
+		}else if(headerName.equals("Party")){
+			sentence = "Dance til my feet melt";
+		}else if(headerName.equals("Screening")){
+			sentence = "See the world through another one's eyes";
+		}else if(headerName.equals("Concert")){
+			sentence = "Enjoy some live music";
+		}else if(headerName.equals("Other")){
+			sentence = "Something that can not be categorized";
+		}else{
+			sentence = headerName;
+		}
+		return sentence;
+	}
+	
+	/**
+	 * Returns the total number of children in all displayed groups
+	 * 
+	 * @return the total number of children
+	 */
+	public int getTotalChildrenCount(){
+		int total = 0;
+		for(int i=0; i<getGroupCount(); i++){
+			total += getChildrenCount(i);
+		}
+		return total;
 	}
 	 
 	/**

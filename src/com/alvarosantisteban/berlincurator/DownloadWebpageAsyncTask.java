@@ -26,6 +26,8 @@ public class DownloadWebpageAsyncTask extends AsyncTask<String, String, Integer>
 	private Context context;
 	private ProgressBar loadProgressBar;
 	private Toast toast;
+	private String choosenDate;
+	private int numOfEventsInDate = 0;
 	
 	/**
 	* The Database Helper that helps dealing with the db easily
@@ -36,10 +38,12 @@ public class DownloadWebpageAsyncTask extends AsyncTask<String, String, Integer>
 	 * Used for logging purposes
 	 */
 	private static final String TAG = "DownloadWebpageAsyncTask";
+	private static final String EXTRA_DATE = "date";
 
-	public DownloadWebpageAsyncTask(Context context, ProgressBar theLoadProgressBar) {
+	public DownloadWebpageAsyncTask(Context context, ProgressBar theLoadProgressBar, String theChoosenDate) {
 	    this.context = context;
 	    this.loadProgressBar = theLoadProgressBar;
+	    this.choosenDate = theChoosenDate;
 	    toast = Toast.makeText(context, "", Toast.LENGTH_LONG);
 	}
 	
@@ -109,6 +113,9 @@ public class DownloadWebpageAsyncTask extends AsyncTask<String, String, Integer>
 				for (int j = 0; j < eventsFromAWebsite.size(); j++) {
 					if(addEventToDB(eventsFromAWebsite.get(j))){
 						numOfNewEvents++;
+						if(eventsFromAWebsite.get(j).getDay().equals(choosenDate)){
+							numOfEventsInDate++;
+						}
 					}
 				}
 			}
@@ -155,7 +162,7 @@ public class DownloadWebpageAsyncTask extends AsyncTask<String, String, Integer>
 		}
 		*/
 		if(foundEvents.size() >= 1){
-			Log.d(TAG,"El evento ya existe, no se añade.");
+			//Log.v(TAG,"El evento ya existe, no se añade.");
 			return true;
 		}
 		return false;
@@ -172,7 +179,7 @@ public class DownloadWebpageAsyncTask extends AsyncTask<String, String, Integer>
 			displayToast("There were problems downloading the content from: " +progress[1] +" It's events won't be displayed.");
 		}else if (progress[0].equals("Finish")){
 			if (Integer.parseInt(progress[1]) > 0){
-				displayToast("Added " +progress[1] +" new events");
+				displayToast("Added " +progress[1] +" new events, " +numOfEventsInDate +" for this day.");
 			}else{
 				displayToast(context.getString(R.string.no_new_events));
 			}
@@ -194,6 +201,7 @@ public class DownloadWebpageAsyncTask extends AsyncTask<String, String, Integer>
 		}
 		if (result > 0){
 			Intent intent = new Intent(context, DateActivity.class);
+			intent.putExtra(EXTRA_DATE, choosenDate);
 			((Activity) context).startActivity(intent);
 		}
 	}

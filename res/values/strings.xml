@@ -15,8 +15,8 @@
     <string name="image_find_text">Find what\'s going on in Berlin tonight!</string>
 
     <!-- Date Activity -->
-    <string name="events_for_today">These are the events for today</string>
-    <string name="events_for_tomorrow">These are the events for tomorrow</string>
+    <string name="events_for_today">What are you doing today?</string>
+    <string name="events_for_tomorrow">What are you doing tomorrow?</string>
     <string name="events_for_a">The events for the</string>
     <string name="no_network">No network connection available</string>
     <string name="searching">Searching for new events</string>

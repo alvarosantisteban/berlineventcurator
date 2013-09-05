@@ -21,6 +21,7 @@ public class CalendarActivity extends Activity {
 	public static int selectedDay = 0;
 	Context context = this;
 	public static final String EXTRA_DATE = "date";
+	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +34,7 @@ public class CalendarActivity extends Activity {
 			actionBar.setDisplayHomeAsUpEnabled(true);
 		}
 		
-		calendar = (MyCalendarView) findViewById(R.id.calendarView);
+		calendar = (CalendarView) findViewById(R.id.calendarView);
 		
 		calendar.setOnDateChangeListener(new OnDateChangeListener() {
 

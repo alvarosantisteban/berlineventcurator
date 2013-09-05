@@ -8,22 +8,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.View.OnClickListener;
+import android.view.MotionEvent;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.Toast;
-
 import com.alvarosantisteban.berlincurator.loader.GothDatumEventLoader;
 import com.alvarosantisteban.berlincurator.loader.IHeartBerlinEventLoader;
 import com.alvarosantisteban.berlincurator.loader.IndexEventLoader;
@@ -64,6 +60,9 @@ public class FirstTimeActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 	SharedPreferences sharedPref;
 	Context context;
 	
+	AnimationDrawable wavesAnimation;
+
+	
 	/**
 	 * The total set of webs where the events can be extracted
 	 */
@@ -95,7 +94,7 @@ public class FirstTimeActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 		// Set the context
 		context = this;
 		setContentView(R.layout.activity_first_time);
-		loadButton = (Button) findViewById(R.id.loadButton);
+		//loadButton = (Button) findViewById(R.id.loadButton);
 		loadProgressBar = (ProgressBar)findViewById(R.id.progressLoadHtml);	
 		//toast = Toast.makeText(this, "", Toast.LENGTH_LONG);
 		
@@ -153,13 +152,19 @@ public class FirstTimeActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 		} 
 		//context.getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true);
 		//actionBarHeight = getResources().getDimensionPixelSize(tv.resourceId);
+		
+		ImageView waveImage = (ImageView) findViewById(R.id.wave);
+		waveImage.setBackgroundResource(R.drawable.building_waves);
+		wavesAnimation = (AnimationDrawable) waveImage.getBackground();
+
 
 		// Listener for the load button
+		/*
 		loadButton.setOnClickListener(new OnClickListener() {
 			
 			/**
 			 * Downloads the html from the websites and goes to the DataActivity
-			 */
+			 *
 			public void onClick(View v) {
 				
 				// prepare for a progress bar dialog	
@@ -173,7 +178,8 @@ public class FirstTimeActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 			    // Check if is possible to establish a connection
 			    if (networkInfo != null && networkInfo.isConnected()) {
 			    	Log.i(TAG, "There is a networ connection available.");
-			    	DownloadWebpageAsyncTask download = new DownloadWebpageAsyncTask(context, loadProgressBar);
+			    	DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.GERMAN);
+			    	DownloadWebpageAsyncTask download = new DownloadWebpageAsyncTask(context, loadProgressBar, dateFormat.format(currentDay.getTime()));
 					// Execute the asyncronous task of downloading the websites
 					download.execute(websNames);
 			    } else {
@@ -186,6 +192,7 @@ public class FirstTimeActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 			    
 			}
 		});	
+		*/
 	}
 	
 	public void onStart() {
@@ -216,6 +223,15 @@ public class FirstTimeActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 	public void onDestroy() {
 	    super.onDestroy();
 	    Log.d(TAG, "In the onDestroy() event");
+	}
+
+	public boolean onTouchEvent(MotionEvent event) {
+		Log.d(TAG, "onTouchEvent");
+		if (event.getAction() == MotionEvent.ACTION_DOWN) {
+			wavesAnimation.start();
+		    return true;
+		}
+		return super.onTouchEvent(event);
 	}
 
 	
