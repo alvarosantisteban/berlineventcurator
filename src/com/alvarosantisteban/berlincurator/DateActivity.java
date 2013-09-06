@@ -61,6 +61,7 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 	private final String LAST_TOTAL_NUM_EVENTS = "lastTotalNumber";
 	private final String LAST_SELECTION = "lastSelection";
 	private final String FIRST_TIME_APP = "isFirstTimeApp";
+	private final String CHOOSEN_DATE = "choosenDate";
 	
 	public static final String EXTRA_EVENT = "com.alvarosantisteban.berlincurator.event";
 	// Settings
@@ -204,7 +205,7 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 		}
 		
 		lastTotalNumEvents = sharedPref.getInt(LAST_TOTAL_NUM_EVENTS, 0);
-		//
+
 		Intent intent;
 		//isFirstTimeApp = true;
 		if (isFirstTimeApp) {
@@ -279,10 +280,12 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 		
 		displayedDate = (TextView) findViewById(R.id.date);
 		if (choosenDate == null){	
+			choosenDate = sharedPref.getString(CHOOSEN_DATE, today);
 			// The user did not select anything, the default date is today
-			displayedDate.setText(R.string.events_for_today);
-			choosenDate = today;
+			//displayedDate.setText(R.string.events_for_today);
+			//choosenDate = today;
 		}else{
+			/*
 			if (choosenDate.equals(today)){
 				displayedDate.setText(R.string.events_for_today);
 			}else if (choosenDate.equals(getTomorrow())){
@@ -291,7 +294,19 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 				displayedDate.setText(R.string.events_for_a);
 				displayedDate.append(" " +choosenDate);
 			}
+			*/
+			Editor editor = sharedPref.edit();
+			editor.putString(CHOOSEN_DATE, choosenDate);
+			editor.commit();
 		}	
+		if (choosenDate.equals(today)){
+			displayedDate.setText(R.string.events_for_today);
+		}else if (choosenDate.equals(getTomorrow())){
+			displayedDate.setText(R.string.events_for_tomorrow);
+		}else{
+			displayedDate.setText(R.string.events_for_a);
+			displayedDate.append(" " +choosenDate);
+		}
 		
 		//databaseHelper = getHelper();
 		

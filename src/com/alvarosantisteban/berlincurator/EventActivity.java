@@ -339,7 +339,6 @@ public class EventActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 		} else if (item.getItemId() == android.R.id.home) {
 			// app icon in action bar clicked; go to the DateActivity
             Intent intent = new Intent(this, DateActivity.class);
-            intent.putExtra(EXTRA_DATE, day.getText().toString());
 			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 			startActivity(intent);
 		}

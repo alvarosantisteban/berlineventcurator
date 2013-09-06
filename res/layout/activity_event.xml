@@ -13,7 +13,6 @@
 	    android:paddingLeft="@dimen/activity_horizontal_margin"
 	    android:paddingRight="@dimen/activity_horizontal_margin"
 	    android:orientation="vertical" 
-	    android:background="@drawable/papiro_background"
 	    tools:context=".EventActivity" >
 	
 	    <TextView

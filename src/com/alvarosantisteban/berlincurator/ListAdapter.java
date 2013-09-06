@@ -163,8 +163,8 @@ public class ListAdapter extends BaseExpandableListAdapter {
 		if(headerInfo.getEventsNumber() == 0){
 			heading.setTextColor(Color.GRAY);
 		}
-		tf = Typeface.createFromAsset(context.getAssets(), "font/Berylium.ttf");
-		heading.setTypeface(tf);
+		//tf = Typeface.createFromAsset(context.getAssets(), "font/Berylium.ttf");
+		//heading.setTypeface(tf);
 		return convertView;
 	}
 	
