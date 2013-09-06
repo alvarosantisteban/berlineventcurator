@@ -4,8 +4,11 @@ import com.alvarosantisteban.berlincurator.R;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.view.Menu;
@@ -35,6 +38,13 @@ public class AboutActivity extends Activity {
 	    gitHubUrl.setMovementMethod(LinkMovementMethod.getInstance());
 	    gitHubUrl.setText(Html.fromHtml("<a href=\"https://github.com/alvarosantisteban/curator\">My GitHub account</a>"));
 	    
+	    // DELETE IT, IS JUST FOR TRYING SHIT
+	    /*
+	    SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        Editor editor = sharedPref.edit();
+        editor.putBoolean("isFirstTimeApp", true);
+        editor.commit();
+        */
 	}
 
 	@Override

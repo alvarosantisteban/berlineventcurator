@@ -1,7 +1,11 @@
 package com.alvarosantisteban.berlincurator;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Set;
 
 import android.content.Context;
@@ -9,17 +13,22 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.graphics.drawable.AnimationDrawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.Toast;
+
 import com.alvarosantisteban.berlincurator.loader.GothDatumEventLoader;
 import com.alvarosantisteban.berlincurator.loader.IHeartBerlinEventLoader;
 import com.alvarosantisteban.berlincurator.loader.IndexEventLoader;
@@ -60,7 +69,7 @@ public class FirstTimeActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 	SharedPreferences sharedPref;
 	Context context;
 	
-	AnimationDrawable wavesAnimation;
+	public AnimationDrawable wavesAnimation;
 
 	
 	/**
@@ -229,6 +238,26 @@ public class FirstTimeActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 		Log.d(TAG, "onTouchEvent");
 		if (event.getAction() == MotionEvent.ACTION_DOWN) {
 			wavesAnimation.start();
+			
+			Toast toast = Toast.makeText(getBaseContext(), "Downloading the events.\nIt might take a few seconds, be patient ;)", Toast.LENGTH_LONG);
+	    	toast.setGravity(Gravity.TOP, 0, FirstTimeActivity.actionBarHeight);
+	    	toast.show();
+			ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+		    NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+		    // Check if is possible to establish a connection
+		    if (networkInfo != null && networkInfo.isConnected()) {
+		    	Log.i(TAG, "There is a networ connection available.");
+		    	DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.GERMAN);
+		    	DownloadWebpageAsyncTask download = new DownloadWebpageAsyncTask(context, loadProgressBar, dateFormat.format(Calendar.getInstance().getTime()));
+				// Execute the asyncronous task of downloading the websites
+				download.execute(websNames);
+		    } else {
+		    	// Inform the user that there is no network connection available
+		    	toast = Toast.makeText(getBaseContext(), "No network connection available.", Toast.LENGTH_LONG);
+		    	toast.setGravity(Gravity.TOP, 0, FirstTimeActivity.actionBarHeight);
+		    	toast.show();
+		        Log.w(TAG, "No network connection available.");
+		    }
 		    return true;
 		}
 		return super.onTouchEvent(event);

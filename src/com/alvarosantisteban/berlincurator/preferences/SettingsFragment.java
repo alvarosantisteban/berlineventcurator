@@ -113,7 +113,8 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
         // Set the intent for the Legal Notices preference (triggered when clicked)
         findPreference("legal").setIntent(new Intent(getActivity(), LegalNoticesActivity.class));
         // Set the listener of the preference list of possible organizations
-        organizationList.setOnPreferenceChangeListener(preferenceListener);        	
+        organizationList.setOnPreferenceChangeListener(preferenceListener);     
+        
     }
 
 	/**
