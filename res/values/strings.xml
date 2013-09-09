@@ -2,7 +2,7 @@
 <resources>
 
     <!-- Title from the activities on the Action Bar -->
-    <string name="app_name">Berlin Event Curator</string>
+    <string name="app_name">PathosBerlin</string>
     <string name="title_activity_date">Events of the day</string>
     <string name="title_activity_event">Event information</string>
     <string name="title_activity_calendar">Calendar</string>
@@ -44,9 +44,9 @@
     <string name="multilist_summary">Choose the websites from where the events will be taken</string>
     <string name="multilist_dialog">Active websites</string>
     <string name="about_title">About</string>
-    <string name="about_summary">General information about Berlin Event Curator</string>
+    <string name="about_summary">General information about PathosBerlin</string>
     <string name="legal_title">Legal Notices</string>
-    <string name="legal_summary">Legal attributions to services that Berlin Event Curator uses</string>
+    <string name="legal_summary">Legal attributions to services that PathosBerlin uses</string>
     <string name="general_selection_title">Selection</string>
     <string name="general_selection_summary">Decide the types of events that you want to see</string>
     <string name="multilist_thema_title">Selection of topics</string>
@@ -95,7 +95,7 @@
 
     <!-- General, blanks and no infos -->
     <string name="image_content_description">No content description for this image</string>
-    <string name="logo_content_description">Logo from Berlin Event Curator</string>
+    <string name="logo_content_description">Logo from PathosBerlin</string>
     <string name="time_unknown"></string>
     <string name="nothing"></string>
     <string name="hello_world">Hello world!</string>

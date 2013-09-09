@@ -28,8 +28,8 @@ public class AboutActivity extends Activity {
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 			ActionBar actionBar = getActionBar();
 			actionBar.setDisplayHomeAsUpEnabled(true);
-		} 
-	    
+		}
+		
 	    email = (TextView) findViewById(R.id.email_address);
 	    email.setMovementMethod(LinkMovementMethod.getInstance());
 	    email.setText(Html.fromHtml("<a href=\"mailto:alvarosantisteban@gmail.com?Subject=BerlinCurator\">alvarosantisteban@gmail.com</a>"));

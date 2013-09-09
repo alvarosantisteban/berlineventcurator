@@ -334,9 +334,13 @@ public class EventActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 				Intent i2 = new Intent(this, CalendarActivity.class);
 				startActivity(i2);
         	}else{
+        		/*
         		Toast toast = Toast.makeText(getBaseContext(), "You need to have an Android with version at least 3.0 to select the day", Toast.LENGTH_SHORT);
     			toast.setGravity(Gravity.TOP, 0, FirstTimeActivity.actionBarHeight);
     			toast.show();
+    			*/
+    			Intent i2 = new Intent(this, FakeCalendarActivity.class);
+				startActivity(i2);
         	}
 		} else if (item.getItemId() == android.R.id.home) {
 			// app icon in action bar clicked; go to the DateActivity

@@ -34,6 +34,7 @@ import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.ExpandableListView.OnGroupClickListener;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -132,6 +133,8 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 	 */
 	ExpandableListView expandableSitesList;
 	
+	RelativeLayout layout;
+	
 	/**
 	 * A LinkedHashMap with the name of the tag (from website/thema/type) as key and its corresponding HeaderInfo as value. 
 	 * Used to make the search easier
@@ -221,6 +224,7 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 		setContentView(R.layout.activity_date);
 		expandableSitesList = (ExpandableListView) findViewById(R.id.expandableSitesList);
 		loadProgressBar = (ProgressBar)findViewById(R.id.progressLoadHtml);	
+		layout = (RelativeLayout)findViewById(R.id.date_layout);
 		
 		// Get the sites are meant to be shown
 		//originTags = sharedPref.getStringSet(SettingsFragment.KEY_PREF_MULTILIST_SITES, new HashSet<String>(Arrays.asList(context.getResources().getStringArray(R.array.default_sites_array))));
@@ -738,9 +742,8 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 				Intent i2 = new Intent(this, CalendarActivity.class);
 				startActivity(i2);
         	}else{
-        		Toast toast = Toast.makeText(getBaseContext(), "You need to have an Android with version at least 3.0 to select the day", Toast.LENGTH_SHORT);
-    			toast.setGravity(Gravity.TOP, 0, FirstTimeActivity.actionBarHeight);
-    			toast.show();
+    			Intent i2 = new Intent(this, FakeCalendarActivity.class);
+				startActivity(i2);
         	}
 		}else if (item.getItemId() == R.id.menu_refresh_events) {
 			// Create a connection

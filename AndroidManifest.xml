@@ -36,7 +36,7 @@
         </activity>
         <activity
             android:name="com.alvarosantisteban.berlincurator.DateActivity"
-            android:label="@string/title_activity_date" >
+            android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -49,6 +49,10 @@
         </activity>
         <activity
             android:name="com.alvarosantisteban.berlincurator.CalendarActivity"
+            android:label="@string/title_activity_calendar" >
+        </activity>
+        <activity
+            android:name="com.alvarosantisteban.berlincurator.FakeCalendarActivity"
             android:label="@string/title_activity_calendar" >
         </activity>
         <activity

@@ -43,7 +43,7 @@
         android:layout_below="@+id/my_name"
         android:layout_marginTop="15dp"
         android:text="@string/email"
-        android:textStyle="bold"  />
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/email_address"
@@ -52,16 +52,6 @@
         android:layout_alignLeft="@+id/code"
         android:layout_below="@+id/email"
         android:text="@string/email_address" />
-
-    <ImageView
-        android:id="@+id/logo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/development"
-        android:layout_alignParentLeft="true"
-        android:layout_marginBottom="30dp"
-        android:contentDescription="@string/logo_content_description"
-        android:src="@drawable/oso_berlin_icon" />
 
     <TextView
         android:id="@+id/development"
@@ -72,22 +62,32 @@
         android:text="@string/development"
         android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/version"
+    <ImageView
+        android:id="@+id/logo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/logo"
-        android:layout_alignLeft="@+id/app_name"
-        android:text="@string/version"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:layout_alignLeft="@+id/development"
+        android:layout_alignParentTop="true"
+        android:contentDescription="@string/logo_content_description"
+        android:src="@drawable/icon2_nobackground" />
 
     <TextView
         android:id="@+id/app_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/version"
-        android:layout_toRightOf="@+id/logo"
+        android:layout_alignLeft="@+id/logo"
+        android:layout_below="@+id/logo"
+        android:layout_marginTop="22dp"
         android:text="@string/app_name"
         android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <TextView
+        android:id="@+id/version"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/logo"
+        android:layout_below="@+id/app_name"
+        android:text="@string/version"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
 </RelativeLayout>
