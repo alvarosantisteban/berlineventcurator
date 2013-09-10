@@ -70,6 +70,7 @@ public class SettingsActivity extends PreferenceActivity  {
   	  public boolean onPreferenceChange(Preference preference, Object newValue) {
   		  Log.d(TAG, "onPreferenceChange");
   		  Intent i = new Intent(context, DateActivity.class);
+  		  i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
   		  startActivity(i);
   		  return true;
   	  }

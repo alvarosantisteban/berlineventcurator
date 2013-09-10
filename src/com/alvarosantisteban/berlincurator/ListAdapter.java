@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,7 +20,7 @@ import android.widget.TextView;
 public class ListAdapter extends BaseExpandableListAdapter {
 	
 	private Context context;
-	private Typeface tf;
+	//private Typeface tf;
 	/**
 	 * The ArrayList used to get the information 
 	 */

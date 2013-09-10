@@ -166,7 +166,7 @@ public class FirstTimeActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 		waveImage.setBackgroundResource(R.drawable.building_waves);
 		wavesAnimation = (AnimationDrawable) waveImage.getBackground();
 
-
+		
 		// Listener for the load button
 		/*
 		loadButton.setOnClickListener(new OnClickListener() {
@@ -237,6 +237,8 @@ public class FirstTimeActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 	public boolean onTouchEvent(MotionEvent event) {
 		Log.d(TAG, "onTouchEvent");
 		if (event.getAction() == MotionEvent.ACTION_DOWN) {
+			// Terminate the activity so the user can not return to it
+			//finish();
 			wavesAnimation.start();
 			
 			Toast toast = Toast.makeText(getBaseContext(), "Downloading the events.\nIt might take a few seconds, be patient ;)", Toast.LENGTH_LONG);
@@ -262,7 +264,6 @@ public class FirstTimeActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 		}
 		return super.onTouchEvent(event);
 	}
-
 	
 	/**
 	 * Inflates the menu from the XML

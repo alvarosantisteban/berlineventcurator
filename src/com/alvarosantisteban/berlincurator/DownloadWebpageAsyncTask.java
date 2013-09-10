@@ -199,9 +199,11 @@ public class DownloadWebpageAsyncTask extends AsyncTask<String, String, Integer>
 			OpenHelperManager.releaseHelper();
 			databaseHelper = null;
 		}
-		if (result > 0){
+		//if (result > 0){
+		if(numOfEventsInDate>0){
 			Intent intent = new Intent(context, DateActivity.class);
 			intent.putExtra(EXTRA_DATE, choosenDate);
+			intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 			((Activity) context).startActivity(intent);
 		}
 	}

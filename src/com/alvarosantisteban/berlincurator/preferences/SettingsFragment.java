@@ -197,9 +197,6 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 			editor.putString(KEY_PREF_MULTILIST_SITES, StringUtils.join(defaultSitesSelection, ","));
 		}
 		editor.commit();
-		
-		Intent i = new Intent(getActivity(), SettingsActivity.class);
-		startActivity(i);
 	}
 	
 	/**
