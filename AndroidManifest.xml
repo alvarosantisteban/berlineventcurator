@@ -71,6 +71,11 @@
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="AIzaSyBu5GNhAdUZzy3YWPdUcmbZnPC58m1Grto" />
+
+        <activity
+            android:name="com.alvarosantisteban.berlincurator.ManifestoActivity"
+            android:label="@string/title_activity_manifesto" >
+        </activity>
     </application>
 
 </manifest>

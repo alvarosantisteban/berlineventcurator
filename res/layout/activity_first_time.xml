@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     tools:context=".FirstTimeActivity" >
     
+    <!-- 
     <Button
         android:id="@+id/loadButton"
         android:layout_width="wrap_content"
@@ -22,6 +23,12 @@
         android:layout_alignParentTop="true"
         android:src="@drawable/home_find_text" 
         android:contentDescription="@string/image_find_text"/>
+        
+        PARA EL PROGRESS BAR
+        android:layout_alignLeft="@+id/loadButton"
+        android:layout_alignTop="@+id/home_find_events"
+        
+         -->
      
     <ImageView
         android:id="@+id/wave"
@@ -34,9 +41,7 @@
         style="@android:style/Widget.ProgressBar.Large"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/loadButton"
-        android:layout_alignTop="@+id/home_find_events"
-        android:layout_marginTop="40dp"
+        android:layout_alignTop="@+id/wave"
         android:visibility="invisible"
         android:layout_centerInParent="true" />
 

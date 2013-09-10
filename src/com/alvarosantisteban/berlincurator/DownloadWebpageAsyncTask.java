@@ -52,7 +52,9 @@ public class DownloadWebpageAsyncTask extends AsyncTask<String, String, Integer>
 	 */
 	protected void onPreExecute(){
     	Log.d(TAG,"onPreExecute");
-    	loadProgressBar.setVisibility(View.VISIBLE);
+    	if(loadProgressBar != null){
+    		loadProgressBar.setVisibility(View.VISIBLE);
+    	}
     	// Inform the user
     	publishProgress("Start", "");
     	lockScreenOrientation();
@@ -192,7 +194,9 @@ public class DownloadWebpageAsyncTask extends AsyncTask<String, String, Integer>
     */
 	protected void onPostExecute(Integer result) {
 		Log.d(TAG,"onPostExecute------------>");
-		loadProgressBar.setVisibility(View.GONE);
+		if(loadProgressBar != null){
+			loadProgressBar.setVisibility(View.GONE);
+		}
 		// Reload the Date Activity if there are new events
 		unlockScreenOrientation();
 		if (databaseHelper != null) {

@@ -90,7 +90,7 @@ public class FirstTimeActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 	/**
 	 * The button that triggers the download and extraction of events
 	 */
-    Button loadButton;
+    //Button loadButton;
     
     //private static Toast toast;
 	
@@ -250,7 +250,7 @@ public class FirstTimeActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 		    if (networkInfo != null && networkInfo.isConnected()) {
 		    	Log.i(TAG, "There is a networ connection available.");
 		    	DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.GERMAN);
-		    	DownloadWebpageAsyncTask download = new DownloadWebpageAsyncTask(context, loadProgressBar, dateFormat.format(Calendar.getInstance().getTime()));
+		    	DownloadWebpageAsyncTask download = new DownloadWebpageAsyncTask(context, null, dateFormat.format(Calendar.getInstance().getTime()));
 				// Execute the asyncronous task of downloading the websites
 				download.execute(websNames);
 		    } else {
