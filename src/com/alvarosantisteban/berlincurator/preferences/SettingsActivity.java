@@ -1,13 +1,19 @@
 package com.alvarosantisteban.berlincurator.preferences;
 
-import com.alvarosantisteban.berlincurator.DateActivity;
-
 import android.app.ActionBar;
-import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.ListPreference;
+import android.preference.Preference;
+import android.preference.PreferenceActivity;
+import android.preference.Preference.OnPreferenceChangeListener;
+import android.util.Log;
 import android.view.MenuItem;
+
+import com.alvarosantisteban.berlincurator.DateActivity;
+import com.alvarosantisteban.berlincurator.R;
 
 /**
  * 
@@ -15,9 +21,21 @@ import android.view.MenuItem;
  * @author Alvaro Santisteban 2013 - alvarosantisteban@gmail.com
  *
  */
-public class SettingsActivity extends Activity  {
-
+public class SettingsActivity extends PreferenceActivity  {
 	
+	/**
+	 * Used for logging purposes
+	 */
+	private static final String TAG = "SettingsActivity";
+	
+	/**
+	 * Preference for the list with possible organizations
+	 */
+	public static final String KEY_PREF_LIST_ORGANIZATIONS = "possible_organizations_list";
+	ListPreference organizationList; 
+	Context context;
+	
+	@SuppressWarnings("deprecation")
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,9 +48,32 @@ public class SettingsActivity extends Activity  {
         // Enable the app's icon to act as home
 		ActionBar actionBar = getActionBar();
 		actionBar.setDisplayHomeAsUpEnabled(true);
-		} 
+		} else{
+			// Settings for older versions
+			context = this;
+			addPreferencesFromResource(R.xml.old_devices_preferences);
+			organizationList = (ListPreference) findPreference(KEY_PREF_LIST_ORGANIZATIONS); 
+	        // Set the intent for the About preference (triggered when clicked)
+	        findPreference("about").setIntent(new Intent(this, AboutActivity.class));
+	        // Set the intent for the Legal Notices preference (triggered when clicked)
+	        findPreference("legal").setIntent(new Intent(this, LegalNoticesActivity.class));
+	        organizationList.setOnPreferenceChangeListener(preferenceListener); 
+		}
 
     }
+	
+	/**
+	 * The listener for the changes of the preference list of possible organizations 
+	 */
+	private OnPreferenceChangeListener preferenceListener = new Preference.OnPreferenceChangeListener() {
+
+  	  public boolean onPreferenceChange(Preference preference, Object newValue) {
+  		  Log.d(TAG, "onPreferenceChange");
+  		  Intent i = new Intent(context, DateActivity.class);
+  		  startActivity(i);
+  		  return true;
+  	  }
+	};
 	
 	/**
 	 * Checks which item from the menu has been clicked
@@ -48,5 +89,4 @@ public class SettingsActivity extends Activity  {
  
         return true;
     }
-
 }

@@ -22,7 +22,7 @@
     <string name="searching">Searching for new events</string>
     <string name="no_new_events">There are no new events to be added</string>
     <string name="types_pseudoarray_values">Exhibition,Talk,Party,Screening,Concert,Other</string>
-    <string name="topics_pseudoarray_values">Art,Politics,Going Out</string>
+    <string name="topics_pseudoarray_values">Art,Politics,Going out</string>
     <string name="sites_pseudoarray_values">I Heart Berlin,Metal Concerts,White Trash,Goth Datum,Stress Faktor,Index</string>
 
     <!-- Event Activity -->
