@@ -60,6 +60,8 @@
     <string name="organization_by_type">By Type</string>
     <string name="organization_by_topic">By Topic</string>
     <string name="organization_by_origin">By Origin</string>
+    <string name="pref_category_organization_and_tags_title">Organization and tags</string>
+    <string name="pref_category_info_title">Info</string>
     
     <!-- Tags for organization by topic -->
     <string name="art_topic_tag">Art</string>
@@ -79,7 +81,7 @@
     <string name="googleplay_tag">Google Play services attribution:</string>
     <string name="googleplay_attribution">Google play services is not available at the moment</string>
 
-    <!-- Info Activity -->
+    <!-- About Activity -->
     <string name="version">Version 1.0</string>
     <string name="development">Developed by:</string>
     <string name="my_name">Álvaro Santisteban Diéguez</string>
@@ -87,6 +89,10 @@
     <string name="email_address">alvarosantisteban@gmail.com</string>
     <string name="code">Code available at:</string>
     <string name="code_url">https://github.com/alvarosantisteban/berlineventcurator</string>
+    <string name="artwork_tag">Artwork by:</string>
+    <string name="artwork">Heather Gatley</string>
+    <string name="thanks_tag">Thanks to:</string>
+    <string name="thanks">Jens Schumann</string>
 
     <!-- Menu item name -->
     <string name="menu_settings">Settings</string>

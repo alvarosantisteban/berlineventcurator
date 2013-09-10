@@ -90,4 +90,40 @@
         android:text="@string/version"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
+    <TextView
+        android:id="@+id/artwork_tag"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/codeUrl"
+        android:layout_below="@+id/codeUrl"
+        android:layout_marginTop="15dp"
+        android:textStyle="bold"
+        android:text="@string/artwork_tag" />
+
+    <TextView
+        android:id="@+id/artwork"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/artwork_tag"
+        android:layout_below="@+id/artwork_tag"
+        android:text="@string/artwork" />
+
+    <TextView
+        android:id="@+id/thanks_tag"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/artwork"
+        android:layout_below="@+id/artwork"
+        android:layout_marginTop="15dp"
+        android:textStyle="bold"
+        android:text="@string/thanks_tag" />
+
+    <TextView
+        android:id="@+id/thanks"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/thanks_tag"
+        android:layout_below="@+id/thanks_tag"
+        android:text="@string/thanks"/>
+
 </RelativeLayout>
