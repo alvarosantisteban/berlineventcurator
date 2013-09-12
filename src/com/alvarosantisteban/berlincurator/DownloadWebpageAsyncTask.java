@@ -21,6 +21,12 @@ import com.alvarosantisteban.berlincurator.utils.DatabaseHelper;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
 
+/**
+ * Asyncronous Task used to download a set of html from different websites. 
+ * 
+ * @author Alvaro Santisteban 2013 - alvarosantisteban@gmail.com
+ *
+ */
 public class DownloadWebpageAsyncTask extends AsyncTask<String, String, Integer> {
 	
 	private Context context;
@@ -63,7 +69,7 @@ public class DownloadWebpageAsyncTask extends AsyncTask<String, String, Integer>
 	/**
 	 * Downloads the htmls and creates the lists of Events. 
 	 * Detects any possible problem during the download of the website or the extraction of events.
-	 * @return 
+	 * @return the number of new events
 	 * 
 	 */
 	protected Integer doInBackground(String... urls) { 
@@ -72,28 +78,22 @@ public class DownloadWebpageAsyncTask extends AsyncTask<String, String, Integer>
 		for (int i=0; i<urls.length; i++){
 			List<Event> eventsFromAWebsite = null;
 			if (urls[i].equals("I Heart Berlin")){
-				System.out.println("Ihearberlin dentro");
+				Log.d(TAG, "Inside Ihearberlin");
 				eventsFromAWebsite = EventLoaderFactory.newIHeartBerlinEventLoader().load(context);
-			}else if(urls[i].equals("Berlin Art Parasites")){
-				System.out.println("artParasites dentro");
-				eventsFromAWebsite = EventLoaderFactory.newArtParasitesEventLoader().load(context);
 			}else if(urls[i].equals("Metal Concerts")){
-				System.out.println("metalConcerts dentro");
+				Log.d(TAG, "Inside metalConcerts");
 				eventsFromAWebsite = EventLoaderFactory.newMetalConcertsEventLoader().load(context);
 			}else if(urls[i].equals("White Trash")){
-				System.out.println("whitetrash dentro");
+				Log.d(TAG, "Inside whitetrash");
 				eventsFromAWebsite = EventLoaderFactory.newWhiteTrashEventLoader().load(context);
-			}else if(urls[i].equals("Köpi's events")){
-				System.out.println("koepi dentro");
-				eventsFromAWebsite = EventLoaderFactory.newKoepiEventLoader().load(context);
 			}else if(urls[i].equals("Goth Datum")){
-				System.out.println("goth dentro");
+				Log.d(TAG, "Inside Goth");
 				eventsFromAWebsite = EventLoaderFactory.newGothDatumEventLoader().load(context);
 			}else if(urls[i].equals("Stress Faktor")){
-				System.out.println("Stresssssss faktor dentro");
+				Log.d(TAG, "Inside Stresssssss faktor");
 				eventsFromAWebsite = EventLoaderFactory.newStressFaktorEventLoader().load(context);
 			}else if(urls[i].equals("Index")){
-				System.out.println("Index dentro");
+				Log.d(TAG, "Inside Index");
 				eventsFromAWebsite = EventLoaderFactory.newIndexEventLoader().load(context);
 			}else{
 				return null;
@@ -101,15 +101,6 @@ public class DownloadWebpageAsyncTask extends AsyncTask<String, String, Integer>
 			// If there was a problem loading the events we tell the user
 			if (eventsFromAWebsite == null){
 				publishProgress("Exception", urls[i]);
-				/*
-				 * Si en algun momento vuelvo a tener esa parte activa, recordar que hacer una llamada a isBerlinWeekend  como esta, rompe
-				 * la interfaz de EventLoaderFactory y hay que evitarlo. 
-				// Distinguish the situation where the event is null because the Berlin Art Parasites website is not checked
-				if(!(urls[i].equals("Berlin Art Parasites") && !ArtParasitesEventLoader.isBerlinWeekend())){
-					System.out.println("Event is null");
-					publishProgress("Exception", urls[i]);	
-				}
-				*/
 			}else{
 				// Add the events from this website to the DB
 				for (int j = 0; j < eventsFromAWebsite.size(); j++) {
@@ -122,7 +113,7 @@ public class DownloadWebpageAsyncTask extends AsyncTask<String, String, Integer>
 				}
 			}
 		}
-		// Inform the user
+		// Inform the user that the download finished
 		publishProgress("Finish",Integer.valueOf(numOfNewEvents).toString());
 		return numOfNewEvents;
 	} 
@@ -158,11 +149,7 @@ public class DownloadWebpageAsyncTask extends AsyncTask<String, String, Integer>
 		fieldValues.put("day", event.getDay());
 		fieldValues.put("description", event.getDescription());
 		List<Event> foundEvents = eventDao.queryForFieldValuesArgs(fieldValues);
-		/*
-		 * for (int i=0; i<foundEvents.size();i++){
-			System.out.println(foundEvents.get(i).getName());
-		}
-		*/
+		
 		if(foundEvents.size() >= 1){
 			//Log.v(TAG,"El evento ya existe, no se añade.");
 			return true;
@@ -186,7 +173,6 @@ public class DownloadWebpageAsyncTask extends AsyncTask<String, String, Integer>
 				displayToast(context.getString(R.string.no_new_events));
 			}
 		}
-		//loadProgressBar.setProgress(progress[0].intValue());
 	}
 	
 	/**
@@ -197,13 +183,15 @@ public class DownloadWebpageAsyncTask extends AsyncTask<String, String, Integer>
 		if(loadProgressBar != null){
 			loadProgressBar.setVisibility(View.GONE);
 		}
+		
 		// Reload the Date Activity if there are new events
 		unlockScreenOrientation();
 		if (databaseHelper != null) {
 			OpenHelperManager.releaseHelper();
 			databaseHelper = null;
 		}
-		//if (result > 0){
+		
+		// If there are new events for the current date, reload the DateActivity
 		if(numOfEventsInDate>0){
 			Intent intent = new Intent(context, DateActivity.class);
 			intent.putExtra(EXTRA_DATE, choosenDate);
@@ -212,6 +200,10 @@ public class DownloadWebpageAsyncTask extends AsyncTask<String, String, Integer>
 		}
 	}
 	
+	/**
+	 * Looks the screen. 
+	 * Used to avoid having problems during the download.
+	 */
 	private void lockScreenOrientation() {
 	    int currentOrientation = context.getResources().getConfiguration().orientation;
 	    if (currentOrientation == Configuration.ORIENTATION_PORTRAIT) {
@@ -220,11 +212,20 @@ public class DownloadWebpageAsyncTask extends AsyncTask<String, String, Integer>
 	    	((Activity) context).setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 	    }
 	}
-	 
+	
+	/**
+	 * Unlocks the screen.
+	 */
 	private void unlockScreenOrientation() {
 		((Activity) context).setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
 	}
 	
+	/**
+	 * Displays the message passed as parameter. 
+	 * By calling this method, the toast object is updated without having to wait to the end of the last toast displayed.
+	 * 
+	 * @param message the message to be displayed
+	 */
 	private void displayToast(final String message) {
 	    //toast.cancel();
 	    toast.setText(message); 
@@ -232,6 +233,10 @@ public class DownloadWebpageAsyncTask extends AsyncTask<String, String, Integer>
 	    toast.show();
 	}
 		
+	/**
+	 * Return the current DB Helper or creates one if there is none.
+	 * @return the database helper
+	 */
 	private DatabaseHelper getHelper() {
 		if (databaseHelper == null) {
 			databaseHelper = OpenHelperManager.getHelper(context, DatabaseHelper.class);

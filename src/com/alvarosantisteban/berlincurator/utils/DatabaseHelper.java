@@ -20,10 +20,9 @@ import com.j256.ormlite.table.TableUtils;
  */
 public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
-	// name of the database file for your application -- change to something appropriate for your app
+	// name of the database file
 	private static final String DATABASE_NAME = "berlincurator.db";
 	// any time you make changes to your database objects, you may have to increase the database version
-	//private static final int DATABASE_VERSION = 1;
 	private static final int DATABASE_VERSION = 3;
 
 	// the DAO object we use to access the Events table
@@ -32,7 +31,6 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
 	public DatabaseHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION, R.raw.ormlite_config);
-		//super(context, DATABASE_NAME, null, DATABASE_VERSION);
 	}
 
 	/**
@@ -76,9 +74,8 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 			throw new RuntimeException(e);
 		}
 		/*
-		 * Un comment this but then don't drop and create the table, it will update
+		 * Uncomment this but then don't drop and create the table, it will update
 		if (oldVersion == 1) {
-			System.out.println("Y YO ESTOY AQUI ESPERANDOTEEEEEEE");
 			RuntimeExceptionDao<Event, Integer> dao = getEventDataDao();
 			// we added the themaTag and typeTag column in version 2
 			dao.executeRaw("ALTER TABLE `events` ADD COLUMN themaTag VARCHAR;");
@@ -86,7 +83,6 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		}*/
 		/*
 		if (oldVersion == 2) {
-			System.out.println("Y YO ESTOY AQUI ESPERANDOTEEEEEEE");
 			RuntimeExceptionDao<Event, Integer> dao = getEventDataDao();
 			// we added the origin's website column in version 2
 			dao.executeRaw("ALTER TABLE `events` ADD COLUMN originsWebsite VARCHAR;");
@@ -124,4 +120,3 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		eventRuntimeDao = null;
 	}
 }
-

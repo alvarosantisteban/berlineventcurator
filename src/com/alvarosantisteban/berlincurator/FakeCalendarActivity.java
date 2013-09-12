@@ -60,6 +60,7 @@ private final String LAST_CHOOSEN_DATE = "lastChoosenDate";
 		long lastDate = sharedPref.getLong(LAST_CHOOSEN_DATE, selectedDay.getTimeInMillis());
 		selectedDay.setTimeInMillis(lastDate);
 		
+		// Detects the change of the date
 		picker.init(selectedDay.get(Calendar.YEAR),selectedDay.get(Calendar.MONTH),
 				selectedDay.get(Calendar.DATE),(new OnDateChangedListener() {
 

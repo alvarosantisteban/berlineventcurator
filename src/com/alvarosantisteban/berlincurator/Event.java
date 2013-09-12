@@ -19,12 +19,10 @@ import com.j256.ormlite.table.DatabaseTable;
 @DatabaseTable(tableName = "events")
 public class Event implements Serializable{
 	
+	// Empty constructor needed to be explicited by ORMLite
 	public Event(){
 	}
 	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	
 	/**
@@ -282,18 +280,4 @@ public class Event implements Serializable{
 	public void setOriginsWebsite(String theOriginsWebsite) {
 		this.originsWebsite = theOriginsWebsite;
 	}
-	
-	/*
-	public void print() {
-		System.out.println("Name:"+getName());
-		System.out.println("Day:"+getDay());
-		printLinks();	
-	}
-	
-	public void printLinks(){
-		for (int i=0; i<links.length;i++){
-			System.out.println("Link["+i +"]:"+links[i]);
-		}
-	}
-	*/
 }

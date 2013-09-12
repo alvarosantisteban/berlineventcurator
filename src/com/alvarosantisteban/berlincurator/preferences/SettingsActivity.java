@@ -16,7 +16,7 @@ import com.alvarosantisteban.berlincurator.DateActivity;
 import com.alvarosantisteban.berlincurator.R;
 
 /**
- * 
+ * Displays a limited set of settings if the device is older than Honeycomb or the settings fragment if the device is newer.
  * 
  * @author Alvaro Santisteban 2013 - alvarosantisteban@gmail.com
  *
@@ -53,6 +53,8 @@ public class SettingsActivity extends PreferenceActivity  {
 			context = this;
 			addPreferencesFromResource(R.xml.old_devices_preferences);
 			organizationList = (ListPreference) findPreference(KEY_PREF_LIST_ORGANIZATIONS); 
+			// Set the intent for the Manifesto preference (triggered when clicked)
+	        findPreference("manifesto").setIntent(new Intent(this, ManifestoActivity.class));
 	        // Set the intent for the About preference (triggered when clicked)
 	        findPreference("about").setIntent(new Intent(this, AboutActivity.class));
 	        // Set the intent for the Legal Notices preference (triggered when clicked)
@@ -87,7 +89,6 @@ public class SettingsActivity extends PreferenceActivity  {
 			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 			startActivity(intent);
 		}
- 
         return true;
     }
 }

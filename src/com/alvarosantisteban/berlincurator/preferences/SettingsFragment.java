@@ -17,22 +17,19 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.MultiSelectListPreference;
-import android.preference.Preference;
-import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
 /**
- * Creates the settings 
+ * Creates the settings for versions newer than Honeycomb. 
+ * Allows the user to select the kind of organization that he/she wants between type, topic or origin of the events.
+ * It also allows the user to choose the set of tags that wants to see. * 
  * 
  * @author Alvaro Santisteban 2013 - alvarosantisteban@gmail.com
  *
  */
 public class SettingsFragment extends PreferenceFragment implements OnSharedPreferenceChangeListener {
-
-	
-	 //public static final String PREFS_FILE_NAME = "multilist_sites"; I think is not needed
 	
 	/**
 	 * Used for logging purposes
@@ -98,7 +95,6 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
         
         // Get the set of active websites
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        //setOfSites = sharedPref.getStringSet(KEY_PREF_MULTILIST_SITES, new HashSet<String>(Arrays.asList(getResources().getStringArray(R.array.default_sites_array))));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
         	setOfSites = sharedPref.getStringSet(KEY_PREF_MULTILIST_SITES, new HashSet<String>(Arrays.asList(getResources().getStringArray(R.array.default_sites_array))));
 		} else {
@@ -107,14 +103,12 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 				setOfSites = new HashSet<String>(Arrays.asList(s.split(",")));
 			}
 		}
-        
+        // Set the intent for the Manifesto preference (triggered when clicked)
+        findPreference("manifesto").setIntent(new Intent(getActivity(), ManifestoActivity.class));
         // Set the intent for the About preference (triggered when clicked)
         findPreference("about").setIntent(new Intent(getActivity(), AboutActivity.class));
         // Set the intent for the Legal Notices preference (triggered when clicked)
-        findPreference("legal").setIntent(new Intent(getActivity(), LegalNoticesActivity.class));
-        // Set the listener of the preference list of possible organizations
-        organizationList.setOnPreferenceChangeListener(preferenceListener);     
-        
+        findPreference("legal").setIntent(new Intent(getActivity(), LegalNoticesActivity.class));  
     }
 
 	/**
@@ -127,7 +121,6 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
         	Log.d(TAG,"key=multilist sites changed");
             // Save the old values
             Editor editor = sharedPreferences.edit();
-            //editor.putStringSet(KEY_PREF_MULTILIST_LAST_SELECTION, setOfSites);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 				editor.putStringSet(KEY_PREF_MULTILIST_LAST_SELECTION, setOfSites);
 			} else {
@@ -137,7 +130,6 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
             
             // Set the new values
             setOfSites = originMultiList.getValues();
-            //editor.putStringSet(KEY_PREF_MULTILIST_SITES, setOfSites);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 				editor.putStringSet(KEY_PREF_MULTILIST_SITES, setOfSites);
 			} else {
@@ -150,34 +142,35 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
         }else if (key.equals(KEY_PREF_MULTILIST_TYPE)){
         	Log.d(TAG,"key=multilist type changed");
         	Editor editor = sharedPreferences.edit();
-            //editor.putStringSet(KEY_PREF_MULTILIST_TYPE, typeMultiList.getValues());
-        	if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 				editor.putStringSet(KEY_PREF_MULTILIST_TYPE, typeMultiList.getValues());
 			} else {
 				editor.putString(KEY_PREF_MULTILIST_TYPE, StringUtils.join(typeMultiList.getValues(), ","));
 			}
             editor.commit();
+            
         	// Go to Date Activity
             Intent i = new Intent(getActivity(), DateActivity.class);
 			startActivity(i);
         }else if (key.equals(KEY_PREF_MULTILIST_TOPIC)){
         	Log.d(TAG,"key=multilist topic changed");
         	Editor editor = sharedPreferences.edit();
-            //editor.putStringSet(KEY_PREF_MULTILIST_TOPIC, topicMultiList.getValues());
-        	if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 				editor.putStringSet(KEY_PREF_MULTILIST_TOPIC, topicMultiList.getValues());
 			} else {
 				editor.putString(KEY_PREF_MULTILIST_TOPIC, StringUtils.join(topicMultiList.getValues(), ","));
 			}
             editor.commit();
-        	// Go to Date Activity
+        	
+            // Go to Date Activity
             Intent i = new Intent(getActivity(), DateActivity.class);
 			startActivity(i);
         }else if (key.equals(KEY_PREF_LIST_ORGANIZATIONS)){
         	Log.d(TAG,"key=possible_organizations_list changed");
         	String kindOfOrganization = sharedPreferences.getString(key, TYPE_ORGANIZATION);
+        	enableActiveOrganization(kindOfOrganization);
         	if(kindOfOrganization.equals(TYPE_ORGANIZATION) || kindOfOrganization.equals(TOPIC_ORGANIZATION)){
-        		Log.d(TAG,"Selected By Type or By Topic. Restore default websites selection");
+        		Log.d(TAG,"Selected By Type or By Topic. Restore default websites selection"); 
         		restoreDefaultWebsitesSelection(sharedPreferences);
         	}
         }
@@ -190,7 +183,6 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 		originMultiList.setValues(defaultSitesSelection);
 		// Save the new values
 		Editor editor = sharedPreferences.edit();
-		//editor.putStringSet(KEY_PREF_MULTILIST_SITES, defaultSitesSelection);
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 			editor.putStringSet(KEY_PREF_MULTILIST_SITES, defaultSitesSelection);
 		} else {
@@ -198,18 +190,6 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 		}
 		editor.commit();
 	}
-	
-	/**
-	 * The listener for the changes of the preference list of possible organizations 
-	 */
-	private OnPreferenceChangeListener preferenceListener = new Preference.OnPreferenceChangeListener() {
-
-  	  public boolean onPreferenceChange(Preference preference, Object newValue) {
-  	    final String selectedOrganization = newValue.toString();
-  	    enableActiveOrganization(selectedOrganization);
-  	    return true;
-  	  }
-	};
   	
 	/**
 	 * Enables the active organization and disables the others

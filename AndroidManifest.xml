@@ -67,15 +67,14 @@
             android:name="com.alvarosantisteban.berlincurator.preferences.LegalNoticesActivity"
             android:label="@string/title_activity_legal_notices" >
         </activity>
-
+        <activity
+            android:name="com.alvarosantisteban.berlincurator.preferences.ManifestoActivity"
+            android:label="@string/title_activity_manifesto" >
+        </activity>
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="AIzaSyBu5GNhAdUZzy3YWPdUcmbZnPC58m1Grto" />
 
-        <activity
-            android:name="com.alvarosantisteban.berlincurator.ManifestoActivity"
-            android:label="@string/title_activity_manifesto" >
-        </activity>
     </application>
 
 </manifest>

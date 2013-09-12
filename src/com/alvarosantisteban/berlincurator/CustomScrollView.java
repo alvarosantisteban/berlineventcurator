@@ -9,6 +9,12 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.widget.ScrollView;
 
+/**
+ * Custom scroll view to avoid scrolling problems with the google map of the EventActivity.
+ * 
+ * @author Alvaro Santisteban 2013 - alvarosantisteban@gmail.com
+ *
+ */
 public class CustomScrollView extends ScrollView{
 	
 	/**
@@ -39,7 +45,6 @@ public class CustomScrollView extends ScrollView{
 	    	map.getHitRect(bound);
 			//printSeveralCoordinates(ev, bound);
 	    	if(bound.contains(Math.round(ev.getX()), Math.round(ev.getY())+getScrollY())){
-	    		Log.v(TAG,"El rectangulo del mapa contiene el punto tocado");
 	    		return false;
 	    	}
 		}

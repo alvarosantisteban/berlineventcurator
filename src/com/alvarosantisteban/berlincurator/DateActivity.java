@@ -34,7 +34,6 @@ import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.ExpandableListView.OnGroupClickListener;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -48,23 +47,30 @@ import com.j256.ormlite.stmt.DeleteBuilder;
 import com.j256.ormlite.stmt.SelectArg;
 
 /**
- * Displays a list with the events for a concrete day organized by the origin of the website and the time.
+ * Main activity that displays a list with the events for a selected day organized by the type, topic or origin of the website.
  * 
  * @author Alvaro Santisteban 2013 - alvarosantisteban@gmail.com
  *
  */
 public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 	
+	//--------------------------------------------
+	// CONSTANTS AND EXTRAS
+	//--------------------------------------------
+	
+	// Constants to determinate the kind of organization
 	private String TYPE_ORGANIZATION;
 	private String TOPIC_ORGANIZATION;
 	
 	// Constants to access Preferences
-	private final String LAST_TOTAL_NUM_EVENTS = "lastTotalNumber";
 	private final String LAST_SELECTION = "lastSelection";
 	private final String FIRST_TIME_APP = "isFirstTimeApp";
 	private final String CHOOSEN_DATE = "choosenDate";
 	
+	// The keyword passed as extra to EventActivity
 	public static final String EXTRA_EVENT = "com.alvarosantisteban.berlincurator.event";
+	// The keyword received as extra to know the selected date 
+	private final String EXTRA_DATE = "date";
 	// Settings
 	private static final int RESULT_SETTINGS = 1;
 	
@@ -73,22 +79,29 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 	public static final int RESULT_UPDATE = 1;
 	public static final String EVENTS_RESULT_DATA = "result data";
 	
-	private final String EXTRA_DATE = "date";
-	
-	public Set<String> lastSelection;
-	
-	public Set<String> typeTags;
-	public Set<String> topicTags;
-	public Set<String> originTags;
-	
-	public String[] setOfTags;
-	
-	private static Toast toast;
-			
 	/**
 	 * Used for logging purposes
 	 */
 	private static final String TAG = "DateActivity";
+	
+	//--------------------------------------------
+	// SETS OF TAGS
+	//--------------------------------------------
+	
+	// The last selection of tags, to be compared with the actual one
+	public Set<String> lastSelection;
+	
+	// The sets of tags for the different kinds of organizations
+	public Set<String> typeTags;
+	public Set<String> topicTags;
+	public Set<String> originTags;
+	
+	// The array of Strings with the tags that is going to be used to load the events
+	public String[] setOfTags;
+	
+	//--------------------------------------------
+	// DATE RELATED
+	//--------------------------------------------
 	
 	/**
 	 * Format of the date
@@ -115,31 +128,21 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 	 */
 	public String choosenDate;
 	
-	/**
-	 * The last total number of events for a choosenDate 
-	 * 
-	 * IS NOT WORKING. The problem is that the AsynTask goes in parallel so it's not easy to know when does it end and therefore when to
-	 * call getTotalChildrenCount of the listAdapter
-	 */
-	int lastTotalNumEvents = 0;
-	
-	/**
-	 * The total number of events for a choosenDate
-	 */
-	int totalNumEvents = 0;
+	//--------------------------------------------
+	// STRUCTURES
+	//--------------------------------------------
 	
 	/**
 	 * The expandable list with the groups and events
 	 */
 	ExpandableListView expandableSitesList;
 	
-	RelativeLayout layout;
-	
 	/**
 	 * A LinkedHashMap with the name of the tag (from website/thema/type) as key and its corresponding HeaderInfo as value. 
 	 * Used to make the search easier
 	 */
 	private LinkedHashMap<String, HeaderInfo> tagsMap = new LinkedHashMap<String, HeaderInfo>();
+	
 	/**
 	 * An ArrayList with the HeaderInfo of each group
 	 */
@@ -151,9 +154,25 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 	private ListAdapter listAdapter;
 	
 	/**
-	 * The Database Helper that helps dealing with the db easily
+	 * The position of the last touched group
 	 */
-	//private DatabaseHelper databaseHelper = null;
+	int lastTouchedGroupPosition;
+	
+	/**
+	 * The position of the last child (event) touched inside  the lastTouchedGroupPosition
+	 */
+	int lastTouchedChildPosition;
+	
+	//--------------------------------------------
+	// OTHER
+	//--------------------------------------------
+	
+	private static Toast toast;
+	
+	/**
+	 * The total number of events for a choosenDate
+	 */
+	int totalNumEvents = 0;
 	
 	final Context context = this;
 	
@@ -166,15 +185,6 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 	 *  User preferences
 	 */
 	SharedPreferences sharedPref;
-		
-	/**
-	 * The position of the last touched group
-	 */
-	int lastTouchedGroupPosition;
-	/**
-	 * The position of the last child (event) touched inside  the lastTouchedGroupPosition
-	 */
-	int lastTouchedChildPosition;
 	
 	/**
 	 *  Loads the elements from the resources, gets the data from the mainActitivy and calls the parsers to extract the information that
@@ -197,20 +207,7 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 		// Know if its the first time the user uses the app
 		// --------------------------------------------------
 		boolean isFirstTimeApp = sharedPref.getBoolean(FIRST_TIME_APP, true);
-		//lastSelection = sharedPref.getStringSet("lastSelection", new HashSet<String>(Arrays.asList(context.getResources().getStringArray(R.array.default_sites_array))));
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-			lastSelection = sharedPref.getStringSet(LAST_SELECTION, new HashSet<String>(Arrays.asList(context.getResources().getStringArray(R.array.default_sites_array))));
-		} else {
-			String s = sharedPref.getString(LAST_SELECTION, context.getResources().getString(R.string.sites_pseudoarray_values));
-			if(s != null){
-				lastSelection = new HashSet<String>(Arrays.asList(s.split(",")));
-			}
-		}
-		
-		lastTotalNumEvents = sharedPref.getInt(LAST_TOTAL_NUM_EVENTS, 0);
-
 		Intent intent;
-		//isFirstTimeApp = true;
 		if (isFirstTimeApp) {
 			// Go directly to First Time Activity
 			intent = new Intent(context, FirstTimeActivity.class);
@@ -224,10 +221,17 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 		setContentView(R.layout.activity_date);
 		expandableSitesList = (ExpandableListView) findViewById(R.id.expandableSitesList);
 		loadProgressBar = (ProgressBar)findViewById(R.id.progressLoadHtml);	
-		layout = (RelativeLayout)findViewById(R.id.date_layout);
 		
+		// Get the old selection of tags
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+			lastSelection = sharedPref.getStringSet(LAST_SELECTION, new HashSet<String>(Arrays.asList(context.getResources().getStringArray(R.array.default_sites_array))));
+		} else {
+			String s = sharedPref.getString(LAST_SELECTION, context.getResources().getString(R.string.sites_pseudoarray_values));
+			if(s != null){
+				lastSelection = new HashSet<String>(Arrays.asList(s.split(",")));
+			}
+		}
 		// Get the sites are meant to be shown
-		//originTags = sharedPref.getStringSet(SettingsFragment.KEY_PREF_MULTILIST_SITES, new HashSet<String>(Arrays.asList(context.getResources().getStringArray(R.array.default_sites_array))));
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 			originTags = sharedPref.getStringSet(SettingsFragment.KEY_PREF_MULTILIST_SITES, new HashSet<String>(Arrays.asList(context.getResources().getStringArray(R.array.default_sites_array))));
 		} else {
@@ -239,10 +243,9 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 		
 		// Get the kind of organization
 		String kindOfOrganization = sharedPref.getString(SettingsFragment.KEY_PREF_LIST_ORGANIZATIONS, TYPE_ORGANIZATION);
-		String kindOfOrganizationTag;
+		String kindOfOrganizationDBTag;
 		if (kindOfOrganization.equals(TYPE_ORGANIZATION)){
 			// Get the set of type tags
-			//typeTags = sharedPref.getStringSet(SettingsFragment.KEY_PREF_MULTILIST_TYPE, new HashSet<String>(Arrays.asList(context.getResources().getStringArray(R.array.types_array_values))));
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 				typeTags = sharedPref.getStringSet(SettingsFragment.KEY_PREF_MULTILIST_TYPE, new HashSet<String>(Arrays.asList(context.getResources().getStringArray(R.array.types_array_values))));
 			} else {
@@ -252,10 +255,9 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 				}
 			}
 			setOfTags = typeTags.toArray(new String[0]);
-			kindOfOrganizationTag = "typeTag";
+			kindOfOrganizationDBTag = "typeTag";
 		}else if (kindOfOrganization.equals(TOPIC_ORGANIZATION)){
 			// Get the set of topic tags
-			//topicTags = sharedPref.getStringSet(SettingsFragment.KEY_PREF_MULTILIST_TOPIC, new HashSet<String>(Arrays.asList(context.getResources().getStringArray(R.array.themas_array_values))));
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 				topicTags = sharedPref.getStringSet(SettingsFragment.KEY_PREF_MULTILIST_TOPIC, new HashSet<String>(Arrays.asList(context.getResources().getStringArray(R.array.themas_array_values))));
 			} else {
@@ -266,11 +268,12 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 			}
 			
 			setOfTags = topicTags.toArray(new String[0]);
-			kindOfOrganizationTag ="themaTag";
+			kindOfOrganizationDBTag ="themaTag";
 		}else{
 			setOfTags = originTags.toArray(new String[0]);
-			kindOfOrganizationTag = "eventsOrigin";
+			kindOfOrganizationDBTag = "eventsOrigin";
 		}
+		
 		// Create the header groups
 		createHeaderGroups(setOfTags);
 		 
@@ -279,30 +282,18 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 	    // --------------------------------------------------
 		
 		intent = getIntent();
-		// Get the choosen date from the calendar or from the event that the user was consulting
+		// Get the choosen date from the calendar
 		choosenDate = intent.getStringExtra(EXTRA_DATE);
-		
-		displayedDate = (TextView) findViewById(R.id.date);
 		if (choosenDate == null){	
-			choosenDate = sharedPref.getString(CHOOSEN_DATE, today);
 			// The user did not select anything, the default date is today
-			//displayedDate.setText(R.string.events_for_today);
-			//choosenDate = today;
+			choosenDate = sharedPref.getString(CHOOSEN_DATE, today);
 		}else{
-			/*
-			if (choosenDate.equals(today)){
-				displayedDate.setText(R.string.events_for_today);
-			}else if (choosenDate.equals(getTomorrow())){
-				displayedDate.setText(R.string.events_for_tomorrow);
-			}else{
-				displayedDate.setText(R.string.events_for_a);
-				displayedDate.append(" " +choosenDate);
-			}
-			*/
+			// Save the date selection
 			Editor editor = sharedPref.edit();
 			editor.putString(CHOOSEN_DATE, choosenDate);
 			editor.commit();
 		}	
+		displayedDate = (TextView) findViewById(R.id.date);
 		if (choosenDate.equals(today)){
 			displayedDate.setText(R.string.events_for_today);
 		}else if (choosenDate.equals(getTomorrow())){
@@ -311,8 +302,6 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 			displayedDate.setText(R.string.events_for_a);
 			displayedDate.append(" " +choosenDate);
 		}
-		
-		//databaseHelper = getHelper();
 		
 		// Enable the app's icon to act as home
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
@@ -330,23 +319,23 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 		expandableSitesList.setAdapter(listAdapter);
 		
 		// Load the events for the selected websites and tags
-		loadEvents(kindOfOrganizationTag, setOfTags);
+		loadEvents(kindOfOrganizationDBTag, setOfTags);
 		
 		// Expand the groups with events
 		expandGroupsWithEvents();
-		
-		// Get the number of events
-		totalNumEvents = listAdapter.getTotalChildrenCount();
 		
 		// Listener for the events
 		expandableSitesList.setOnChildClickListener(myEventClicked);
 		// Listener for the sites
 		expandableSitesList.setOnGroupClickListener(myListGroupClicked);
+		
 		// Listener for the collapsed group
 		//expandableSitesList.setOnGroupCollapseListener(myCollapsedGroup);
 		// Listener for the expanded group
 		//expandableSitesList.setOnGroupExpandListener(myExpandedGroup);
 		
+		// Get the number of events
+		totalNumEvents = listAdapter.getTotalChildrenCount();
 		if(totalNumEvents == 0){
 			displayToast("There are no events for this day. Refresh or go to another day.");
 		}
@@ -359,31 +348,15 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 			deletedGroups.removeAll(originTags);
 			addedGroups.removeAll(lastSelection);
 			
-			int totalChildrenCount = totalNumEvents;
 			// Get the events for the new groups
 			if(addedGroups.size() > 0){
-				downloadNewGroups(addedGroups);
-				//Log.d(TAG, "totalChildrenCount:"+totalChildrenCount);
-				totalChildrenCount = listAdapter.getTotalChildrenCount();
-				//Log.d(TAG, "totalChildrenCount:"+totalChildrenCount);
-				// Inform about how many new events are for the day
-				int difference = totalChildrenCount-totalNumEvents;
-				if(difference == 1){
-					displayToast("There is 1 new event for this day.");
-				}else if(difference > 1){
-					displayToast("There are " +difference +" new events for this day.");
-				}
+				downloadEventsForAddedGroups(addedGroups);
 			}
 			
 			// Delete the events for the groups not used anymore
 			if(deletedGroups.size() > 0){
-				removeGroups(deletedGroups);
-				totalChildrenCount = listAdapter.getTotalChildrenCount();
+				removeGroupsFromDB(deletedGroups);
 			}
-			
-			// Get the total number of events
-			lastTotalNumEvents = totalNumEvents;
-			totalNumEvents = totalChildrenCount;
 			
 			// Save the new selection
 			lastSelection = originTags;
@@ -393,17 +366,20 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 			} else {
 				editor.putString(LAST_SELECTION, StringUtils.join(lastSelection, ","));
 			}
-			editor.putInt(LAST_TOTAL_NUM_EVENTS, lastTotalNumEvents);
             editor.commit();
 		}
 	}
+	
+	// ----------------------------------------------------------------------------------------------
+	// ADD AND DELETE EVENTS
+	// ----------------------------------------------------------------------------------------------
 
 	/**
 	 * Removes the events from the DB that match the origin of any of the String in the set
 	 * 
 	 * @param deletedGroups Set with the Strings of the origins to be deleted
 	 */
-	private void removeGroups(Set<String> deletedGroups) {
+	private void removeGroupsFromDB(Set<String> deletedGroups) {
 		Log.d(TAG, "There are " +deletedGroups.size() +" groups deleted");
 		// Get the Event DAO to deleted the entries of the unselected groups
 		RuntimeExceptionDao<Event, Integer> eventDao = getHelper().getEventDataDao();
@@ -426,7 +402,7 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 	 * 
 	 * @param addedGroups Set with the Strings of the origins to be added
 	 */
-	private void downloadNewGroups(Set<String> addedGroups) {
+	private void downloadEventsForAddedGroups(Set<String> addedGroups) {
 		Log.d(TAG, "There are " +addedGroups.size() +" new groups added");
 		// Create a connection
 		ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -437,144 +413,7 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 			// Execute the asyncronous task of downloading the websites
 			download.execute(addedGroups.toArray((new String[addedGroups.size()])));
 		}
-	}
-		
-
-	/**
-	 * Checks the differences between two string arrays to determinate which groups have elements that have to be deleted and which groups
-	 * have events that have to be downloaded.
-	 * 
-	 * @param newSelection the new selection of the user
-	 * @param oldSelection the old selection of the user
-	 *
-	private void checkDifferencesBetweenSelection(Set<String> newSelection, Set<String> oldSelection) {
-		Log.d(TAG,"checkDifferencesBetweenSelection. oldSelection.size():"+oldSelection.size());
-		String[] newSelection1 = newSelection.toArray(new String[0]);
-		String[] oldSelection1 = oldSelection.toArray(new String[0]);
-		// Check the added groups
-		List<String> added = new ArrayList<String>();
-		if(oldSelection1.length == 0){
-			for(int i=0; i<newSelection1.length;i++){
-				added.add(newSelection1[i]);
-			}
-		}else{
-			for(int i=0; i<newSelection1.length;i++){
-				for(int j=0; j<oldSelection1.length;j++){
-					if(newSelection1[i].equals(oldSelection1[j])){
-						j = oldSelection1.length;
-					}else{
-						if(j == oldSelection1.length-1){
-							added.add(newSelection1[i]);
-						}
-					}
-				}
-			}
-		}
-		
-		// Download the events of the new added thema/type, if applies
-		Log.d(TAG,"New added groups:"+added.size());
-		if(added.size() > 0){
-			// Create a connection
-			ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-			NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-			// Check if is possible to establish a connection
-			if (networkInfo != null && networkInfo.isConnected()) {
-				//DownloadWebpageTask2 download = new DownloadWebpageTask2();
-				DownloadWebpageAsyncTask download = new DownloadWebpageAsyncTask(this, loadProgressBar);
-				// Execute the asyncronous task of downloading the websites
-				download.execute(added.toArray(new String[added.size()]));
-			}
-		}
-		
-		// Check the deleted groups
-		Log.d(TAG,"Oldselection: "+oldSelection1.length);
-		Log.d(TAG,"newselection: "+newSelection1.length);
-		List<String> deleted = new ArrayList<String>();
-		if(newSelection1.length == 0){
-			for(int i=0; i<oldSelection1.length;i++){
-				deleted.add(oldSelection1[i]);
-			}
-		}else{
-			for(int i=0; i<oldSelection1.length;i++){
-				for(int j=0; j<newSelection1.length;j++){
-					if(oldSelection1[i].equals(newSelection1[j])){
-						j = newSelection1.length;
-					}else{
-						if(j == newSelection1.length-1){
-							deleted.add(oldSelection1[i]);
-						}
-					}
-				}
-			}
-		}
-		
-		// Remove from the database the old ones, if applies
-		Log.d(TAG,"Deleted groups:"+deleted.size());
-		if (deleted.size() > 0){
-			RuntimeExceptionDao<Event, Integer> eventDao = getHelper().getEventDataDao();
-			DeleteBuilder<Event, Integer> deleteBuilder = eventDao.deleteBuilder();	
-			for (int i=0; i<deleted.size(); i++){
-				try {
-					Log.d(TAG,"deleted eventsOrigin:"+deleted.get(i));
-					// create our argument which uses a SQL ? to avoid having problems with apostrophes
-					SelectArg deletedArg = new SelectArg(deleted.get(i));
-					deleteBuilder.where().eq("eventsOrigin", deletedArg);
-					deleteBuilder.delete();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-	}
-	*/
-	
-	/**
-	 * Returns the date of tomorrow formated like DD/MM/YYYY
-	 * 
-	 * @return a String with tomorrow in the format DD/MM/YYYY
-	 */
-	private String getTomorrow() {
-		Calendar tomorrow = currentDay;
-		// add one day to the date/calendar
-	    tomorrow.add(Calendar.DAY_OF_YEAR, 1);
-		return dateFormat.format(tomorrow.getTime());
-	}
-
-	/**
-	 * Expand all groups
-	 *
-	private void expandAll() {
-		int count = listAdapter.getGroupCount();
-		for (int i = 0; i < count; i++){
-			expandableSitesList.expandGroup(i);
-		}
-	}
-	
-	/**
-	 * Collapse all groups
-	 *
-	private void collapseAll() {
-		int count = listAdapter.getGroupCount();
-		for (int i = 0; i < count; i++){
-			expandableSitesList.collapseGroup(i);
-		}
-	}
-	*/
-	
-	/**
-	 * Expand the groups with events on it
-	 */
-	private void expandGroupsWithEvents(){
-		int count = listAdapter.getGroupCount();
-		for (int i = 0; i < count; i++){
-			if(listAdapter.getChildrenCount(i) > 0){
-				expandableSitesList.expandGroup(i);
-			}
-			/*else{
-				expandableSitesList.setGroupIndicator(null);
-			}*/
-		}
-	}
+	}	
 	
 	/**
 	 * Loads the events from the DB that match the choosenDate and the set of tags for the kind of organization passed as parameters
@@ -598,6 +437,7 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 				e.printStackTrace();
 				Log.e(TAG,"DB exception while retrieving the events from the website " +setOfTags[i]);
 			}
+			// Add the events to the corresponding group
 			for (int j = 0; j < eventsFromWebsite.size(); j++) {
 				addEvent(setOfTags[i],eventsFromWebsite.get(j));
 			}
@@ -605,22 +445,21 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 	}
 	
 	/**
-	 * Add an event to its corresponding group 
+	 * Add an event to the list of events of its corresponding group 
 	 * 
-	 * @param theTag The tag to whom the the event belongs
+	 * @param theGroupTag The tag to whom the the event belongs
 	 * @param newEvent The event to be attached
-	 * @return the position of group where the event was added
+	 * @return the position of the group where the event was added
 	 */
-	private int addEvent(String theTag, Event newEvent){
-		int groupPosition = 0;
-	   
+	private int addEvent(String theGroupTag, Event newEvent){	   
 		// Check in the hash map if the group already exists
-		HeaderInfo headerInfo = tagsMap.get(theTag);
-		// Add the group if doesn't exists
+		HeaderInfo headerInfo = tagsMap.get(theGroupTag);
+		
+		//  Create the group if doesn't exists
 		if(headerInfo == null){
 			headerInfo = new HeaderInfo();
-			headerInfo.setName(theTag);
-			tagsMap.put(theTag, headerInfo);
+			headerInfo.setName(theGroupTag);
+			tagsMap.put(theGroupTag, headerInfo);
 			groupsList.add(headerInfo);
 		}
 	 
@@ -630,19 +469,17 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 		int listSize = eventsList.size();
 		// Add to the counters
 		listSize++;
-		//totalNumEvents++;
 	 
 		// Set the sequence for the event
 		newEvent.setSequence(String.valueOf(listSize));
-		// Add it to its list of events
+		// Add the event to the list of events
 		eventsList.add(newEvent);
 		// Update the site with the "new" eventsList
 		headerInfo.setEventsList(eventsList);
 		headerInfo.setEventsNumber(listSize);
 		
-		//find the group position inside the list
-		groupPosition = groupsList.indexOf(headerInfo);
-		return groupPosition;
+		// find the group position inside the list
+		return groupsList.indexOf(headerInfo);
 	}
 	
 	/**
@@ -660,70 +497,50 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 		}
 	}
 	
+	// ----------------------------------------------------------------------------------------------
+	// CLICK LISTENERS
+	// ----------------------------------------------------------------------------------------------
+	
 	/**
-	 * The child listener for the events
+	 * The child listener that detects the click on an event from the list and goes to the corresponding EventActivity.
 	 */
 	private OnChildClickListener myEventClicked =  new OnChildClickListener() {
-		 
-		  public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
-	    
-			  // Get the group header 
-			  HeaderInfo headerInfo = groupsList.get(groupPosition);
-			  // Get the child info
-			  Event clickedEvent =  headerInfo.getEventsList().get(childPosition);
-			  // Update the last touched group and child position
-			  lastTouchedGroupPosition = groupPosition;
-			  lastTouchedChildPosition = childPosition;
-			  // Go the Event Activity
-			  Intent intent = new Intent(context, EventActivity.class);
-			  intent.putExtra(EXTRA_EVENT, clickedEvent);
-			  startActivityForResult(intent, INTENT_RETURN_CODE);
-			  return false;
-		  }
+		public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
+			// Get the group header 
+			HeaderInfo headerInfo = groupsList.get(groupPosition);
+			// Get the child info
+			Event clickedEvent =  headerInfo.getEventsList().get(childPosition);
+			// Update the last touched group and child position
+			lastTouchedGroupPosition = groupPosition;
+			lastTouchedChildPosition = childPosition;
+			// Go the Event Activity
+			Intent intent = new Intent(context, EventActivity.class);
+			intent.putExtra(EXTRA_EVENT, clickedEvent);
+			startActivityForResult(intent, INTENT_RETURN_CODE);
+			return false;
+		}
 	};
 	
 	/**
-	 * The group listener for the sites
+	 * The group listener that detects the click on the group header
 	 */
-	private OnGroupClickListener myListGroupClicked =  new OnGroupClickListener() {
-		 
-		  public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
-			  // Get the group header
-			  HeaderInfo headerInfo = groupsList.get(groupPosition);
-			  // If the group does not contain events, tell the user
-			  if(headerInfo.getEventsNumber() == 0){
-				  displayToast("There are no events to show for " + headerInfo.getName());
-				  //Toast toast = Toast.makeText(getBaseContext(), "There are no events to show for " + headerInfo.getName(), Toast.LENGTH_SHORT);
-				  //toast.setGravity(Gravity.TOP, 0, FirstTimeActivity.actionBarHeight);
-				  //toast.show();
-				  // Avoid propagation = the group is not expanded/collapsed
-				  return true;
-			  }
-			  return false;
-		  }
-	   
+	private OnGroupClickListener myListGroupClicked =  new OnGroupClickListener() { 
+		public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
+			// Get the group header
+			HeaderInfo headerInfo = groupsList.get(groupPosition);
+			// If the group does not contain events, tell the user
+			if(headerInfo.getEventsNumber() == 0){
+				displayToast("There are no events to show for " + headerInfo.getName());
+				// Avoid propagation = the group is not expanded/collapsed
+				return true;
+			}
+			return false;
+		} 
 	};
 	
-	/**
-	 * The group collapse listener 
-	 *
-	private OnGroupCollapseListener myCollapsedGroup = new OnGroupCollapseListener(){
-		
-		public void onGroupCollapse(int groupPosition){
-			System.out.println("onGroupCollapse");
-		}
-	};
-	
-	/**
-	 * The group expand listener
-	 *
-	private OnGroupExpandListener myExpandedGroup = new OnGroupExpandListener(){
-		
-		public void onGroupExpand(int groupPosition){
-			System.out.println("onGroupExpand");
-		}
-	};
-	*/
+	// ----------------------------------------------------------------------------------------------
+	// RELATED TO THE MENU
+	// ----------------------------------------------------------------------------------------------
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -751,7 +568,6 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 		    NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
 		    // Check if is possible to establish a connection
 		    if (networkInfo != null && networkInfo.isConnected()) {
-				//DownloadWebpageTask2 download = new DownloadWebpageTask2();
 		    	DownloadWebpageAsyncTask download = new DownloadWebpageAsyncTask(this,loadProgressBar, choosenDate);
 				// Execute the asyncronous task of downloading the websites
 				download.execute(originTags.toArray(new String[0]));
@@ -764,14 +580,13 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 			Intent i = new Intent(this, SettingsActivity.class);
 			startActivityForResult(i, RESULT_SETTINGS);
 		}
-		/*else if (item.getItemId() == android.R.id.home) {
-			// app icon in action bar clicked; go home
-			Intent intent = new Intent(this, MainActivity.class);
-			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-			startActivity(intent);
-		}*/
         return true;
     }
+	
+	
+	// ----------------------------------------------------------------------------------------------
+	// LIFECYCLE
+	// ----------------------------------------------------------------------------------------------
 	
 	public void onStart() {
 		super.onStart();
@@ -842,10 +657,66 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 		groupsList.set(lastTouchedGroupPosition, headerInfo);
 	}
 	
+	// ----------------------------------------------------------------------------------------------
+	// OTHER
+	// ----------------------------------------------------------------------------------------------
+	
+	/**
+	 * Displays the message passed as parameter. 
+	 * By calling this method, the toast object is updated without having to wait to the end of the last toast displayed.
+	 * 
+	 * @param message the message to be displayed
+	 */
 	private void displayToast(final String message) {
 	    //toast.cancel();
 	    toast.setText(message); 
 	    toast.setGravity(Gravity.TOP, 0, FirstTimeActivity.actionBarHeight);
 	    toast.show();
 	}	
+	
+	/**
+	 * Returns the date of tomorrow formated like DD/MM/YYYY
+	 * 
+	 * @return a String with tomorrow in the format DD/MM/YYYY
+	 */
+	private String getTomorrow() {
+		Calendar tomorrow = currentDay;
+		// add one day to the date/calendar
+	    tomorrow.add(Calendar.DAY_OF_YEAR, 1);
+		return dateFormat.format(tomorrow.getTime());
+	}
+	
+	/**
+	 * Expand all groups
+	 */
+	@SuppressWarnings("unused")
+	private void expandAll() {
+		int count = listAdapter.getGroupCount();
+		for (int i = 0; i < count; i++){
+			expandableSitesList.expandGroup(i);
+		}
+	}
+	
+	/**
+	 * Collapse all groups
+	 */
+	@SuppressWarnings("unused")
+	private void collapseAll() {
+		int count = listAdapter.getGroupCount();
+		for (int i = 0; i < count; i++){
+			expandableSitesList.collapseGroup(i);
+		}
+	}
+	
+	/**
+	 * Expand the groups with events on it
+	 */
+	private void expandGroupsWithEvents(){
+		int count = listAdapter.getGroupCount();
+		for (int i = 0; i < count; i++){
+			if(listAdapter.getChildrenCount(i) > 0){
+				expandableSitesList.expandGroup(i);
+			}
+		}
+	}
 }

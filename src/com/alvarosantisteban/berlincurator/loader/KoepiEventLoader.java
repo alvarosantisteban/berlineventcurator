@@ -11,6 +11,13 @@ import com.alvarosantisteban.berlincurator.utils.WebUtils;
 import android.content.Context;
 import android.util.Log;
 
+/**
+ * NOT USED ANY MORE
+ * Receives the html from the Koepi website and parses the information to create a list of events.
+ * 
+ * @author Alvaro Santisteban 2013 - alvarosantisteban@gmail.com
+ *
+ */
 public class KoepiEventLoader implements EventLoader{
 	
 	public final static String WEBSITE_URL = "http://www.koepi137.net/eventskonzerte.php";

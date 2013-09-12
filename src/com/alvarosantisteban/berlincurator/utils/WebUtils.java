@@ -8,6 +8,12 @@ import java.net.URL;
 import android.content.Context;
 import android.util.Log;
 
+/**
+ * Methods that are used across the application that deal with download of html and conversion between encodings.
+ * 
+ * @author Alvaro Santisteban 2013 - alvarosantisteban@gmail.com
+ *
+ */
 public final class WebUtils {
 	
 	private static final String TAG = "WebUtils";

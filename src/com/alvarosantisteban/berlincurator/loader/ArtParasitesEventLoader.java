@@ -12,6 +12,13 @@ import com.alvarosantisteban.berlincurator.utils.WebUtils;
 import android.content.Context;
 import android.util.Log;
 
+/**
+ * NOT USED ANYMORE
+ * Receives the html from the ArtParasites website and parses the information to create a list of events.
+ * 
+ * @author Alvaro Santisteban 2013 - alvarosantisteban@gmail.com
+ *
+ */
 public class ArtParasitesEventLoader implements EventLoader {
 	
 	public final static String WEBSITE_URL = "http://www.berlin-artparasites.com/recommended";

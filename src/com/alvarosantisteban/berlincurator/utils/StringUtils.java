@@ -8,6 +8,12 @@ import java.text.SimpleDateFormat;
 
 import android.util.Log;
 
+/**
+ * Methods that are used across the application that deal with strings
+ * 
+ * @author Alvaro Santisteban 2013 - alvarosantisteban@gmail.com
+ *
+ */
 public final class StringUtils {
 	
 	/**

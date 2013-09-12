@@ -43,6 +43,12 @@
         android:title="@string/pref_category_info_title"
         android:key="pref_key_category_info">
 	    <Preference 
+	        android:key="manifesto"
+	        android:dialogTitle="@string/manifesto_title"
+	        android:summary="@string/manifesto_summary"        
+	        android:title="@string/manifesto_title"
+	        />
+	    <Preference 
 	        android:key="about"
 	        android:dialogTitle="@string/about_title"
 	        android:summary="@string/about_summary"        

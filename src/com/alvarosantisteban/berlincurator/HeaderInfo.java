@@ -3,7 +3,7 @@ package com.alvarosantisteban.berlincurator;
 import java.util.ArrayList;
 
 /**
- * The information of the website and its List of events.
+ * The information of the group header and its List of events.
  * 
  * @author Alvaro Santisteban 2013 - alvarosantisteban@gmail.com
  *

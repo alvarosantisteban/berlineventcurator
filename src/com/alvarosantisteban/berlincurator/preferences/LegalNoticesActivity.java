@@ -10,6 +10,12 @@ import android.widget.TextView;
 import com.alvarosantisteban.berlincurator.R;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 
+/**
+ * Displays the information about the GooglePlay attributions.
+ * 
+ * @author Alvaro Santisteban 2013 - alvarosantisteban@gmail.com
+ *
+ */
 public class LegalNoticesActivity extends Activity {
 	
 	TextView googlePlayAttributions;
@@ -43,5 +49,4 @@ public class LegalNoticesActivity extends Activity {
  
         return true;
     }
-
 }

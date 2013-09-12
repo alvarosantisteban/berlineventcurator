@@ -80,11 +80,9 @@ public class ListAdapter extends BaseExpandableListAdapter {
 		TextView childItem = (TextView) convertView.findViewById(R.id.childItem);
 		childItem.setText("- " +Html.fromHtml(event.getName().trim()));
 		if (event.isTheEventInteresting()){
-	    	//childItem.append(" XXX");
 	    	childItem.setTextColor(Color.parseColor("#427212"));
 	    }else{
 	    	childItem.setTextColor(Color.BLACK);
-	    	//childItem.setTextColor(Color.WHITE);
 	    }
 		return convertView;
 	}
@@ -99,7 +97,6 @@ public class ListAdapter extends BaseExpandableListAdapter {
 	public int getChildrenCount(int groupPosition) {
 		ArrayList<Event> eventsList = websitesList.get(groupPosition).getEventsList();
 		return eventsList.size();
-	 
 	}
 	 
 	/**
@@ -157,7 +154,6 @@ public class ListAdapter extends BaseExpandableListAdapter {
 			singPl =" event";
 		}
 		heading.setText(getGroupName(headerInfo.getName().trim()) +" - " +headerInfo.getEventsNumber() +singPl);
-		//heading.setTextColor(Color.WHITE);
 		// If there are no events, make the header's color gray
 		if(headerInfo.getEventsNumber() == 0){
 			heading.setTextColor(Color.GRAY);
@@ -168,23 +164,23 @@ public class ListAdapter extends BaseExpandableListAdapter {
 	}
 	
 	/**
-	 * Changes the headerName 
+	 * Returns the name of header group that will be printed out
 	 * 
-	 * @param headerName
-	 * @return
+	 * @param headerName the header name to be changed
+	 * @return the name for that header group to be printed
 	 */
 	private String getGroupName(String headerName){
 		String sentence = "Error";
 		if(headerName.equals("Exhibition")){
-			sentence = "Expand my conscience";
+			sentence = "Exhibitions";
 		}else if(headerName.equals("Talk")){
-			sentence = "Adquire some knowledge";
+			sentence = "Talks";
 		}else if(headerName.equals("Party")){
-			sentence = "Dance til my feet melt";
+			sentence = "Parties";
 		}else if(headerName.equals("Screening")){
-			sentence = "See the world through another one's eyes";
+			sentence = "Screenings";
 		}else if(headerName.equals("Concert")){
-			sentence = "Enjoy some live music";
+			sentence = "Concerts";
 		}else if(headerName.equals("Other")){
 			sentence = "Something that can not be categorized";
 		}else{

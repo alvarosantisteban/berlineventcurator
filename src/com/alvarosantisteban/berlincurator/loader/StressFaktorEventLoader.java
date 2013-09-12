@@ -11,6 +11,12 @@ import com.alvarosantisteban.berlincurator.utils.WebUtils;
 import android.content.Context;
 import android.util.Log;
 
+/**
+ * Receives the html from the Stress Faktor website and parses the information to create a list of events.
+ * 
+ * @author Alvaro Santisteban 2013 - alvarosantisteban@gmail.com
+ *
+ */
 public class StressFaktorEventLoader implements EventLoader {
 	
 	public final static String WEBSITE_URL = "http://stressfaktor.squat.net/termine.php?display=7";

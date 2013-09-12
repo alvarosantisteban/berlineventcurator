@@ -1,45 +1,36 @@
 package com.alvarosantisteban.berlincurator.preferences;
 
 import com.alvarosantisteban.berlincurator.R;
+import android.os.Build;
+import android.os.Bundle;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
-import android.os.Build;
-import android.os.Bundle;
-import android.text.Html;
-import android.text.method.LinkMovementMethod;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
 /**
- * Displays information of the app such as the logo, version and creator.
+ * Displays the app's manifesto.
  * 
  * @author Alvaro Santisteban 2013 - alvarosantisteban@gmail.com
  *
  */
-public class AboutActivity extends Activity {
-	
-	TextView email;
-	TextView gitHubUrl;
+public class ManifestoActivity extends Activity {
+
+	TextView manifesto;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_about);
+		setContentView(R.layout.activity_manifesto);
 		// Enable the app's icon to act as home
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 			ActionBar actionBar = getActionBar();
 			actionBar.setDisplayHomeAsUpEnabled(true);
 		}
 		
-	    email = (TextView) findViewById(R.id.email_address);
-	    email.setMovementMethod(LinkMovementMethod.getInstance());
-	    email.setText(Html.fromHtml("<a href=\"mailto:alvarosantisteban@gmail.com?Subject=BerlinCurator\">alvarosantisteban@gmail.com</a>"));
-	    
-	    gitHubUrl = (TextView) findViewById(R.id.codeUrl);
-	    gitHubUrl.setMovementMethod(LinkMovementMethod.getInstance());
-	    gitHubUrl.setText(Html.fromHtml("<a href=\"https://github.com/alvarosantisteban/curator\">My GitHub account</a>"));
+		manifesto = (TextView) findViewById(R.id.manifesto);
 	}
 
 	@Override

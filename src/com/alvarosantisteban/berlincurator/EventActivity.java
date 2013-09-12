@@ -8,7 +8,6 @@ import java.util.List;
 
 import android.app.ActionBar;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Build;
@@ -43,7 +42,7 @@ import com.j256.ormlite.dao.RuntimeExceptionDao;
 
 
 /**
- * Displays all the information of an event: Day, name, hour, description and links
+ * Displays all the information of an event: Day, name, hour, description, origin, tags, links and map.
  * 
  * @author Alvaro Santisteban 2013 - alvarosantisteban@gmail.com
  *
@@ -73,14 +72,17 @@ public class EventActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 	 * The event being displayed
 	 */
 	Event event;
-	
-	public static final String EXTRA_DATE = "date";
+	/**
+	 *  The key word passed as extra from DateActivity
+	 */
+	public static final String EXTRA_EVENT = "com.alvarosantisteban.berlincurator.event";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		Log.d(TAG,"In the onCreate() event");
 		
+		// Check if the GooglePlay services for the Map can be used
 		int availabilityCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getApplicationContext());
 		if(availabilityCode == ConnectionResult.SUCCESS){
 			Log.i(TAG, "GooglePlayServices is available :)");
@@ -90,7 +92,7 @@ public class EventActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 		
 		// Get the intent with the Event
 		Intent intent = getIntent();
-		event = (Event)intent.getSerializableExtra(DateActivity.EXTRA_EVENT);
+		event = (Event)intent.getSerializableExtra(EXTRA_EVENT);
 		
 		// Enable the app's icon to act as home
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
@@ -108,10 +110,9 @@ public class EventActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 		description = (TextView)findViewById(R.id.events_description);
 		origin = (TextView)findViewById(R.id.events_origin);
 		location = (TextView)findViewById(R.id.events_location);
-		//mapita = (MapView) findViewById(R.id.map);
 
 		// Get the information of the event
-		getEventsInfo();
+		initEventsInfo();
 		
 		// Initializes the mapView
 		initMap(savedInstanceState);
@@ -121,12 +122,11 @@ public class EventActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 	/**
 	 * Gets the information from the event and prints it to the screen
 	 */
-	private void getEventsInfo() {
+	private void initEventsInfo() {
 		// Get the date
 		day.setText(event.getDay().trim());
 		
 		// Get the state of the check
-		//interestingCheck.setChecked(getFromSP("cb" +event.getId()));
 		interestingCheck.setChecked(event.isTheEventInteresting()); 
 		
 		// Get the name
@@ -137,23 +137,22 @@ public class EventActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 		// Get the hour, if any
 		if(!event.getHour().equals("")){
 			time.setText(Html.fromHtml(event.getHour()));
-			//time.setText(event.getHour());
 		}
 		
 		// Get the description, if any
 		if (!event.getDescription().equals("")){
 			description.setText(Html.fromHtml(event.getDescription()));
 			description.append("\n" +event.getThemaTag() + " | " +event.getTypeTag());
-			
 		}
+		
+		// Get the origin of the information
 		origin.setText(Html.fromHtml("Event taken from: <a href=\"" +event.getOriginsWebsite() + "\">" +event.getEventsOrigin()  + "</a>"));
 		//origin.setClickable(true);
 		origin.setMovementMethod (LinkMovementMethod.getInstance());
 		
-		// Get the the links, if any
+		// Get the links, if any
 		if (!event.getLink().equals("")){
 			String[] links = event.getLinks();
-			
 			link.setText(links[0] + " \n " +links[1]);
 			// Make the link clickable. The links have no html, so we make them clickable this way
 			Linkify.addLinks(link, Linkify.WEB_URLS);
@@ -171,7 +170,7 @@ public class EventActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 		}
 	}
 
-	/*
+	/**
 	 * Initializes the mapView, sets the position of the event on it and adds the map to the layout.
 	 * 
 	 */
@@ -179,7 +178,6 @@ public class EventActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 		geocoder = new Geocoder(this);	
 		try {
 			List<Address> addressList = geocoder.getFromLocationName(event.getLocation(), 1); 
-			//System.out.println("addressList.size()" +addressList.size());
 			if (addressList != null && addressList.size() > 0) {
                 double lat = addressList.get(0).getLatitude();  
                 double lng = addressList.get(0).getLongitude();  
@@ -200,6 +198,11 @@ public class EventActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 			e.printStackTrace();
 		}
 	}
+	
+
+	// ----------------------------------------------------------------------------------------------
+	// INTERACTING WITH ELEMENTS OF THE EVENTACTIVITY
+	// ----------------------------------------------------------------------------------------------
 	
 	/**
 	 * Adds the event to a Google Calendar of the user.
@@ -225,8 +228,7 @@ public class EventActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 				intent.putExtra(Events.ALL_DAY, true); 
 				long startEvent = getTimeInMilliseconds(day.getText().toString(),"00:00");
 				intent.putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, startEvent); 
-			}
-			
+			}		
 			startActivity(intent); 
 		}else{
 			Toast toast = Toast.makeText(getBaseContext(), "You need to have an Android with version at least 4.0 to add events to your Google Calendar", Toast.LENGTH_SHORT);
@@ -255,8 +257,7 @@ public class EventActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 		minutes = Integer.parseInt(hourMinutes[1]);
 		
 		Calendar beginTime = Calendar.getInstance();
-		beginTime.set(year, month-1, day, hour, minutes);
-		// TODO TAKE CARE HERE, that month-1 could create problems
+		beginTime.set(year, month-1, day, hour, minutes); // Month starts in 0
 		return beginTime.getTimeInMillis();
 	}
 	
@@ -290,31 +291,10 @@ public class EventActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 		}
 	}
 	
-	/**
-	 * Saves the state of the checkbox into the SharedPreferences
-	 * 
-	 * @param key the key to be saved 
-	 * @param value the value to be saved
-	 */
-	@SuppressWarnings("unused")
-	private void saveInSp(String key, boolean value){
-        SharedPreferences preferences = getApplicationContext().getSharedPreferences("PROJECT_NAME", android.content.Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putBoolean(key, value);
-        editor.commit();
-    }
-	
-	/**
-	 * Returns the state of the checkbox with the key given as parameter
-	 * 
-	 * @param key the checkbox key
-	 * @return the state of the checkbox 
-	 */
-	@SuppressWarnings("unused")
-	private boolean getFromSP(String key){
-        SharedPreferences preferences = getApplicationContext().getSharedPreferences("PROJECT_NAME", android.content.Context.MODE_PRIVATE);
-        return preferences.getBoolean(key, false);
-	}
+
+	// ----------------------------------------------------------------------------------------------
+	// MENU RELATED
+	// ----------------------------------------------------------------------------------------------
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -350,6 +330,10 @@ public class EventActivity extends OrmLiteBaseActivity<DatabaseHelper> {
  
         return true;
     }
+
+	// ----------------------------------------------------------------------------------------------
+	// LIFECYCLE
+	// ----------------------------------------------------------------------------------------------
 	
 	public void onStart() {
 		super.onStart();
