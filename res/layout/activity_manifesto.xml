@@ -1,17 +1,55 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".ManifestoActivity" >
+    android:layout_height="match_parent" >
 
-    <TextView
+    <RelativeLayout
+        android:id="@+id/manifesto_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        tools:context=".ManifestoActivity" >
+        
+         <TextView
         android:id="@+id/manifesto"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/manifesto" />
+         
+         <TextView
+            android:id="@+id/burnText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/pathos_word"
+            android:layout_alignBottom="@+id/pathos_word"
+            android:layout_alignParentLeft="true"
+            android:text="@string/consume" />
 
-</RelativeLayout>
+        <TextView
+            android:id="@+id/antimanifesto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/pathos_word"
+            android:paddingTop="22dp"
+            android:text="@string/antimanifesto" />
+
+        <TextView
+            android:id="@+id/pathos_word"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/manifesto"
+            android:layout_toRightOf="@+id/burnText"
+            android:textStyle="bold"
+            android:text="@string/app_name" />
+
+    </RelativeLayout>
+
+   
+
+</ScrollView>

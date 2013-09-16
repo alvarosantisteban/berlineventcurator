@@ -2,7 +2,7 @@
 <resources>
 
     <!-- Title from the activities on the Action Bar -->
-    <string name="app_name">PathosBerlin</string>
+    <string name="app_name">Pathos</string>
     <string name="title_activity_date">Events of the day</string>
     <string name="title_activity_event">Event information</string>
     <string name="title_activity_calendar">Calendar</string>
@@ -44,9 +44,9 @@
     <string name="manifesto_title">Manifesto</string>
     <string name="manifesto_summary">The meaning of life!</string>
     <string name="about_title">About</string>
-    <string name="about_summary">General information about PathosBerlin</string>
+    <string name="about_summary">General information about Pathos</string>
     <string name="legal_title">Legal Notices</string>
-    <string name="legal_summary">Legal attribution to the services that PathosBerlin uses</string>
+    <string name="legal_summary">Legal attribution to the services that Pathos uses</string>
     <string name="possible_organizations_title">Organization of the events</string>
     <string name="possible_organizations_summary">Choose the way you want the information to be organized</string>
     <string name="general_selection_title">Selection</string>
@@ -81,16 +81,39 @@
     
     <!-- Manifesto Activity -->
     <string name="manifesto">Every day, every night is an opportunity of experiencing something new, something different. An opportunity to test ourselves and to learn from it.
-This learning is a labyrinth were one can get lost. This app is not going to show thou a shortcut through the maze, on the contrary, its aim is to present thou some of its branches and help thou enjoy the journey.
+This learning is a labyrinth were one can get lost. This app is not going to show you the right path through the maze, on the contrary, its aim is to present you some of its branches and help you enjoy the journey.
 \n\n
 This is about learning to obtain aesthetical pleasure from the dead of the parties, when a sunlight makes its way through an unlikely window and hits the dance floor. The moment when the masks fall down and faces almost melt in a beautiful decay. When there is no more pretending and dresscode, just pure human honesty and vulnerability. When exhausted people keep on dancing because they are afraid to go to the so called home, or because they just forgot about it.
-Feeling alive when you are all weak. Exploring and surpassing your own limits. And the music, always the music. A frantic or a slight/enveloping/covering/surrounding rhythm. It does not matter. Music, music, music...
+Feeling alive when you are all weak. Exploring and surpassing your own limits with a frantic or a slight/enveloping/covering/surrounding rhythm as your only guidance.
 \n\n
 This is about being in the right city in the right moment of your life to discover it.
 \n
 This is about revolutionary enriching hedonism.
-\n\n
-Let Berlin consume you. Pathos.</string>
+\n
+	</string>
+	<string name="consume">Let Berlin consume you. </string>
+	<string name="antimanifesto">
+		(If you are against the mystification of Berlin and think that all this is bullshit, don\'t worry, you can still use this app as a way of getting interesting events)
+	</string>
+	<string name="pathos_definition">
+<b>Etymology</b>
+\n
+From Ancient Greek πάθος (pathos, “suffering”).
+\n
+<b>Noun</b>
+\n
+<b>pathos</b> (countable and uncountable; plural pathoses)
+	\n
+    <b>1.</b> That quality or property of anything which touches the feelings or excites emotions and passions, especially, that which awakens tender emotions, such as pity, sorrow, and the like; contagious warmth of feeling, action, or expression; pathetic quality. 
+    \n
+    <b>2.</b> (rhetoric) A writer\'s attempt to persuade an audience through appeals involving the use of strong emotions not strictly limited to pity.
+	\n
+    <b>3.</b> (literature) An author\'s attempt to evoke a feeling of pity or sympathetic sorrow for a character.
+    \n
+    <b>4.</b> (theology, philosophy) In theology and existentialist ethics following Kierkegaard and Heidegger, a deep and abiding commitment of the heart, as in the notion of "finding your passion" as an important aspect of a fully lived, engaged life.
+	\n
+	<b>5.</b> <u>(technology) A programmer\'s attempt to reunite zeros and ones to create an Android app that might help him explore his own limits and live the last part of his youth to its fullest.</u>
+	</string>
 
     <!-- Legal Noticies Activity -->
     <string name="googleplay_tag">Google Play services attribution:</string>
