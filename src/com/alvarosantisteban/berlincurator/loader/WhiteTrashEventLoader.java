@@ -98,9 +98,9 @@ public class WhiteTrashEventLoader implements EventLoader{
 				// Set the name depending if the band name contains "(" or not
 				if (nameAndRest[0].equals(linkNameAndRest2[1])){
 					String[] nameAndBlaBla = linkNameAndRest2[1].split("</a>",2);
-					event.setName(nameAndBlaBla[0]);
+					event.setName(StringUtils.capitalizeString(nameAndBlaBla[0]));
 				}else{
-					event.setName(nameAndRest[0]);
+					event.setName(StringUtils.capitalizeString(nameAndRest[0]));
 				}
 				String[] description1 = linkNameAndRest2[1].split("</a>");
 				// Set the constructed description
@@ -111,7 +111,6 @@ public class WhiteTrashEventLoader implements EventLoader{
 				event.setDescription(description + description2b[0] + description3[0]);
 				
 				// Set the location
-				//event.setLocation("<a href=\"https://maps.google.es/maps?q=Schoenhauser+Allee+6-7,+Berlin\">White Trash Bar</a>");
 				event.setLocation("White Trash, Schoenhauser Allee 6-7, Berlin");
 				// Set the origin
 				event.setEventsOrigin(WEBSITE_NAME);

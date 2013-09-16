@@ -30,13 +30,16 @@ public class StressFaktorEventLoader implements EventLoader {
 	//Event's topic tags
 	private String POLITICAL_TOPIC_TAG;
 	private String GOING_OUT_TOPIC_TAG;
+	private String ART_TOPIC_TAG;
 				
 	// Event's type tags
 	private String CONCERT_TYPE_TAG;
 	private String PARTY_TYPE_TAG;
 	private String TALK_TYPE_TAG;
 	private String SCREENING_TYPE_TAG;
+	private String EXHIBITION_TYPE_TAG;
 	private String OTHER_TYPE_TAG;		
+	
 
 	@Override
 	public List<Event> load(Context context) {
@@ -62,11 +65,13 @@ public class StressFaktorEventLoader implements EventLoader {
 	private void initializeTags(Context context) {
 		POLITICAL_TOPIC_TAG = context.getResources().getString(R.string.politics_topic_tag);
 		GOING_OUT_TOPIC_TAG = context.getResources().getString(R.string.goingout_topic_tag);
+		ART_TOPIC_TAG = context.getResources().getString(R.string.art_topic_tag);
 		
 		CONCERT_TYPE_TAG = context.getResources().getString(R.string.concert_type_tag);
 		PARTY_TYPE_TAG = context.getResources().getString(R.string.party_type_tag);
 		TALK_TYPE_TAG = context.getResources().getString(R.string.talk_type_tag);
 		SCREENING_TYPE_TAG = context.getResources().getString(R.string.screening_type_tag);
+		EXHIBITION_TYPE_TAG = context.getResources().getString(R.string.exhibition_type_tag);
 		OTHER_TYPE_TAG = context.getResources().getString(R.string.other_type_tag);
 	}
 
@@ -140,6 +145,8 @@ public class StressFaktorEventLoader implements EventLoader {
 	private String extractThemaTag(String typeTag) {
 		if(typeTag.equals(TALK_TYPE_TAG)){
 			return POLITICAL_TOPIC_TAG; 
+		}else if(typeTag.equals(EXHIBITION_TYPE_TAG)){
+			return ART_TOPIC_TAG;
 		}
 		return GOING_OUT_TOPIC_TAG;
 	}
@@ -170,6 +177,8 @@ public class StressFaktorEventLoader implements EventLoader {
 				lowerCase.contains("solarpowersupercinema") || lowerCase.contains("film") || lowerCase.contains("kurzfilme")
 				|| lowerCase.contains("kino-abend")){
 			return SCREENING_TYPE_TAG;
+		}else if (lowerCase.contains("ausstellung")){
+			return EXHIBITION_TYPE_TAG;
 		}
 		return OTHER_TYPE_TAG;
 	}

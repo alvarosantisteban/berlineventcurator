@@ -78,6 +78,19 @@
     <string name="talk_type_tag">Talk</string>
     <string name="screening_type_tag">Screening</string>
     <string name="other_type_tag">Other</string>
+    
+    <!-- Manifesto Activity -->
+    <string name="manifesto">Every day, every night is an opportunity of experiencing something new, something different. An opportunity to test ourselves and to learn from it.
+This learning is a labyrinth were one can get lost. This app is not going to show thou a shortcut through the maze, on the contrary, its aim is to present thou some of its branches and help thou enjoy the journey.
+\n\n
+This is about learning to obtain aesthetical pleasure from the dead of the parties, when a sunlight makes its way through an unlikely window and hits the dance floor. The moment when the masks fall down and faces almost melt in a beautiful decay. When there is no more pretending and dresscode, just pure human honesty and vulnerability. When exhausted people keep on dancing because they are afraid to go to the so called home, or because they just forgot about it.
+Feeling alive when you are all weak. Exploring and surpassing your own limits. And the music, always the music. A frantic or a slight/enveloping/covering/surrounding rhythm. It does not matter. Music, music, music...
+\n\n
+This is about being in the right city in the right moment of your life to discover it.
+\n
+This is about revolutionary enriching hedonism.
+\n\n
+Let Berlin consume you. Pathos.</string>
 
     <!-- Legal Noticies Activity -->
     <string name="googleplay_tag">Google Play services attribution:</string>
