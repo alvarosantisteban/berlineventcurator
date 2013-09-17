@@ -10,16 +10,13 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Point;
-import android.graphics.drawable.GradientDrawable.Orientation;
 import android.util.Log;
-import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
@@ -52,7 +49,6 @@ public class ManifestoActivity extends Activity {
 			ActionBar actionBar = getActionBar();
 			actionBar.setDisplayHomeAsUpEnabled(true);
 		}
-		//layout = (LinearLayout) findViewById(R.id.manifesto_layout);
 		layout = (RelativeLayout) findViewById(R.id.manifesto_layout);
 		manifesto = (TextView) findViewById(R.id.manifesto);
 		pathosDefinition = (TextView) findViewById(R.id.pathos_word);
@@ -62,43 +58,62 @@ public class ManifestoActivity extends Activity {
 		pathosDefinition.setOnClickListener(new OnClickListener() {
 		     @Override
 		     public void onClick(View arg0) {
-		    	 showPopup(ManifestoActivity.this, arg0.getX(), arg0.getY());
+		    	 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+		    		 showPopup(ManifestoActivity.this, arg0.getX(), arg0.getY());
+		    	 }else{
+		    		 showPopup(ManifestoActivity.this, 0, 0);
+		    	 }
 		     }
 		   });
 	}
-	
+	/**
+	 * Displays a popup with the definition of Pathos at the point where the parameters say.
+	 * 
+	 * @param context the activity context
+	 * @param x the x coordinate for the word Pathos
+	 * @param x the y coordinate for the word Pathos
+	 */
+	@SuppressWarnings("deprecation")
 	private void showPopup(final Activity context, float x, float y) {	
-		   int popupWidth = 550;
-		   int popupHeight = 400;
-		   // Some offset to align the popup a bit to the right, and a bit down, relative to button's position.
-		   int OFFSET_X = 215;
-		   int OFFSET_Y = 280;
-		   int pX = 0;
-		   int pY = 0;
-		   if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
-			   pX = (int) x - OFFSET_X;
-			   pY = (int) y - OFFSET_Y;
-		   }else{
-			   pX = (int) x - OFFSET_Y;
-			   pY = (int) y - OFFSET_X -230;
-		   }
-		 
-		   // Inflate the popup_layout.xml
-		   LinearLayout viewGroup = (LinearLayout) context.findViewById(R.id.popup);
-		   LayoutInflater layoutInflater = (LayoutInflater) context
-		     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		   View layout = layoutInflater.inflate(R.layout.popup_layout, viewGroup);
-		 
-		   // Creating the PopupWindow
-		   popup = new PopupWindow(this);
-		   popup.setContentView(layout);
-		   popup.setWidth(popupWidth);
-		   popup.setHeight(popupHeight);
-		   popup.setFocusable(true);
-		 
-		   // Displaying the popup
-		   popup.showAtLocation(layout, Gravity.NO_GRAVITY, pX, pY);
+		// Get the size of the device (in px)
+		Point outSize = new Point();
+		outSize.x = getWindowManager().getDefaultDisplay().getWidth();
+		outSize.y = getWindowManager().getDefaultDisplay().getHeight();
+		//Log.v(TAG, "outSize.x:"+outSize.x +" outSize.y:" +outSize.y);
+		//Log.v(TAG, "x:"+x +" y:" +y);
+		
+		// Set the size of the popup window
+		int popupWidth = outSize.x / 2;
+		int popupHeight = outSize.y / 3;
+		
+		// Set the position of the popup window
+		int OFFSET_X = 215;
+		int OFFSET_Y = 280;
+		int pX = 0;
+		int pY = 0;
+		if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
+			pX = (int) x - OFFSET_X;
+			pY = (int) y - OFFSET_Y;
+		}else{
+			pX = (int) x - OFFSET_Y;
+			pY = (int) y - OFFSET_X -230;
 		}
+		 
+		// Inflate the popup_layout.xml
+		LinearLayout viewGroup = (LinearLayout) context.findViewById(R.id.popup);
+		LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		View layout = layoutInflater.inflate(R.layout.popup_layout, viewGroup);
+		 
+		// Create the PopupWindow
+		popup = new PopupWindow(this);
+		popup.setContentView(layout);
+		popup.setWidth(popupWidth);
+		popup.setHeight(popupHeight);
+		popup.setFocusable(true);
+		 
+		// Display the popup
+		popup.showAtLocation(layout, Gravity.NO_GRAVITY, pX, pY);
+	}
 
 	public void onDestroy() {
 	    super.onDestroy();

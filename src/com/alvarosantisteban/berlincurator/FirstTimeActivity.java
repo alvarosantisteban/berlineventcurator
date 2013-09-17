@@ -12,6 +12,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.content.res.Configuration;
+import android.graphics.Point;
 import android.graphics.drawable.AnimationDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -21,10 +23,14 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.Toast;
 
 import com.alvarosantisteban.berlincurator.loader.GothDatumEventLoader;
@@ -79,6 +85,9 @@ public class FirstTimeActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 										StressFaktorEventLoader.WEBSITE_NAME, 
 										IndexEventLoader.WEBSITE_NAME};
 	
+	PopupWindow popup;
+	boolean animationStarted = false;
+	
 	/**
 	 * Loads the elements from the resources
 	 */
@@ -120,7 +129,8 @@ public class FirstTimeActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 	 */
 	public boolean onTouchEvent(MotionEvent event) {
 		Log.d(TAG, "onTouchEvent");
-		if (event.getAction() == MotionEvent.ACTION_DOWN) {
+		if (event.getAction() == MotionEvent.ACTION_DOWN && !animationStarted) {
+			animationStarted = true;
 			// Mark that the App has been used
 			Editor editor = sharedPref.edit();
 			editor.putBoolean("isFirstTimeApp", false);
@@ -134,6 +144,9 @@ public class FirstTimeActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 	    	toast.setGravity(Gravity.TOP, 0, actionBarHeight);
 	    	toast.show();
 	    	
+	    	// Show the Pathos definition
+	    	showPopup();
+	    		
 			ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 		    NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
 		    // Check if is possible to establish a connection
@@ -154,6 +167,49 @@ public class FirstTimeActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 		}
 		return super.onTouchEvent(event);
 	}
+	
+	/**
+	 * Displays a popup with the definition of Pathos. 
+	 */
+	@SuppressWarnings("deprecation")
+	private void showPopup() {	
+		// Get the size of the device (in px)
+		Point outSize = new Point();
+		outSize.x = getWindowManager().getDefaultDisplay().getWidth();
+		outSize.y = getWindowManager().getDefaultDisplay().getHeight();
+		
+		// Set the size of the popup window
+		int popupWidth = outSize.x / 2;
+		int popupHeight = outSize.y / 3;
+		
+		// Set the position of the popup window
+		int OFFSET_X = popupWidth / 2;
+		int OFFSET_Y = popupHeight;
+		int pX = 0;
+		int pY = 0;
+		if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
+			pX = OFFSET_X;
+			pY = OFFSET_Y;
+		}else{
+			pX = OFFSET_Y / 2;
+			pY = popupWidth;
+		}
+		// Inflate the popup_layout.xml
+		LinearLayout viewGroup = (LinearLayout) findViewById(R.id.popup);
+		LayoutInflater layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		View layout = layoutInflater.inflate(R.layout.popup_layout, viewGroup);
+		 
+		// Create the PopupWindow
+		popup = new PopupWindow(this);
+		popup.setContentView(layout);
+		popup.setWidth(popupWidth);
+		popup.setHeight(popupHeight);
+		popup.setFocusable(true);
+		
+		// Display the popup
+		popup.showAtLocation(layout, Gravity.NO_GRAVITY, pX, pY);
+	}
+
 	
 	/**
 	 * Inflates the menu from the XML
@@ -205,5 +261,6 @@ public class FirstTimeActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 	public void onDestroy() {
 	    super.onDestroy();
 	    Log.d(TAG, "In the onDestroy() event");
+	    popup.dismiss();
 	}
 }
