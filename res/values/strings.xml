@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Title from the activities on the Action Bar -->
     <string name="app_name">Pathos</string>
-    <string name="title_activity_date">Events of the day</string>
     <string name="title_activity_event">Event information</string>
     <string name="title_activity_calendar">Calendar</string>
     <string name="title_activity_settings">Settings</string>
@@ -12,8 +11,7 @@
     <string name="title_activity_manifesto">Manifesto</string>
 
     <!-- Main Activity -->
-    <string name="loading_events">Click the button to load the events</string>
-    <string name="image_find_text">Find what\'s going on in Berlin tonight!</string>
+    <string name="loading_events">Click the image to load the events</string>
 
     <!-- Date Activity -->
     <string name="events_for_today">What are you doing today?</string>
@@ -34,7 +32,6 @@
     <string name="events_links">There are no links for this event.</string>
     <string name="add_to_calendar">Add this event to my Google Calendar</string>
     <string name="events_map_tag">Location of the event</string>
-    <string name="events_interesting">Mark if you find this event interesting</string>
     <string name="events_location">The location of this event could not be determined</string>
     <string name="mark_event">You marked this event as interesting</string>
     <string name="unmark_event">You unmarked this event</string>
@@ -49,8 +46,6 @@
     <string name="legal_summary">Legal attribution to the services that Pathos uses</string>
     <string name="possible_organizations_title">Organization of the events</string>
     <string name="possible_organizations_summary">Choose the way you want the information to be organized</string>
-    <string name="general_selection_title">Selection</string>
-    <string name="general_selection_summary">Decide the types of events that you want to see</string>
     <string name="multilist_thema_title">Selection of topics</string>
     <string name="multilist_thema_summary">Choose the topics that interest you</string>
     <string name="multilist_thema_dialog">Active topics</string>
@@ -62,7 +57,7 @@
     <string name="multilist_dialog">Active origins</string>
     <string name="organization_by_type">By Type</string>
     <string name="organization_by_topic">By Topic</string>
-    <string name="organization_by_origin">By Origin</string>
+    <string name="organization_by_origin" tools:ignore="UnusedResources">By Origin</string>
     <string name="pref_category_organization_and_tags_title">Organization and tags</string>
     <string name="pref_category_info_title">Info</string>
 
@@ -138,15 +133,11 @@ From Ancient Greek πάθος (pathos, “suffering”).
     <string name="menu_refresh">Refresh</string>
 
     <!-- General, blanks and no infos -->
-    <string name="image_content_description">No content description for this image</string>
     <string name="logo_content_description">Logo from PathosBerlin</string>
     <string name="time_unknown"></string>
-    <string name="nothing"></string>
-    <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
 
     <!-- Arrays -->
-    <string-array name="empty_array" />
     <string-array name="sites_array">
         <item>I Heart Berlin</item>
         <item>Metal Concerts</item>
@@ -206,20 +197,6 @@ From Ancient Greek πάθος (pathos, “suffering”).
         <item>By Topic</item>
         <item>By Type</item>
         <item>By Origin</item>
-    </string-array>
-    <!--
-    Old array
-	<string-array name="sites_array_values">
-        <item>I Heart Berlin</item>
-        <item>Berlin Art Parasites</item>
-        <item>Metal Concerts</item>
-        <item>White Trash</item>
-        <item>Köpi\'s events</item>
-        <item>Goth Datum</item>
-        <item>Stress Faktor</item>
-        <item>Index</item>
-    </string-array>
-    -->
-    
+    </string-array>   
 
 </resources>

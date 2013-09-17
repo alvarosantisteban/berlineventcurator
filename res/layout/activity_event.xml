@@ -39,7 +39,7 @@
 	            android:layout_width="24dp"
 	            android:layout_height="34dp"
 	            android:paddingRight="5dp"
-	            android:src="@drawable/google_calendar_icon" 
+	            android:src="@drawable/ic_google_calendar" 
 	            android:contentDescription="@string/add_to_calendar"
 	            android:layout_weight="0" 
 	            android:onClick="addToMyGoogleCalendar"/>

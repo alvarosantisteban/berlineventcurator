@@ -8,6 +8,7 @@
         <ignore path="src/com/alvarosantisteban/berlincurator/EventActivity.java" />
         <ignore path="src/com/alvarosantisteban/berlincurator/FirstTimeActivity.java" />
     </issue>
+    <issue id="MissingTranslation" severity="ignore" />
     <issue id="NewApi" severity="ignore">
         <ignore path="src/com/alvarosantisteban/berlincurator/CalendarActivity.java" />
         <ignore path="src/com/alvarosantisteban/berlincurator/DateActivity.java" />
@@ -17,6 +18,8 @@
     </issue>
     <issue id="ShowToast">
         <ignore path="src/com/alvarosantisteban/berlincurator/DateActivity.java" />
+        <ignore path="src/com/alvarosantisteban/berlincurator/DateActivity.java" />
+        <ignore path="src/com/alvarosantisteban/berlincurator/DownloadWebpageAsyncTask.java" />
         <ignore path="src/com/alvarosantisteban/berlincurator/DownloadWebpageAsyncTask.java" />
         <ignore path="src/com/alvarosantisteban/berlincurator/FirstTimeActivity.java" />
     </issue>
