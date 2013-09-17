@@ -1,129 +1,132 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".AboutActivity" >
-
-    <TextView
-        android:id="@+id/my_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/development"
-        android:layout_below="@+id/development"
-        android:text="@string/my_name"
-        android:textAlignment="textEnd" />
-
-    <TextView
-        android:id="@+id/code"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/my_name"
-        android:layout_below="@+id/my_name"
-        android:layout_marginTop="64dp"
-        android:text="@string/code"
-        android:textStyle="bold" />
-
-    <TextView
-        android:id="@+id/codeUrl"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/my_name"
-        android:layout_below="@+id/code"
-        android:text="@string/code_url" />
-
-    <TextView
-        android:id="@+id/email"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/my_name"
-        android:layout_below="@+id/my_name"
-        android:layout_marginTop="15dp"
-        android:text="@string/email"
-        android:textStyle="bold" />
-
-    <TextView
-        android:id="@+id/email_address"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/code"
-        android:layout_below="@+id/email"
-        android:text="@string/email_address" />
-
-    <TextView
-        android:id="@+id/development"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_centerVertical="true"
-        android:text="@string/development"
-        android:textStyle="bold" />
-
-    <ImageView
-        android:id="@+id/logo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/development"
-        android:layout_alignParentTop="true"
-        android:contentDescription="@string/logo_content_description"
-        android:src="@drawable/icon2_nobackground" />
-
-    <TextView
-        android:id="@+id/app_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/logo"
-        android:layout_below="@+id/logo"
-        android:layout_marginTop="22dp"
-        android:text="@string/app_name"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
-
-    <TextView
-        android:id="@+id/version"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/logo"
-        android:layout_below="@+id/app_name"
-        android:text="@string/version"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
-
-    <TextView
-        android:id="@+id/artwork_tag"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/codeUrl"
-        android:layout_below="@+id/codeUrl"
-        android:layout_marginTop="15dp"
-        android:textStyle="bold"
-        android:text="@string/artwork_tag" />
-
-    <TextView
-        android:id="@+id/artwork"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/artwork_tag"
-        android:layout_below="@+id/artwork_tag"
-        android:text="@string/artwork" />
-
-    <TextView
-        android:id="@+id/thanks_tag"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/artwork"
-        android:layout_below="@+id/artwork"
-        android:layout_marginTop="15dp"
-        android:textStyle="bold"
-        android:text="@string/thanks_tag" />
-
-    <TextView
-        android:id="@+id/thanks"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/thanks_tag"
-        android:layout_below="@+id/thanks_tag"
-        android:text="@string/thanks"/>
-
-</RelativeLayout>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+	    xmlns:tools="http://schemas.android.com/tools"
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent"
+	    tools:context=".AboutActivity" >
+	<RelativeLayout 
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:paddingBottom="@dimen/activity_vertical_margin"
+	    android:paddingLeft="@dimen/activity_horizontal_margin"
+	    android:paddingRight="@dimen/activity_horizontal_margin"
+	    android:paddingTop="@dimen/activity_vertical_margin"
+	    >
+	    
+	    <ImageView
+	        android:id="@+id/logo"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_alignParentTop="true"
+	        android:contentDescription="@string/logo_content_description"
+	        android:src="@drawable/icon2_nobackground" />
+	
+	    <TextView
+	        android:id="@+id/app_name"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_alignLeft="@+id/logo"
+	        android:layout_below="@+id/logo"
+	        android:layout_marginTop="22dp"
+	        android:text="@string/app_name"
+	        android:textAppearance="?android:attr/textAppearanceLarge" />
+	
+	    <TextView
+	        android:id="@+id/version"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_alignLeft="@+id/logo"
+	        android:layout_below="@+id/app_name"
+	        android:text="@string/version"
+	        android:textAppearance="?android:attr/textAppearanceMedium" />
+	    
+	    <TextView
+	        android:id="@+id/development"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_alignLeft="@+id/logo"
+	        android:layout_below="@+id/version"
+	        android:text="@string/development"
+	        android:textStyle="bold" 
+	        android:layout_marginTop="15dp"/>
+	
+	    <TextView
+	        android:id="@+id/my_name"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_alignLeft="@+id/logo"
+	        android:layout_below="@+id/development"
+	        android:text="@string/my_name"/>
+	    
+	    <TextView
+	        android:id="@+id/email"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_alignLeft="@+id/logo"
+	        android:layout_below="@+id/my_name"
+	        android:layout_marginTop="15dp"
+	        android:text="@string/email"
+	        android:textStyle="bold" />
+	
+	    <TextView
+	        android:id="@+id/email_address"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_alignLeft="@+id/logo"
+	        android:layout_below="@+id/email"
+	        android:text="@string/email_address" />
+	
+	    <TextView
+	        android:id="@+id/code"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_alignLeft="@+id/logo"
+	        android:layout_below="@+id/email_address"
+	        android:layout_marginTop="15dp"
+	        android:text="@string/code"
+	        android:textStyle="bold" />
+	
+	    <TextView
+	        android:id="@+id/codeUrl"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_alignLeft="@+id/logo"
+	        android:layout_below="@+id/code"
+	        android:text="@string/code_url" />    
+	
+	    <TextView
+	        android:id="@+id/artwork_tag"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_alignLeft="@+id/logo"
+	        android:layout_below="@+id/codeUrl"
+	        android:layout_marginTop="15dp"
+	        android:textStyle="bold"
+	        android:text="@string/artwork_tag" />
+	
+	    <TextView
+	        android:id="@+id/artwork"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_alignLeft="@+id/logo"
+	        android:layout_below="@+id/artwork_tag"
+	        android:text="@string/artwork" />
+	
+	    <TextView
+	        android:id="@+id/thanks_tag"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_alignLeft="@+id/logo"
+	        android:layout_below="@+id/artwork"
+	        android:layout_marginTop="15dp"
+	        android:textStyle="bold"
+	        android:text="@string/thanks_tag" />
+	
+	    <TextView
+	        android:id="@+id/thanks"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_alignLeft="@+id/logo"
+	        android:layout_below="@+id/thanks_tag"
+	        android:text="@string/thanks"/>
+	</RelativeLayout>
+</ScrollView>
