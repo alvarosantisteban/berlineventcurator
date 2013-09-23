@@ -2,7 +2,7 @@
 # generated on 2013/08/15 05:07:12
 #
 # --table-start--
-dataClass=com.alvarosantisteban.berlincurator.Event
+dataClass=com.alvarosantisteban.pathos.Event
 tableName=events
 # --table-fields-start--
 # --field-start--

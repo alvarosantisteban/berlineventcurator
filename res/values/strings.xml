@@ -75,18 +75,15 @@
     <string name="other_type_tag">Other</string>
     
     <!-- Manifesto Activity -->
-    <string name="manifesto">Every day, every night is an opportunity of experiencing something new, something different. An opportunity to test ourselves and to learn from it.
-This learning is a labyrinth were one can get lost. This app is not going to show you the right path through the maze, on the contrary, its aim is to present you some of its branches and help you enjoy the journey.
-\n\n
-This is about learning to obtain aesthetical pleasure from the dead of the parties, when a sunlight makes its way through an unlikely window and hits the dance floor. The moment when the masks fall down and faces almost melt in a beautiful decay. When there is no more pretending and dresscode, just pure human honesty and vulnerability. When exhausted people keep on dancing because they are afraid to go to the so called home, or because they just forgot about it.
-Feeling alive when you are all weak. Exploring and surpassing your own limits with a frantic or a slight/enveloping/covering/surrounding rhythm as your only guidance.
-\n\n
-This is about being in the right city in the right moment of your life to discover it.
+    <string name="manifesto">Every day, every night is an opportunity to experience something new, something different. An opportunity to test, expand and learn something about ourselves. This learning is a labyrinth were one can get lost. This app intends not to direct your path through the maze. On the contrary, its aim is to reveal a selection of its branches to open up your own personal journey. 
 \n
-This is about revolutionary enriching hedonism.
+This is about being aware of how privileged we are. Of assuming that we have a responsibility, a commitment to a moral imperative that makes us outrage towards injustice. To understand the importance of networks of humans helping other humans while keeping our independence intact. Together, as one, reconquering the public space back.
 \n
-	</string>
-	<string name="consume">Let Berlin consume you. </string>
+This is about wandering through galleries in search of one of those rare moments where art honors its name and you are deeply moved by a unique beauty, a certain perfection or a concept, a reality that was unknown to you until that moment. Things that remain inside you, changing your perception of life. 
+\n
+This is about learning to obtain aesthetical pleasure from the death of the parties, when a slither of sunlight creeps onto the dance floor in an hourless night. When the masks fall down and true faces are revealed as melting in a beautiful decay. When pretence and inhibitions are abandoned to expose a purer human honesty and vulnerability. When exhausted bodies continue dancing for fear of the idea of returning home, or even because they forgot to remember it\'s very existence. Feeling alive when you are at your weakest. Exploring and surpassing your own limits with a frantic or enveloping rhythm as your only guide.
+</string>
+	<string name="consume">Let Berlin consume you.</string>
 	<string name="antimanifesto">
 		(If you are against the mystification of Berlin and think that all this is bullshit, don\'t worry, you can still use this app as a way of getting interesting events)
 	</string>
