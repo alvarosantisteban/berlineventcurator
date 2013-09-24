@@ -30,11 +30,8 @@ import android.widget.TextView;
  */
 public class ManifestoActivity extends Activity {
 
-	//LinearLayout layout;
 	RelativeLayout layout;
-	TextView manifesto;
 	TextView pathosDefinition;
-	//Point p; //The "x" and "y" position of the "Show Button" on screen.
 	PopupWindow popup;
 	
 	private final String TAG = "ManifestoActivity";
@@ -50,9 +47,9 @@ public class ManifestoActivity extends Activity {
 			actionBar.setDisplayHomeAsUpEnabled(true);
 		}
 		layout = (RelativeLayout) findViewById(R.id.manifesto_layout);
-		manifesto = (TextView) findViewById(R.id.manifesto);
 		pathosDefinition = (TextView) findViewById(R.id.pathos_word);
 		pathosDefinition.setTextColor(Color.DKGRAY);
+		pathosDefinition.setText(" Pathos.");
 		popup = null;
 		
 		pathosDefinition.setOnClickListener(new OnClickListener() {
@@ -88,7 +85,7 @@ public class ManifestoActivity extends Activity {
 		
 		// Set the position of the popup window
 		int OFFSET_X = 215;
-		int OFFSET_Y = 280;
+		int OFFSET_Y = (int) ((int)outSize.y / 1.7);
 		int pX = 0;
 		int pY = 0;
 		if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){

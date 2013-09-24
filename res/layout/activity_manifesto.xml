@@ -18,6 +18,7 @@
         android:id="@+id/manifesto"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textIsSelectable="true"
         android:text="@string/manifesto" />
          
          <TextView
@@ -27,6 +28,7 @@
             android:layout_alignBaseline="@+id/pathos_word"
             android:layout_alignBottom="@+id/pathos_word"
             android:layout_alignParentLeft="true"
+            android:textIsSelectable="true"
             android:text="@string/consume" />
 
         <TextView
@@ -37,6 +39,7 @@
             android:layout_alignParentLeft="true"
             android:layout_below="@+id/pathos_word"
             android:paddingTop="22dp"
+            android:textIsSelectable="true"
             android:text="@string/antimanifesto" />
 
         <TextView
@@ -46,6 +49,7 @@
             android:layout_below="@+id/manifesto"
             android:layout_toRightOf="@+id/burnText"
             android:textStyle="bold"
+            android:textIsSelectable="true"
             android:text="@string/app_name" />
 
     </RelativeLayout>

@@ -39,7 +39,7 @@
 
     <!-- Settings Activity -->
     <string name="manifesto_title">Manifesto</string>
-    <string name="manifesto_summary">The meaning of life!</string>
+    <string name="manifesto_summary">Let Berlin consume you</string>
     <string name="about_title">About</string>
     <string name="about_summary">General information about Pathos</string>
     <string name="legal_title">Legal Notices</string>
@@ -75,17 +75,15 @@
     <string name="other_type_tag">Other</string>
     
     <!-- Manifesto Activity -->
-    <string name="manifesto">Every day, every night is an opportunity to experience something new, something different. An opportunity to test, expand and learn something about ourselves. This learning is a labyrinth were one can get lost. This app intends not to direct your path through the maze. On the contrary, its aim is to reveal a selection of its branches to open up your own personal journey. 
-\n
-This is about being aware of how privileged we are. Of assuming that we have a responsibility, a commitment to a moral imperative that makes us outrage towards injustice. To understand the importance of networks of humans helping other humans while keeping our independence intact. Together, as one, reconquering the public space back.
-\n
-This is about wandering through galleries in search of one of those rare moments where art honors its name and you are deeply moved by a unique beauty, a certain perfection or a concept, a reality that was unknown to you until that moment. Things that remain inside you, changing your perception of life. 
-\n
-This is about learning to obtain aesthetical pleasure from the death of the parties, when a slither of sunlight creeps onto the dance floor in an hourless night. When the masks fall down and true faces are revealed as melting in a beautiful decay. When pretence and inhibitions are abandoned to expose a purer human honesty and vulnerability. When exhausted bodies continue dancing for fear of the idea of returning home, or even because they forgot to remember it\'s very existence. Feeling alive when you are at your weakest. Exploring and surpassing your own limits with a frantic or enveloping rhythm as your only guide.
+    <string name="manifesto">\tEvery day, every night is an opportunity to experience something new, something different. An opportunity to test, expand and learn something about ourselves. This learning is a labyrinth were one can get lost. This app intends not to direct your path through the maze. On the contrary, its aim is to reveal a selection of its branches to open up your own personal journey. 
+\n\n\tThis is about being aware of how privileged we are. Of assuming that we have a responsibility, a commitment to a moral imperative that makes us outrage towards injustice. To understand the importance of networks of humans helping other humans while keeping our independence intact. Together, as one, reconquering the public space back.
+\n\n\tThis is about wandering through galleries in search of one of those rare moments where art honors its name and you are deeply moved by a unique beauty, a certain perfection or a concept, a reality that was unknown to you until that moment. Things that remain inside you, changing your perception of life. 
+\n\n\tThis is about learning to obtain aesthetical pleasure from the death of the parties, when a slither of sunlight creeps onto the dance floor in an hourless night. When the masks fall down and true faces are revealed as melting in a beautiful decay. When pretence and inhibitions are abandoned to expose a purer human honesty and vulnerability. When exhausted bodies continue dancing for fear of the idea of returning home, or even because they forgot to remember it\'s very existence. Feeling alive when you are at your weakest. Exploring and surpassing your own limits with a frantic or enveloping rhythm as your only guide.
+\n\n
 </string>
-	<string name="consume">Let Berlin consume you.</string>
+	<string name="consume">\tLet Berlin consume you.</string>
 	<string name="antimanifesto">
-		(If you are against the mystification of Berlin and think that all this is bullshit, don\'t worry, you can still use this app as a way of getting interesting events)
+(If you are against the mystification of Berlin and think that all this is bullshit, don\'t worry, you can still use this app as a way of getting interesting events)
 	</string>
 	<string name="pathos_definition">
 <b>Etymology</b>

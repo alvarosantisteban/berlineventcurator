@@ -129,7 +129,7 @@ public class StressFaktorEventLoader implements EventLoader {
 				event.setTypeTag(extractTypeTag(nameAndRest[0].replaceFirst(": ", "").trim()));
 				// Set the thema tag
 				event.setThemaTag(extractThemaTag(event.getTypeTag()));
-				String eventTitle = getTitle(description, event.getTypeTag());
+				String eventTitle = getTitle(description, name, event.getTypeTag());
 				if(eventTitle != null){
 					name = name+": " +eventTitle;
 				}
@@ -144,13 +144,17 @@ public class StressFaktorEventLoader implements EventLoader {
 	 * Extracts the title of the screening or the name of the first band playing, if there is any. If not, returns null.
 	 * 
 	 * @param description The description of the event, which may contains the title
+	 * @param name The name of the event so far
 	 * @param tag the type tag for that event
 	 * @return the title of the screening or the name of the band. For all other tags, return null.
 	 */
-	private String getTitle(String description, String tag) {
+	private String getTitle(String description, String name, String tag) {
 		if(tag.equals(SCREENING_TYPE_TAG) || tag.equals(CONCERT_TYPE_TAG)){
+			if (name.contains("Peliculoso")){
+				return null;
+			}
 			String[] startTitle = description.split("\"",3);
-			if(startTitle.length == 3){
+			if(startTitle.length == 3){				
 				return startTitle[1].trim();
 			}
 		}
