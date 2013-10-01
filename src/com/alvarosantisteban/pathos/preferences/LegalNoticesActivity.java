@@ -3,6 +3,8 @@ package com.alvarosantisteban.pathos.preferences;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -19,11 +21,20 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 public class LegalNoticesActivity extends Activity {
 	
 	TextView googlePlayAttributions;
+	TextView websites;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_legal_notices);
+		websites = (TextView)findViewById(R.id.used_websites_attribution);
+		websites.setText(Html.fromHtml("<a href=\"http://www.iheartberlin.de/\">I Heart Berlin</a> <br>" +
+				"<a href=\"http://berlinmetal.lima-city.de/index.php/index.php?id=start\">Metal Concerts</a> <br>" +
+				"<a href=\"http://www.whitetrashfastfood.com/events/\">White Trash</a> <br>" +
+				"<a href=\"http://www.goth-city-radio.com/dsb/dates.php\">Goth Datum</a> <br>" +
+				"<a href=\"http://stressfaktor.squat.net/termine.php\">Stress Faktor</a> <br>" +
+				"<a href=\"http://www.indexberlin.de/openings-and-events\">Index</a> <br>"));
+		websites.setMovementMethod (LinkMovementMethod.getInstance());
 		googlePlayAttributions = (TextView) findViewById(R.id.googleplay_attribution);
 		googlePlayAttributions.setText(GooglePlayServicesUtil.getOpenSourceSoftwareLicenseInfo(this));
 	}
@@ -46,7 +57,6 @@ public class LegalNoticesActivity extends Activity {
 			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 			startActivity(intent);
 		}
- 
         return true;
     }
 }

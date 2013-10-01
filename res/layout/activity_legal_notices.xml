@@ -15,17 +15,32 @@
 	    android:orientation="vertical" 
 	    tools:context=".LegalNoticesActivity" >
 	    <TextView
+	        android:id="@+id/used_websites_tag"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:textStyle="bold"
+	        android:text="@string/used_websites_tag" 
+	        android:textIsSelectable="true"/>
+	    <TextView
+	        android:id="@+id/used_websites_attribution"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="@string/used_websites_attribution" 
+	        android:textIsSelectable="true"/>
+	    <TextView
 	        android:id="@+id/googleplay_tag"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:textStyle="bold"
-	        android:text="@string/googleplay_tag" />
+	        android:text="@string/googleplay_tag" 
+	        android:textIsSelectable="true"/>
 	
 	    <TextView
 	        android:id="@+id/googleplay_attribution"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
-	        android:text="@string/googleplay_attribution" />
+	        android:text="@string/googleplay_attribution" 
+	        android:textIsSelectable="true"/>
 	</LinearLayout>
 
 </ScrollView>
