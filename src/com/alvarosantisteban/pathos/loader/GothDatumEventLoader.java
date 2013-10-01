@@ -134,7 +134,11 @@ public class GothDatumEventLoader implements EventLoader {
 				// Get the place for the description
 				String place = "The event will take place in " +placeAndRest[0].trim() +"<br>"; // In many cases includes the word "Berlin"	
 				//event.setLocation("<a href=\"https://maps.google.es/maps?q="+placeAndRest[0].trim().replace(' ', '+')+"\">"+placeAndRest[0].trim()+"</a>");
-				event.setLocation(placeAndRest[0].trim());
+				String location = placeAndRest[0].trim();
+				if(location.equals("Berlin - K17")){
+					location = "Pettenkoferstraﬂe 17a, 10247 Berlin";
+				}
+				event.setLocation(location);
 				String[] nothingNameAndRest = placeAndRest[1].split("<i>",2);
 				String[] nameAndRest = nothingNameAndRest[1].split("<",2);
 				// Set the name
