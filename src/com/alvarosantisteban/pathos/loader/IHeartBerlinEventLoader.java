@@ -208,6 +208,21 @@ public class IHeartBerlinEventLoader implements EventLoader {
 						street = description.indexOf("strasse");
 						if(street > -1){
 							pattern = "strasse";
+						}else{
+							street = description.indexOf("-Alle");
+							if(street > -1){
+								pattern = "-Alle";
+							}else{
+								street = description.indexOf("platz");
+								if(street > -1){
+									pattern = "platz";
+								}else{
+									street = description.indexOf("markt");
+									if(street > -1){
+										pattern = "markt";
+									}
+								}
+							}
 						}
 					}
 				}
