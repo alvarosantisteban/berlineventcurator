@@ -9,6 +9,7 @@
     <string name="title_activity_about">About</string>
     <string name="title_activity_legal_notices">Legal Notices</string>
     <string name="title_activity_manifesto">Manifesto</string>
+    <string name="title_activity_known_issues">Known Issues</string>
 
     <!-- Main Activity -->
     <string name="loading_events">Click the image to load the events</string>
@@ -42,6 +43,8 @@
     <string name="manifesto_summary">Let Berlin consume you</string>
     <string name="about_title">About</string>
     <string name="about_summary">General information about Pathos</string>
+    <string name="known_issues_title">Known Issues</string>
+    <string name="known_issues_summary">Because Pathos ain\'t perfect&#8230; and we like it that way</string>
     <string name="legal_title">Legal Notices</string>
     <string name="legal_summary">Legal attribution to the services that Pathos uses</string>
     <string name="possible_organizations_title">Organization of the events</string>
@@ -73,37 +76,23 @@
     <string name="talk_type_tag">Talk</string>
     <string name="screening_type_tag">Screening</string>
     <string name="other_type_tag">Other</string>
-    
+
     <!-- Manifesto Activity -->
     <string name="manifesto">\tEvery day, every night is an opportunity to experience something new, something different. An opportunity to test, expand and learn something about ourselves. This learning is a labyrinth were one can get lost. This app intends not to direct your path through the maze. On the contrary, its aim is to reveal a selection of its branches to open up your own personal journey. 
 \n\n\tThis is about being aware of how privileged we are. Of assuming that we have a responsibility, a commitment to a moral imperative that makes us outrage towards injustice. To understand the importance of networks of humans helping other humans while keeping our independence intact. Together, as one, reconquering the public space back.
 \n\n\tThis is about wandering through galleries in search of one of those rare moments where art honors its name and you are deeply moved by a unique beauty, a certain perfection or a concept, a reality that was unknown to you until that moment. Things that remain inside you, changing your perception of life. 
 \n\n\tThis is about learning to obtain aesthetical pleasure from the death of the parties, when a slither of sunlight creeps onto the dance floor in an hourless night. When the masks fall down and true faces are revealed as melting in a beautiful decay. When pretence and inhibitions are abandoned to expose a purer human honesty and vulnerability. When exhausted bodies continue dancing for fear of the idea of returning home, or even because they forgot to remember it\'s very existence. Feeling alive when you are at your weakest. Exploring and surpassing your own limits with a frantic or enveloping rhythm as your only guide.
-\n\n
-</string>
-	<string name="consume">\tLet Berlin consume you.</string>
-	<string name="antimanifesto">
-(If you are against mythologizing Berlin and think that all this is bullshit, don\'t worry, you can still use this app as a way of receiving interesting events)
-	</string>
-	<string name="pathos_definition">
-<b>Etymology</b>
-\n
+\n\n</string>
+    <string name="consume">\tLet Berlin consume you.</string>
+    <string name="antimanifesto">(If you are against mythologizing Berlin and think that all this is bullshit, don\'t worry, you can still use this app as a way of receiving interesting events)</string>
+    <string name="pathos_definition"><b>Etymology</b>\n
 From Ancient Greek πάθος (pathos, “suffering”).
-\n
-<b>Noun</b>
-\n
-<b>pathos</b> (countable and uncountable; plural pathoses)
-	\n
-    <b>1.</b> That quality or property of anything which touches the feelings or excites emotions and passions, especially, that which awakens tender emotions, such as pity, sorrow, and the like; contagious warmth of feeling, action, or expression; pathetic quality. 
-    \n
-    <b>2.</b> (rhetoric) A writer\'s attempt to persuade an audience through appeals involving the use of strong emotions not strictly limited to pity.
-	\n
-    <b>3.</b> (literature) An author\'s attempt to evoke a feeling of pity or sympathetic sorrow for a character.
-    \n
-    <b>4.</b> (theology, philosophy) In theology and existentialist ethics following Kierkegaard and Heidegger, a deep and abiding commitment of the heart, as in the notion of "finding your passion" as an important aspect of a fully lived, engaged life.
-	\n
-	<b>5.</b> <u>(technology) A developer\'s attempt to reunite 0\'s and 1\'s to create an Android app that might help him explore his own limits and live the last part of his youth to its fullest.</u>
-	</string>
+\n<b>Noun</b>\n<b>pathos</b> (countable and uncountable; plural pathoses)
+	\n<b>1.</b> That quality or property of anything which touches the feelings or excites emotions and passions, especially, that which awakens tender emotions, such as pity, sorrow, and the like; contagious warmth of feeling, action, or expression; pathetic quality. 
+    \n<b>2.</b> (rhetoric) A writer\'s attempt to persuade an audience through appeals involving the use of strong emotions not strictly limited to pity.
+	\n<b>3.</b> (literature) An author\'s attempt to evoke a feeling of pity or sympathetic sorrow for a character.
+    \n<b>4.</b> (theology, philosophy) In theology and existentialist ethics following Kierkegaard and Heidegger, a deep and abiding commitment of the heart, as in the notion of "finding your passion" as an important aspect of a fully lived, engaged life.
+	\n<b>5.</b><u>(technology) A developer\'s attempt to reunite 0\'s and 1\'s to create an Android app that might help him explore his own limits and live the last part of his youth to its fullest.</u></string>
 
     <!-- Legal Noticies Activity -->
     <string name="googleplay_tag">Google Play services attribution:</string>
@@ -111,6 +100,15 @@ From Ancient Greek πάθος (pathos, “suffering”).
     <string name="used_websites_tag">Information extracted from the following websites:</string>
     <string name="used_websites_attribution">I Heart Berlin,Metal Concerts,White Trash,Goth Datum,Stress Faktor,Index</string>
 
+    <!-- Knonwn Issues Activity -->
+    <string name="known_issues_tag">Pathos has the following known issues. Pathos hopes you will still love her.</string>
+    <string name="known_issues">
+        \n\n<b>1.- Repeated events.</b> It might happen that the same event appears two times. The reason is that a same event came from two different websites but unfortunately there is something in the name or description that makes them indistinguishable for Pathos. Poor Pathos.
+        \n\n<b>2.- Outdated events.</b> In rare occasions, it might happen that the event\'s organizers change its description without letting Pathos know about it. Poor Pathos.
+        \n\n<b>3.- Wrong classification.</b> Very few times an event gets wrongly classified. That does not happen often, because if there is a doubt about the type of event, the "Others" tag will be used. Still, it might happen that a strange description confuses Pathos. Poor Pathos.
+        \n\n<b>4.- Map not displayed.</b> It can happen that you see the event\'s address in the description but still, Pathos does not recognize it and therefore does not display a map for it. Are you calling Pathos stupid? Poor Pathos.
+    </string> 
+    
     <!-- About Activity -->
     <string name="version">Version 1.0</string>
     <string name="development">Developed by:</string>
@@ -194,6 +192,6 @@ From Ancient Greek πάθος (pathos, “suffering”).
         <item>By Topic</item>
         <item>By Type</item>
         <item>By Origin</item>
-    </string-array>   
+    </string-array>
 
 </resources>

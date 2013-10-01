@@ -55,6 +55,12 @@
 	        android:title="@string/about_title"
 	        />
 	    <Preference 
+	        android:key="known_issues"
+	        android:dialogTitle="@string/known_issues_title"
+	        android:summary="@string/known_issues_summary"        
+	        android:title="@string/known_issues_title"
+	        />
+	    <Preference 
 	        android:key="legal"
 	        android:dialogTitle="@string/legal_title"
 	        android:summary="@string/legal_summary"        

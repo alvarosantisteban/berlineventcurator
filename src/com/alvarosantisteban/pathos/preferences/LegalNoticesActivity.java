@@ -1,7 +1,9 @@
 package com.alvarosantisteban.pathos.preferences;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
@@ -26,6 +28,11 @@ public class LegalNoticesActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		// Enable the app's icon to act as home
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+			ActionBar actionBar = getActionBar();
+			actionBar.setDisplayHomeAsUpEnabled(true);
+		}
 		setContentView(R.layout.activity_legal_notices);
 		websites = (TextView)findViewById(R.id.used_websites_attribution);
 		websites.setText(Html.fromHtml("<a href=\"http://www.iheartberlin.de/\">I Heart Berlin</a> <br>" +
@@ -42,7 +49,7 @@ public class LegalNoticesActivity extends Activity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.legal_notices, menu);
+		getMenuInflater().inflate(R.menu.about, menu);
 		return true;
 	}
 	

@@ -57,6 +57,8 @@ public class SettingsActivity extends PreferenceActivity  {
 	        findPreference("manifesto").setIntent(new Intent(this, ManifestoActivity.class));
 	        // Set the intent for the About preference (triggered when clicked)
 	        findPreference("about").setIntent(new Intent(this, AboutActivity.class));
+	        // Set the intent for the Known Issues preference (triggered when clicked)
+	        findPreference("known_issues").setIntent(new Intent(this, KnownIssuesActivity.class));
 	        // Set the intent for the Legal Notices preference (triggered when clicked)
 	        findPreference("legal").setIntent(new Intent(this, LegalNoticesActivity.class));
 	        organizationList.setOnPreferenceChangeListener(preferenceListener); 

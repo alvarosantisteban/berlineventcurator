@@ -107,6 +107,8 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
         findPreference("manifesto").setIntent(new Intent(getActivity(), ManifestoActivity.class));
         // Set the intent for the About preference (triggered when clicked)
         findPreference("about").setIntent(new Intent(getActivity(), AboutActivity.class));
+        // Set the intent for the Known Issues preference (triggered when clicked)
+        findPreference("known_issues").setIntent(new Intent(getActivity(), KnownIssuesActivity.class));
         // Set the intent for the Legal Notices preference (triggered when clicked)
         findPreference("legal").setIntent(new Intent(getActivity(), LegalNoticesActivity.class));  
     }
