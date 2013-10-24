@@ -183,7 +183,7 @@ public class ListAdapter extends BaseExpandableListAdapter {
 		}else if(headerName.equals("Concert")){
 			sentence = "Concerts";
 		}else if(headerName.equals("Other")){
-			sentence = "Something that can not be categorized";
+			sentence = "Not categorized";
 		}else{
 			sentence = headerName;
 		}

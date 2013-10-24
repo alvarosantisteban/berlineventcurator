@@ -36,77 +36,86 @@ public final class StringUtils {
 		} catch (ParseException e) {
 			e.printStackTrace();
 			return "";
+		} catch (Exception e){
+			e.printStackTrace();
+			return "";
 		}
 	}
 	
 	/**
-	 *  A small separate function to extract the hour from the html mess.
+	 *  A small separate function to extract the hour (based on am/pm) from the html mess.
 	 *  
 	 * @param theTime the String with the time
 	 * @return the time in the format HH:MM or HH:MM-HH:MM or an empty string if there was no time or a problem arose.
 	 */
 	public static String extractTime(String theTime) {
-		//Log.d(TAG,"|"+theTime +"|");
-		theTime = theTime.replace(".", ":");
-		//Log.d(TAG,"|"+theTime +"|");
-		String timePeriod = "";
-		// Make sure that there is a time
-		if (theTime.contains("pm")){
-			timePeriod = "pm";
-		}else if (theTime.contains("am")){
-			timePeriod = "am";
-		}else{
-			// Is not a time
-			Log.w(TAG,"It's not a time. We return an empty string");
+		try{
+			//Log.d(TAG,"|"+theTime +"|");
+			theTime = theTime.replace(".", ":");
+			//Log.d(TAG,"|"+theTime +"|");
+			String timePeriod = "";
+			// Make sure that there is a time
+			if (theTime.contains("pm")){
+				timePeriod = "pm";
+			}else if (theTime.contains("am")){
+				timePeriod = "am";
+			}else{
+				// Is not a time
+				Log.w(TAG,"It's not a time. We return an empty string");
+				return "";
+			}
+			// Extract the time and set it
+			String[] timeAndRest = theTime.split(timePeriod); 
+						
+			// Search for a digit
+			int z = 0;
+			while (!Character.isDigit(timeAndRest[0].charAt(z))) z++;
+			String hour = timeAndRest[0].substring(z);
+			hour = hour.trim();
+			String timeSeparator = "";
+			// Check if there is a time interval by looking at a time separator
+			if (hour.contains("-")){
+				timeSeparator = "-";
+			}else if (hour.contains("–")){
+				timeSeparator = "–";
+			}else{	
+				String hour24;
+				if (hour.length() == 1){
+					hour24 = StringUtils.convertTo24Hours("0"+hour+":00"+timePeriod);
+				}else if(hour.length() == 4){
+					hour24 = StringUtils.convertTo24Hours("0"+hour+timePeriod);
+				}else if(hour.length() == 2){
+					hour24 = StringUtils.convertTo24Hours(hour+":00"+timePeriod);
+				}else{
+					hour24 = StringUtils.convertTo24Hours(hour+timePeriod);
+				}
+				return hour24;
+			}
+			String[] hour24 = new String[2];
+			String[] startEnd = hour.split(timeSeparator);
+			for (int i=0; i<startEnd.length; i++){
+				if (startEnd[i].contains(":")){
+					if (startEnd[i].length() == 4){
+						hour24[i] = "0"+startEnd[i];
+					}else{
+						hour24[i] = startEnd[i];
+					}
+				}else{
+					//System.out.println("|"+startEnd[i] +"|");
+					if (startEnd[i].length() == 1){
+						hour24[i] = "0"+startEnd[i]+":00";
+					}else{
+						hour24[i] = startEnd[i]+":00";
+					}
+				}
+				hour24[i] = StringUtils.convertTo24Hours(hour24[i]+timePeriod);
+			}
+			return hour24[0]+"-"+hour24[1];
+		}catch(Exception e){
+			e.printStackTrace();
 			return "";
 		}
-		// Extract the time and set it
-		String[] timeAndRest = theTime.split(timePeriod); 
-					
-		// Search for a digit
-		int z = 0;
-		while (!Character.isDigit(timeAndRest[0].charAt(z))) z++;
-		String hour = timeAndRest[0].substring(z);
-		hour = hour.trim();
-		String timeSeparator = "";
-		// Check if there is a time interval by looking at a time separator
-		if (hour.contains("-")){
-			timeSeparator = "-";
-		}else if (hour.contains("–")){
-			timeSeparator = "–";
-		}else{	
-			String hour24;
-			if (hour.length() == 1){
-				hour24 = StringUtils.convertTo24Hours("0"+hour+":00"+timePeriod);
-			}else if(hour.length() == 4){
-				hour24 = StringUtils.convertTo24Hours("0"+hour+timePeriod);
-			}else if(hour.length() == 2){
-				hour24 = StringUtils.convertTo24Hours(hour+":00"+timePeriod);
-			}else{
-				hour24 = StringUtils.convertTo24Hours(hour+timePeriod);
-			}
-			return hour24;
-		}
-		String[] hour24 = new String[2];
-		String[] startEnd = hour.split(timeSeparator);
-		for (int i=0; i<startEnd.length; i++){
-			if (startEnd[i].contains(":")){
-				if (startEnd[i].length() == 4){
-					hour24[i] = "0"+startEnd[i];
-				}else{
-					hour24[i] = startEnd[i];
-				}
-			}else{
-				//System.out.println("|"+startEnd[i] +"|");
-				if (startEnd[i].length() == 1){
-					hour24[i] = "0"+startEnd[i]+":00";
-				}else{
-					hour24[i] = startEnd[i]+":00";
-				}
-			}
-			hour24[i] = StringUtils.convertTo24Hours(hour24[i]+timePeriod);
-		}
-		return hour24[0]+"-"+hour24[1];
+		
 	}
 
 	/**
@@ -167,22 +176,25 @@ public final class StringUtils {
 	
 	/**
 	 * https://gist.github.com/shreeshga/5398506
-	 * @param set
-	 * @param delim
-	 * @return
+	 * @param set the set of strings that want to be joined
+	 * @param delim the delimiter used to join the different strings
+	 * @return null if one of the parameters is null, a String with all the Strings inside the set joined using the delimiter as "glue"
 	 */
 	public static String join(Set<String> set, String delim) {
-		StringBuilder sb = new StringBuilder();
-		String loopDelim = "";
-		 
-		for (String s : set) {
-			sb.append(loopDelim);
-			sb.append(s);
+		if(set != null && delim != null){
+			StringBuilder sb = new StringBuilder();
+			String loopDelim = "";
 			 
-			loopDelim = delim;
+			for (String s : set) {
+				sb.append(loopDelim);
+				sb.append(s);
+				 
+				loopDelim = delim;
+			}
+			 
+			return sb.toString();
 		}
-		 
-		return sb.toString();
+		return null;
 	}
 	
 	/**
