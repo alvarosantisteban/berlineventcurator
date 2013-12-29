@@ -22,5 +22,6 @@
         <ignore path="src/com/alvarosantisteban/berlincurator/DownloadWebpageAsyncTask.java" />
         <ignore path="src/com/alvarosantisteban/berlincurator/DownloadWebpageAsyncTask.java" />
         <ignore path="src/com/alvarosantisteban/berlincurator/FirstTimeActivity.java" />
+        <ignore path="src/com/alvarosantisteban/pathos/DateActivity.java" />
     </issue>
 </lint>

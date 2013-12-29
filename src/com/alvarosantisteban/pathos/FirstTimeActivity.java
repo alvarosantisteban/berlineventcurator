@@ -141,7 +141,7 @@ public class FirstTimeActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 			wavesAnimation.start();
 			
 			// Inform the user
-			Toast toast = Toast.makeText(getBaseContext(), "Downloading the events.\nIt might take a few seconds, be patient ;)", Toast.LENGTH_LONG);
+			Toast toast = Toast.makeText(getBaseContext(), "Downloading the events.\nIt might take a few seconds, please be patient.", Toast.LENGTH_LONG);
 	    	toast.setGravity(Gravity.TOP, 0, actionBarHeight);
 	    	toast.show();
 	    	

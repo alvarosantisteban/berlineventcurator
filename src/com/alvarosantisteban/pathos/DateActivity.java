@@ -15,6 +15,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+
 import android.app.ActionBar;
 import android.content.Context;
 import android.content.Intent;
@@ -304,12 +305,6 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 			displayedDate.append(" " +choosenDate);
 		}
 		
-		// Enable the app's icon to act as home
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-			ActionBar actionBar = getActionBar();
-			actionBar.setDisplayHomeAsUpEnabled(true);
-		}
-		
 		// --------------------------------------------------
 		// Adapter and loading of events
 		// --------------------------------------------------
@@ -337,7 +332,7 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 		
 		// Get the number of events
 		totalNumEvents = listAdapter.getTotalChildrenCount();
-		if(totalNumEvents == 0){
+		if(totalNumEvents == 0 && !isFirstTimeApp){
 			displayToast("There are no events for this day. Refresh or go to another day.");
 		}
 		
@@ -555,7 +550,15 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 	 */
 	@Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.menu_calendar) {
+		if (item.getItemId() == R.id.menu_map) {
+        	if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+				Intent i2 = new Intent(this, MapActivity.class);
+				startActivity(i2);
+        	}else{
+    			Intent i2 = new Intent(this, FakeCalendarActivity.class);
+				startActivity(i2);
+        	}
+		}else if (item.getItemId() == R.id.menu_calendar) {
         	if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 				Intent i2 = new Intent(this, CalendarActivity.class);
 				startActivity(i2);

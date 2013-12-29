@@ -31,10 +31,13 @@ import android.widget.Toast;
 import com.alvarosantisteban.pathos.R;
 import com.alvarosantisteban.pathos.utils.DatabaseHelper;
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMapOptions;
 import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -87,6 +90,12 @@ public class EventActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 		int availabilityCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getApplicationContext());
 		if(availabilityCode == ConnectionResult.SUCCESS){
 			Log.i(TAG, "GooglePlayServices is available :)");
+			try {
+				MapsInitializer.initialize(getApplicationContext());
+			} catch (GooglePlayServicesNotAvailableException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		
 		setContentView(R.layout.activity_event);
@@ -191,7 +200,10 @@ public class EventActivity extends OrmLiteBaseActivity<DatabaseHelper> {
         		scrollView.setMap(mapita);
         		GoogleMap mMap = mapita.getMap();
         		if(mMap != null){
-        			mMap.addMarker(new MarkerOptions().position(new LatLng(lat, lng)).title(event.getName()).snippet(event.getLocation()));
+        			mMap.addMarker(new MarkerOptions().position(new LatLng(lat, lng))
+        												.title(event.getName())
+        												.snippet(event.getLocation())
+        												.icon(BitmapDescriptorFactory.fromResource(R.drawable.map_marker)));
         		}
             }  
 		} catch (IOException e) {
@@ -324,9 +336,12 @@ public class EventActivity extends OrmLiteBaseActivity<DatabaseHelper> {
         	}
 		} else if (item.getItemId() == android.R.id.home) {
 			// app icon in action bar clicked; go to the DateActivity
+			finish();
+			/*
             Intent intent = new Intent(this, DateActivity.class);
 			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 			startActivity(intent);
+			*/
 		}
  
         return true;

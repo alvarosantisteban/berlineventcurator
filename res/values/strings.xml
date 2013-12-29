@@ -4,6 +4,7 @@
     <!-- Title from the activities on the Action Bar -->
     <string name="app_name">Pathos</string>
     <string name="title_activity_event">Event information</string>
+    <string name="title_activity_map">Map</string>
     <string name="title_activity_calendar">Calendar</string>
     <string name="title_activity_settings">Settings</string>
     <string name="title_activity_about">About</string>
@@ -102,13 +103,11 @@ From Ancient Greek πάθος (pathos, “suffering”).
 
     <!-- Knonwn Issues Activity -->
     <string name="known_issues_tag">Pathos has the following known issues. Pathos hopes you will still love her.</string>
-    <string name="known_issues">
-        \n\n<b>1.- Repeated events.</b> It might happen that the same event appears two times. The reason is that a same event came from two different websites but unfortunately there is something in the name or description that makes them indistinguishable for Pathos. Poor Pathos.
+    <string name="known_issues">        \n\n<b>1.- Repeated events.</b> It might happen that the same event appears two times. The reason is that a same event came from two different websites but unfortunately there is something in the name or description that makes them indistinguishable for Pathos. Poor Pathos.
         \n\n<b>2.- Outdated events.</b> In rare occasions, it might happen that the event\'s organizers change its description without letting Pathos know about it. Poor Pathos.
         \n\n<b>3.- Wrong classification.</b> Very few times an event gets wrongly classified. That does not happen often, because if there is a doubt about the type of event, the "Others" tag will be used. Still, it might happen that a strange description confuses Pathos. Poor Pathos.
-        \n\n<b>4.- Map not displayed.</b> It can happen that you see the event\'s address in the description but still, Pathos does not recognize it and therefore does not display a map for it. Are you calling Pathos stupid? Poor Pathos.
-    </string> 
-    
+        \n\n<b>4.- Map not displayed.</b> It can happen that you see the event\'s address in the description but still, Pathos does not recognize it and therefore does not display a map for it. Are you calling Pathos stupid? Poor Pathos.</string>
+
     <!-- About Activity -->
     <string name="version">Version 1.0</string>
     <string name="development">Developed by:</string>
@@ -123,6 +122,7 @@ From Ancient Greek πάθος (pathos, “suffering”).
     <string name="thanks">Jens Schumann</string>
 
     <!-- Menu item name -->
+    <string name="menu_map">Map</string>
     <string name="menu_settings">Settings</string>
     <string name="menu_calendar">Calendar</string>
     <string name="menu_refresh">Refresh</string>
