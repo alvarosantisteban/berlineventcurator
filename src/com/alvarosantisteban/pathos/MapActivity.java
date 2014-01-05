@@ -10,15 +10,23 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import android.app.ActionBar;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Address;
+import android.location.Criteria;
 import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 
 import com.alvarosantisteban.pathos.utils.DatabaseHelper;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -33,7 +41,14 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
 
-public class MapActivity extends OrmLiteBaseActivity<DatabaseHelper>{
+/**
+ * Displays a map of Berlin with a set of markers representing all the events for the selected day. If gps is activated, 
+ * the user location is also shown.  
+ * 
+ * @author Alvaro Santisteban 2014 - alvarosantisteban@gmail.com
+ *
+ */
+public class MapActivity extends OrmLiteBaseActivity<DatabaseHelper>  implements LocationListener{
 	
 	private static final String TAG = "MapActivity";
 	
@@ -46,6 +61,10 @@ public class MapActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 	MapView generalMap;
 	GoogleMap map;
 	
+	// Used to get the GPS
+	private LocationManager locationManager;
+	private String provider;
+	Marker userMarker;
 	
 	DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.GERMAN);
 	Calendar currentDay = Calendar.getInstance();
@@ -64,6 +83,12 @@ public class MapActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 		
 		context = this;
 		
+		// Enable home button if the device has an action bar
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            ActionBar actionBar = getActionBar();
+            actionBar.setDisplayHomeAsUpEnabled(true);
+		}
+		
 		Intent intent = getIntent();
 		// Get the choosen date from the calendar
 		choosenDate = intent.getStringExtra(EXTRA_DATE);
@@ -75,26 +100,41 @@ public class MapActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 		
 		//generalMap = (MapView)findViewById(R.id.map);
 		map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
-		Marker berlin = map.addMarker(new MarkerOptions().position(BERLIN)
-		        .title("Berlin")
-		        .snippet("Berlin is cool")
-		        .icon(BitmapDescriptorFactory
-		            .fromResource(R.drawable.ic_launcher_pathos)));
-
-		// Move the camera instantly to Berlin with a zoom of 15.
-		map.moveCamera(CameraUpdateFactory.newLatLngZoom(BERLIN, 15));
+	    map.moveCamera(CameraUpdateFactory.newLatLngZoom(BERLIN, 15));
+	    map.setOnInfoWindowClickListener(InfoWindowListener);
 		
-		eventsList = loadAllEvents();
-		addMarkerForEvents(eventsList);
+	    // Load the events and set the markers
+		new LoadEventsAsyncTask().execute((String)null);
 		
-
-		map.setOnInfoWindowClickListener(InfoWindowListener);
-
-		// Zoom in, animating the camera.
-		//map.animateCamera(CameraUpdateFactory.zoomTo(10), 2000, null);
+		// Get the location manager
+	    locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+	    
+	    boolean gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+		if(gpsEnabled){
+			Log.d(TAG, "gpsEnabled");
+			// Define the criteria how to select the location provider -> use default
+		    Criteria criteria = new Criteria();
+		    provider = locationManager.getBestProvider(criteria, false);
+		    
+		    //Location location = locationManager.getLastKnownLocation(provider);
+		    // Initialize the location fields
+		    locationManager.requestLocationUpdates(provider, 400, 1, this);
+		}
 	}
 	
-	
+	OnInfoWindowClickListener InfoWindowListener = new OnInfoWindowClickListener(){
+		@Override
+		public void onInfoWindowClick(Marker marker) {
+			for (Event event : eventsList){
+				if(event.getName().equals(marker.getTitle())){
+					Intent intent = new Intent(context, EventActivity.class);
+					intent.putExtra(EXTRA_EVENT, event);
+					startActivity(intent);
+				}
+			}
+	    }};
+
+	/*
 	private void addMarkerForEvents(List<Event> eventsList) {
 		for(int i=0; i<eventsList.size(); i++){
 			Event event = eventsList.get(i);
@@ -116,23 +156,12 @@ public class MapActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 	    			berlin.showInfoWindow();
 				}
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Log.e(TAG, e.toString());
 			} 	
 		}	
-	}
+	}*/
 
-	OnInfoWindowClickListener InfoWindowListener = new OnInfoWindowClickListener(){
-		@Override
-		public void onInfoWindowClick(Marker marker) {
-			for (Event event : eventsList){
-				if(event.getName().equals(marker.getTitle())){
-					Intent intent = new Intent(context, EventActivity.class);
-					intent.putExtra(EXTRA_EVENT, event);
-					startActivity(intent);
-				}
-			}
-	    }};
+
 
 	/**
 	 * Loads the events from the DB that match the choosenDate and the set of tags for the kind of organization passed as parameters
@@ -140,6 +169,7 @@ public class MapActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 	 * @param kindOfOrganization the kind of organization (By Type, Thema, Origin)
 	 * @param setOfTags the set of tags that the event has to match in order to be extracted from the DB
 	 */
+	    /*
 	private List<Event> loadEvents(String kindOfOrganization, String[] setOfTags){ 
 		Log.d(TAG,"LOAD EVENTS");
 		// Get our dao
@@ -159,31 +189,148 @@ public class MapActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 			return events;
 		}
 		return null;
-	}
+	}*/
+	    
+	    ///////////////////////////////////////////////////////////////////////////
+		// ASYNCTASKS
+		///////////////////////////////////////////////////////////////////////////
 	
-	private List<Event> loadAllEvents(){ 
-		Log.d(TAG,"LOAD ALL EVENTS");
-		// Get our dao
-		RuntimeExceptionDao<Event, Integer> eventDao = getHelper().getEventDataDao();
-		List<Event> events = null;
-		try {
-			Map<String, Object> fieldValues = new HashMap<String,Object>();
-			fieldValues.put("day", choosenDate);
-			events = eventDao.queryForFieldValuesArgs(fieldValues);
-		} catch (Exception e) {
-			e.printStackTrace();
-			Log.e(TAG,"DB exception while retrieving all events");
+	public class LoadEventsAsyncTask extends AsyncTask<String, Void, List<Event>> {
+		
+		private final static String TAG = "LoadEventsAsyncTask";
+
+		@Override
+		protected List<Event> doInBackground(String... params) {
+			Log.d(TAG,"doInBackground");
+			// Get our dao
+			RuntimeExceptionDao<Event, Integer> eventDao = getHelper().getEventDataDao();
+			List<Event> events = null;
+			try {
+				Map<String, Object> fieldValues = new HashMap<String,Object>();
+				fieldValues.put("day", choosenDate);
+				events = eventDao.queryForFieldValuesArgs(fieldValues);
+			} catch (Exception e) {
+				e.printStackTrace();
+				Log.e(TAG,"DB exception while retrieving all events");
+			}
+			return events;
 		}
-		return events;
+		
+		@Override
+		public void onPostExecute(List<Event> theEvents){
+			eventsList = theEvents;
+			//addMarkerForEvents(eventsList);
+			
+
+			for (int i=0; i<eventsList.size(); i++){
+				new AddMarkersAsyncTask().execute(eventsList.get(i));
+			}
+		}
 	}
 
-	
-	
+	public class AddMarkersAsyncTask extends AsyncTask<Event, Void, MarkerOptions> {
+		
+		private final static String TAG = "AddMarkersAsyncTask";
 
+		@Override
+		protected MarkerOptions doInBackground(Event... params) {
+			Event event = params[0];
+			Geocoder geocoder = new Geocoder(context);
+			List<Address> addressList;
+			try {
+				addressList = geocoder.getFromLocationName(event.getLocation(), 1);
+				if (addressList != null && addressList.size() > 0) {
+					Log.d(TAG, "event "+event.getName()+" added as a marker");
+	                double lat = addressList.get(0).getLatitude();  
+	                double lng = addressList.get(0).getLongitude();  
+	                LatLng position = new LatLng(lat, lng);
+	                return new MarkerOptions().position(position)
+	    			        .title(event.getName())
+	    			        .snippet(event.getDescription())
+	    			        .icon(BitmapDescriptorFactory
+	    			            .fromResource(R.drawable.map_marker));
+				}
+			} catch (IOException e) {
+				Log.e(TAG, e.toString());
+			} 
+			return null;
+		}
+			
+		@Override
+		public void onPostExecute(MarkerOptions theMarkerOptions){
+			if(theMarkerOptions != null){
+				Marker berlin = map.addMarker(theMarkerOptions);
+				berlin.showInfoWindow();
+			}
+		}
+	}
+	
+	///////////////////////////////////////////////////////////////////////////
+	// GPS
+	///////////////////////////////////////////////////////////////////////////
+
+	@Override
+	public void onLocationChanged(Location newLocation) {
+		Log.w(TAG, "onLocationChanged");
+		LatLng ltlg = new LatLng(newLocation.getLatitude(),newLocation.getLongitude());
+	    userMarker = map.addMarker(new MarkerOptions().position(ltlg)
+		        .title("You")
+		        .snippet("Here you are")
+		        .icon(BitmapDescriptorFactory
+		            .fromResource(R.drawable.ic_launcher_pathos)));
+	    //map.moveCamera(CameraUpdateFactory.newLatLngZoom(ltlg, 15));
+	    map.animateCamera(CameraUpdateFactory.newLatLngZoom(ltlg, 15), 1500, null);
+	    locationManager.removeUpdates(this);
+	}
+
+
+	@Override
+	public void onProviderDisabled(String provider) {
+		
+	}
+
+	@Override
+	public void onProviderEnabled(String provider) {
+		
+	}
+
+	@Override
+	public void onStatusChanged(String provider, int status, Bundle extras) {
+		
+	}
+	
+	/* Remove the locationlistener updates when Activity is paused */
+	@Override
+	protected void onPause() {
+		  super.onPause();
+		  locationManager.removeUpdates(this);
+	  }
+	  
+	  /* Request updates at startup */
+	@Override
+	protected void onResume() {
+		super.onResume();
+		if(userMarker == null){
+			locationManager.requestLocationUpdates(provider, 400, 1, this);
+		}
+	}
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.map, menu);
 		return true;
 	}
+	
+	
+	/**
+     * Check which item from the menu has been clicked
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+    	if (item.getItemId() == android.R.id.home){
+    		finish();
+        }
+        return true;
+    }
 }
