@@ -1,6 +1,10 @@
 package com.alvarosantisteban.pathos;
 
 import java.io.Serializable;
+
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
@@ -17,10 +21,16 @@ import com.j256.ormlite.table.DatabaseTable;
  *
  */
 @DatabaseTable(tableName = "events")
-public class Event implements Serializable{
+//public class Event implements Serializable{
+public class Event implements Parcelable{
 	
 	// Empty constructor needed to be explicited by ORMLite
 	public Event(){
+	}
+	
+	
+	public Event(Parcel in) { 
+		readFromParcel(in); 
 	}
 	
 	private static final long serialVersionUID = 1L;
@@ -280,4 +290,59 @@ public class Event implements Serializable{
 	public void setOriginsWebsite(String theOriginsWebsite) {
 		this.originsWebsite = theOriginsWebsite;
 	}
+
+	
+	@Override
+	public int describeContents() {
+		return 0;
+	}
+
+	@Override
+	public void writeToParcel(Parcel dest, int flags) {
+		dest.writeInt(id);
+		dest.writeString(sequence);
+		dest.writeString(name);
+		dest.writeString(day);
+		dest.writeString(hour);
+		dest.writeString(description);
+		dest.writeString(location);
+		dest.writeStringArray(links);
+		//dest.writeBooleanArray(isInteresting);
+		//dest.writeBooleanArray(isDescriptionInGerman);
+		dest.writeByte((byte) (isInteresting ? 1 : 0)); 
+		dest.writeByte((byte) (isDescriptionInGerman ? 1 : 0));
+		dest.writeString(eventsOrigin);
+		dest.writeString(originsWebsite);
+		dest.writeString(themaTag);
+		dest.writeString(typeTag);
+		
+	}
+	
+	private void readFromParcel(Parcel in) {
+		id = in.readInt();
+		sequence = in.readString();
+		name = in.readString();
+		day = in.readString();
+		hour = in.readString();
+		description = in.readString();
+		location = in.readString();
+		links = in.createStringArray();
+		isInteresting = in.readByte() != 0; 
+		isDescriptionInGerman = in.readByte() != 0; 
+		eventsOrigin = in.readString();
+		originsWebsite = in.readString();
+		themaTag = in.readString();
+		typeTag = in.readString();
+		
+	}
+	
+	public static final Parcelable.Creator CREATOR = new Parcelable.Creator() { 
+		public Event createFromParcel(Parcel in) { 
+			return new Event(in); 
+		}   
+		
+		public Event[] newArray(int size) { 
+			return new Event[size]; 
+		} 
+	};
 }

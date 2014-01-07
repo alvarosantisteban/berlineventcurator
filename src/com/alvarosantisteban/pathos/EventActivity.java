@@ -10,6 +10,7 @@ import android.app.ActionBar;
 import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.CalendarContract;
@@ -40,6 +41,7 @@ import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
@@ -86,23 +88,12 @@ public class EventActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 		super.onCreate(savedInstanceState);
 		Log.d(TAG,"In the onCreate() event");
 		
-		// Check if the GooglePlay services for the Map can be used
-		int availabilityCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getApplicationContext());
-		if(availabilityCode == ConnectionResult.SUCCESS){
-			Log.i(TAG, "GooglePlayServices is available :)");
-			try {
-				MapsInitializer.initialize(getApplicationContext());
-			} catch (GooglePlayServicesNotAvailableException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		
 		setContentView(R.layout.activity_event);
 		
 		// Get the intent with the Event
 		Intent intent = getIntent();
-		event = (Event)intent.getSerializableExtra(EXTRA_EVENT);
+		//event = (Event)intent.getSerializableExtra(EXTRA_EVENT);
+		event = (Event)intent.getParcelableExtra(EXTRA_EVENT);
 		
 		// Enable the app's icon to act as home
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
@@ -124,6 +115,16 @@ public class EventActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 		// Get the information of the event
 		initEventsInfo();
 		
+		// Check if the GooglePlay services for the Map can be used
+		int availabilityCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getApplicationContext());
+		if(availabilityCode == ConnectionResult.SUCCESS){
+			Log.i(TAG, "GooglePlayServices is available :)");
+			try {
+				MapsInitializer.initialize(getApplicationContext());
+			} catch (GooglePlayServicesNotAvailableException e) {
+				Log.e(TAG, e.toString());
+			}
+		}		
 		// Initializes the mapView
 		initMap(savedInstanceState);
 		
@@ -303,6 +304,50 @@ public class EventActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 			setResult(DateActivity.RESULT_UPDATE, returnIntent);  
 		}
 	}
+	
+	/**
+	 * AsyncTask that adds a marker in the map for each event with a known location
+	 * 
+	 * @author  Alvaro Santisteban 2014 - alvarosantisteban@gmail.com
+	 *
+	 *
+	public class AddMapAsyncTask extends AsyncTask<Event, Void, MarkerOptions> {
+		
+		private final static String TAG = "AddMarkersAsyncTask";
+
+		@Override
+		protected MarkerOptions doInBackground(Event... params) {
+			Event event = params[0];
+			Geocoder geocoder = new Geocoder(context);
+			List<Address> addressList;
+			try {
+				addressList = geocoder.getFromLocationName(event.getLocation(), 1);
+				if (addressList != null && addressList.size() > 0) {
+					Log.d(TAG, "event "+event.getName()+" added as a marker");
+	                double lat = addressList.get(0).getLatitude();  
+	                double lng = addressList.get(0).getLongitude();  
+	                LatLng position = new LatLng(lat, lng);
+	                return new MarkerOptions().position(position)
+	    			        .title(event.getName())
+	    			        .snippet(event.getDescription())
+	    			        .icon(BitmapDescriptorFactory
+	    			            .fromResource(R.drawable.map_marker));
+				}
+			} catch (IOException e) {
+				Log.e(TAG, e.toString());
+			} 
+			return null;
+		}
+			
+		@Override
+		public void onPostExecute(MarkerOptions theMarkerOptions){
+			if(theMarkerOptions != null){
+				Marker berlin = map.addMarker(theMarkerOptions);
+				berlin.showInfoWindow();
+			}
+		}
+	}
+	*/
 	
 
 	// ----------------------------------------------------------------------------------------------

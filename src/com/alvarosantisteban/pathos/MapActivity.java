@@ -127,7 +127,7 @@ public class MapActivity extends OrmLiteBaseActivity<DatabaseHelper>  implements
 		@Override
 		public void onInfoWindowClick(Marker marker) {
 			for (Event event : eventsList){
-				if(event.getName().equals(marker.getTitle())){
+				if(event.getDescription().equals(marker.getSnippet()) && event.getName().equals(marker.getTitle())){
 					Intent intent = new Intent(context, EventActivity.class);
 					intent.putExtra(EXTRA_EVENT, event);
 					startActivity(intent);
