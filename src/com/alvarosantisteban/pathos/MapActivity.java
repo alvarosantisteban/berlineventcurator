@@ -62,6 +62,7 @@ public class MapActivity extends OrmLiteBaseActivity<DatabaseHelper>  implements
 	GoogleMap map;
 	
 	// Used to get the GPS
+	boolean gpsEnabled;
 	private LocationManager locationManager;
 	private String provider;
 	Marker userMarker;
@@ -109,7 +110,7 @@ public class MapActivity extends OrmLiteBaseActivity<DatabaseHelper>  implements
 		// Get the location manager
 	    locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 	    
-	    boolean gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+	    gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
 		if(gpsEnabled){
 			Log.d(TAG, "gpsEnabled");
 			// Define the criteria how to select the location provider -> use default
@@ -194,7 +195,12 @@ public class MapActivity extends OrmLiteBaseActivity<DatabaseHelper>  implements
 	    ///////////////////////////////////////////////////////////////////////////
 		// ASYNCTASKS
 		///////////////////////////////////////////////////////////////////////////
-	
+	/**
+	 * AsyncTask that loads all events from the database
+	 * 
+	 * @author  Alvaro Santisteban 2014 - alvarosantisteban@gmail.com
+	 *
+	 */
 	public class LoadEventsAsyncTask extends AsyncTask<String, Void, List<Event>> {
 		
 		private final static String TAG = "LoadEventsAsyncTask";
@@ -218,16 +224,20 @@ public class MapActivity extends OrmLiteBaseActivity<DatabaseHelper>  implements
 		
 		@Override
 		public void onPostExecute(List<Event> theEvents){
-			eventsList = theEvents;
-			//addMarkerForEvents(eventsList);
-			
-
+			eventsList = theEvents;		
+			// Add the markers for all events
 			for (int i=0; i<eventsList.size(); i++){
 				new AddMarkersAsyncTask().execute(eventsList.get(i));
 			}
 		}
 	}
 
+	/**
+	 * AsyncTask that adds a marker in the map for each event with a known location
+	 * 
+	 * @author  Alvaro Santisteban 2014 - alvarosantisteban@gmail.com
+	 *
+	 */
 	public class AddMarkersAsyncTask extends AsyncTask<Event, Void, MarkerOptions> {
 		
 		private final static String TAG = "AddMarkersAsyncTask";
@@ -280,7 +290,9 @@ public class MapActivity extends OrmLiteBaseActivity<DatabaseHelper>  implements
 		            .fromResource(R.drawable.ic_launcher_pathos)));
 	    //map.moveCamera(CameraUpdateFactory.newLatLngZoom(ltlg, 15));
 	    map.animateCamera(CameraUpdateFactory.newLatLngZoom(ltlg, 15), 1500, null);
-	    locationManager.removeUpdates(this);
+	    if(gpsEnabled){
+	    	locationManager.removeUpdates(this);
+	    }
 	}
 
 
@@ -303,14 +315,16 @@ public class MapActivity extends OrmLiteBaseActivity<DatabaseHelper>  implements
 	@Override
 	protected void onPause() {
 		  super.onPause();
-		  locationManager.removeUpdates(this);
+		  if(gpsEnabled){
+			  locationManager.removeUpdates(this);
+		  }
 	  }
 	  
 	  /* Request updates at startup */
 	@Override
 	protected void onResume() {
 		super.onResume();
-		if(userMarker == null){
+		if(userMarker == null && gpsEnabled){
 			locationManager.requestLocationUpdates(provider, 400, 1, this);
 		}
 	}
