@@ -641,7 +641,8 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 		if (requestCode == INTENT_RETURN_CODE) {
 			if(resultCode == RESULT_UPDATE){      
 		        // The event was updated
-				Event changedEvent = (Event)data.getSerializableExtra(EVENTS_RESULT_DATA);
+				//Event changedEvent = (Event)data.getSerializableExtra(EVENTS_RESULT_DATA);
+				Event changedEvent = (Event)data.getParcelableExtra(EVENTS_RESULT_DATA);
 				replaceAnEvent(changedEvent);
 				listAdapter.notifyDataSetChanged();
 		    }
