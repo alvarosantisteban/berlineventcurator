@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.alvarosantisteban.pathos"
-    android:versionCode="1"
-    android:versionName="1.0" >
+    android:versionCode="2"
+    android:versionName="1.5" >
 
     <uses-sdk
         android:minSdkVersion="10"
-        android:targetSdkVersion="18" />
+        android:targetSdkVersion="19" />
 
     <permission
         android:name="com.alvarosantisteban.pathos.permission.MAPS_RECEIVE"
@@ -80,17 +80,17 @@
             android:label="@string/title_activity_map" >
         </activity>
         
-        <!-- KEY FOR DEBUG MODE -->
+        <!-- KEY FOR DEBUG MODE 
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="AIzaSyACUudAyzwqQr_j2QVGzG1ihyESsJdVnHw" />
-
-        <!--  KEY FOR RELEASE MODE
+-->
+        <!--  KEY FOR RELEASE MODE -->
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="AIzaSyAqTU5eBds-ea5lI_-_h7rF4vowT_1RESI" />
         
-         -->
+        
 
         
     </application>
