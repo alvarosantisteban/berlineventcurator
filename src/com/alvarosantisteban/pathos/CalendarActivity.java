@@ -22,7 +22,6 @@ import android.widget.CalendarView;
 import android.widget.CalendarView.OnDateChangeListener;
 import android.widget.Toast;
 import com.alvarosantisteban.pathos.R;
-import com.tyczj.extendedcalendarview.ExtendedCalendarView;
 
 /**
  * Displays a CalendarView to allow the user to select the day from which the events are going to be displayed in DateActivity.

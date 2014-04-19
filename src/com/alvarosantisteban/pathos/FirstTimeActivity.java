@@ -89,8 +89,6 @@ public class FirstTimeActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 	PopupWindow popup;
 	boolean animationStarted = false;
 	
-	private final String initialMessage = this.getString(R.string.initialMessage);
-	
 	/**
 	 * Loads the elements from the resources
 	 */
@@ -151,7 +149,7 @@ public class FirstTimeActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 		    if (networkInfo != null && networkInfo.isConnected()) {
 		    	Log.i(TAG, "There is a network connection available.");
 		    	DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.GERMAN);
-		    	DownloadWebpageAsyncTask download = new DownloadWebpageAsyncTask(context, null, dateFormat.format(Calendar.getInstance().getTime()), initialMessage);
+		    	DownloadWebpageAsyncTask download = new DownloadWebpageAsyncTask(context, null, dateFormat.format(Calendar.getInstance().getTime()), this.getString(R.string.initialMessage));
 				// Execute the asyncronous task of downloading the websites
 				download.execute(websNames);
 		    } else {
