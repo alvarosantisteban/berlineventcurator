@@ -405,7 +405,7 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 		NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
 		// Check if is possible to establish a connection
 		if (networkInfo != null && networkInfo.isConnected()) {
-			DownloadWebpageAsyncTask download = new DownloadWebpageAsyncTask(this, loadProgressBar, choosenDate);
+			DownloadWebpageAsyncTask download = new DownloadWebpageAsyncTask(this, loadProgressBar, choosenDate, context.getString(R.string.searching));
 			// Execute the asyncronous task of downloading the websites
 			download.execute(addedGroups.toArray((new String[addedGroups.size()])));
 		}
@@ -572,7 +572,7 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 		    NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
 		    // Check if is possible to establish a connection
 		    if (networkInfo != null && networkInfo.isConnected()) {
-		    	DownloadWebpageAsyncTask download = new DownloadWebpageAsyncTask(this,loadProgressBar, choosenDate);
+		    	DownloadWebpageAsyncTask download = new DownloadWebpageAsyncTask(this,loadProgressBar, choosenDate, context.getString(R.string.searching));
 				// Execute the asyncronous task of downloading the websites
 				download.execute(originTags.toArray(new String[0]));
 		    } else {

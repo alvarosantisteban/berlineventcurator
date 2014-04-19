@@ -46,12 +46,16 @@ public class DownloadWebpageAsyncTask extends AsyncTask<String, String, Integer>
 	 */
 	private static final String TAG = "DownloadWebpageAsyncTask";
 	private static final String EXTRA_DATE = "date";
+	
+	private String initialMessage;
 
-	public DownloadWebpageAsyncTask(Context context, ProgressBar theLoadProgressBar, String theChoosenDate) {
+	public DownloadWebpageAsyncTask(Context context, ProgressBar theLoadProgressBar, String theChoosenDate, String theInitialMessage) {
 	    this.context = context;
 	    this.loadProgressBar = theLoadProgressBar;
 	    this.choosenDate = theChoosenDate;
+	    this.initialMessage = theInitialMessage;
 	    toast = Toast.makeText(context, "", Toast.LENGTH_LONG);
+	    
 	}
 	
 	/**
@@ -164,7 +168,7 @@ public class DownloadWebpageAsyncTask extends AsyncTask<String, String, Integer>
 	protected void onProgressUpdate(String... progress) {
 		Log.d(TAG,"Estoy en onProgressUpdate:"+progress[0]);
 		if (progress[0].equals("Start")){
-			displayToast(context.getString(R.string.searching));
+			displayToast(initialMessage);
 		}else if (progress[0].equals("Exception")){
 			displayToast("There were problems downloading the content from: " +progress[1] +" It's events won't be displayed.");
 		}else if (progress[0].equals("Finish")){

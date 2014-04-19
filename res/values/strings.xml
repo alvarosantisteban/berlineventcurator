@@ -14,6 +14,7 @@
 
     <!-- Main Activity -->
     <string name="loading_events">Click the image to load the events</string>
+    <string name="initialMessage">Downloading the events. It might take a few seconds.</string>
 
     <!-- Date Activity -->
     <string name="events_for_today">What are you doing today?</string>
@@ -38,6 +39,7 @@
     <string name="mark_event">You marked this event as interesting</string>
     <string name="unmark_event">You unmarked this event</string>
     <string name="events_origin">Event taken from</string>
+    
 
     <!-- Settings Activity -->
     <string name="manifesto_title">Manifesto</string>

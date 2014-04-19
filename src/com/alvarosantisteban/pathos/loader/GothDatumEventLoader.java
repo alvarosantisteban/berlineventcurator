@@ -146,7 +146,7 @@ public class GothDatumEventLoader implements EventLoader {
 				// For each <BR> there is a part of the description
 				String[] nothingAndDescription = nameAndRest[1].split("<BR>",2); // Si quito el 2, lo puedo tener dividido en parrafos e iterar con for
 				String[] description = nothingAndDescription[1].split("</TD>");
-				event.setDescription(place +description[0]);
+				event.setDescription(place +description[0].trim());
 				// Add a extra link if possible
 				String link = addExtraLink(placeAndRest[0].trim());
 				if (!link.equals("no link")){

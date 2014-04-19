@@ -89,6 +89,8 @@ public class FirstTimeActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 	PopupWindow popup;
 	boolean animationStarted = false;
 	
+	private final String initialMessage = this.getString(R.string.initialMessage);
+	
 	/**
 	 * Loads the elements from the resources
 	 */
@@ -140,11 +142,6 @@ public class FirstTimeActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 			// Start the animation
 			wavesAnimation.start();
 			
-			// Inform the user
-			Toast toast = Toast.makeText(getBaseContext(), "Downloading the events.\nIt might take a few seconds, please be patient.", Toast.LENGTH_LONG);
-	    	toast.setGravity(Gravity.TOP, 0, actionBarHeight);
-	    	toast.show();
-	    	
 	    	// Show the Pathos definition
 	    	showPopup();
 	    		
@@ -154,12 +151,12 @@ public class FirstTimeActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 		    if (networkInfo != null && networkInfo.isConnected()) {
 		    	Log.i(TAG, "There is a network connection available.");
 		    	DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.GERMAN);
-		    	DownloadWebpageAsyncTask download = new DownloadWebpageAsyncTask(context, null, dateFormat.format(Calendar.getInstance().getTime()));
+		    	DownloadWebpageAsyncTask download = new DownloadWebpageAsyncTask(context, null, dateFormat.format(Calendar.getInstance().getTime()), initialMessage);
 				// Execute the asyncronous task of downloading the websites
 				download.execute(websNames);
 		    } else {
 		    	// Inform the user that there is no network connection available
-		    	toast = Toast.makeText(getBaseContext(), "No network connection available.", Toast.LENGTH_LONG);
+		    	Toast toast = Toast.makeText(getBaseContext(), "No network connection available.", Toast.LENGTH_LONG);
 		    	toast.setGravity(Gravity.TOP, 0, actionBarHeight);
 		    	toast.show();
 		        Log.w(TAG, "No network connection available.");

@@ -35,6 +35,8 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
+import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.GoogleMapOptions;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
@@ -64,6 +66,7 @@ public class EventActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 	TextView description;
 	TextView origin;
 	TextView location;
+	TextView tags;
 	CheckBox interestingCheck;
 	
 	Geocoder geocoder = null;  
@@ -110,6 +113,7 @@ public class EventActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 		link = (TextView)findViewById(R.id.events_link);
 		description = (TextView)findViewById(R.id.events_description);
 		origin = (TextView)findViewById(R.id.events_origin);
+		tags = (TextView)findViewById(R.id.events_tags);
 		location = (TextView)findViewById(R.id.events_location);
 
 		// Get the information of the event
@@ -153,13 +157,15 @@ public class EventActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 		// Get the description, if any
 		if (!event.getDescription().equals("")){
 			description.setText(Html.fromHtml(event.getDescription()));
-			description.append("\n" +event.getThemaTag() + " | " +event.getTypeTag());
 		}
 		
 		// Get the origin of the information
 		origin.setText(Html.fromHtml("Event taken from: <a href=\"" +event.getOriginsWebsite() + "\">" +event.getEventsOrigin()  + "</a>"));
 		//origin.setClickable(true);
 		origin.setMovementMethod (LinkMovementMethod.getInstance());
+		
+		// Get the tags
+		tags.setText(event.getThemaTag() + " | " +event.getTypeTag());
 		
 		// Get the links, if any
 		if (!event.getLink().equals("")){
@@ -203,15 +209,25 @@ public class EventActivity extends OrmLiteBaseActivity<DatabaseHelper> {
         		if(mMap != null){
         			mMap.addMarker(new MarkerOptions().position(new LatLng(lat, lng))
         												.title(event.getName())
-        												.snippet(event.getLocation())
+        												//.snippet(event.getLocation())
         												.icon(BitmapDescriptorFactory.fromResource(R.drawable.map_marker)));
         		}
+        		mMap.setOnInfoWindowClickListener(InfoWindowListener);
+        		
             }  
 		} catch (IOException e) {
 			Log.e(TAG,"Problem getting the Address for the map.");
 			e.printStackTrace();
 		}
 	}
+	
+	OnInfoWindowClickListener InfoWindowListener = new OnInfoWindowClickListener(){
+		
+		@Override
+		public void onInfoWindowClick(Marker marker) {
+			Log.w(TAG,"epa");
+			marker.hideInfoWindow();
+	    }};
 	
 
 	// ----------------------------------------------------------------------------------------------

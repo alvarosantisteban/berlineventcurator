@@ -23,6 +23,7 @@ import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
@@ -56,6 +57,8 @@ public class MapActivity extends OrmLiteBaseActivity<DatabaseHelper>  implements
 	private final String EXTRA_DATE = "date";
 	public static final String EXTRA_EVENT = "com.alvarosantisteban.pathos.event";
 	
+	private final String BUNDLE_EVENTS_LIST = "eventsList";
+	
 	static final LatLng BERLIN = new LatLng(52.49333, 13.36446);
 	
 	MapView generalMap;
@@ -80,6 +83,7 @@ public class MapActivity extends OrmLiteBaseActivity<DatabaseHelper>  implements
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		Log.d(TAG, "onCreate");
 		setContentView(R.layout.activity_map);
 		
 		context = this;
@@ -314,19 +318,35 @@ public class MapActivity extends OrmLiteBaseActivity<DatabaseHelper>  implements
 	/* Remove the locationlistener updates when Activity is paused */
 	@Override
 	protected void onPause() {
-		  super.onPause();
-		  if(gpsEnabled){
-			  locationManager.removeUpdates(this);
-		  }
-	  }
+		Log.d(TAG, "onPause");
+		super.onPause();
+		if(gpsEnabled){
+			locationManager.removeUpdates(this);
+		}
+	}
 	  
 	  /* Request updates at startup */
 	@Override
 	protected void onResume() {
+		Log.d(TAG, "onResume");
 		super.onResume();
 		if(userMarker == null && gpsEnabled){
 			locationManager.requestLocationUpdates(provider, 400, 1, this);
 		}
+	}
+	
+	@Override
+	public void onSaveInstanceState(Bundle savedInstanceState) {
+		Log.d(TAG, "onSaveInstanceState");
+		super.onSaveInstanceState(savedInstanceState);
+		savedInstanceState.putParcelableArrayList(BUNDLE_EVENTS_LIST, (ArrayList<? extends Parcelable>) eventsList);
+	}
+	
+	@Override
+	public void onRestoreInstanceState(Bundle savedInstanceState) {
+		Log.d(TAG, "onRestoreInstanceState");
+		super.onRestoreInstanceState(savedInstanceState);
+		eventsList = savedInstanceState.getParcelableArrayList(BUNDLE_EVENTS_LIST);
 	}
 	
 	@Override
