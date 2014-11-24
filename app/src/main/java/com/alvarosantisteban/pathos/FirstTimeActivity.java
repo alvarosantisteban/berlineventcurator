@@ -257,6 +257,8 @@ public class FirstTimeActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 	public void onDestroy() {
 	    super.onDestroy();
 	    Log.d(TAG, "In the onDestroy() event");
-	    popup.dismiss();
+	    if(popup != null){
+            popup.dismiss();
+        }
 	}
 }
