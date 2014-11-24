@@ -211,8 +211,8 @@ public class EventActivity extends OrmLiteBaseActivity<DatabaseHelper> {
         												.title(event.getName())
         												//.snippet(event.getLocation())
         												.icon(BitmapDescriptorFactory.fromResource(R.drawable.map_marker)));
-        		}
-                mMap.setOnInfoWindowClickListener(InfoWindowListener);
+                    mMap.setOnInfoWindowClickListener(InfoWindowListener);
+                }
             }  
 		} catch (IOException e) {
 			Log.e(TAG,"Problem getting the Address for the map.");
