@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <ListPreference   
+        android:key="possible_organizations_list"      
+    	android:entries="@array/possible_organizations_entries" 
+    	android:title="@string/possible_organizations_title" 	
+    	android:entryValues="@array/possible_organizations_values" 
+    	android:summary="@string/possible_organizations_summary" 
+    	android:defaultValue="By Type" />
+    <Preference 
+		android:key="manifesto"
+	    android:dialogTitle="@string/manifesto_title"
+	    android:summary="@string/manifesto_summary"        
+	    android:title="@string/manifesto_title"
+	    />        
+    <Preference 
+        android:key="about"
+        android:dialogTitle="@string/about_title"
+        android:summary="@string/about_summary"        
+        android:title="@string/about_title"
+        />
+    <Preference 
+        android:key="known_issues"
+	    android:dialogTitle="@string/known_issues_title"
+	    android:summary="@string/known_issues_summary"        
+	    android:title="@string/known_issues_title"
+    />
+    <Preference 
+        android:key="legal"
+        android:dialogTitle="@string/legal_title"
+        android:summary="@string/legal_summary"        
+        android:title="@string/legal_title"
+        />
+        
+</PreferenceScreen>
+<!-- From: file:/home/alvaro/Coding/pathosAS/app/src/main/res/xml/old_devices_preferences.xml -->

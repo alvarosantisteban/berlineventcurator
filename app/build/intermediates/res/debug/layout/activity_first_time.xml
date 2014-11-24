@@ -1,0 +1,48 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mainLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".FirstTimeActivity" >
+    
+    <!-- 
+    <Button
+        android:id="@+id/loadButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:contentDescription="@string/loading_events"
+        android:background="@drawable/mybutton" />
+
+    <ImageView
+        android:id="@+id/home_find_events"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:src="@drawable/home_find_text" 
+        android:contentDescription="@string/image_find_text"/>
+        
+        PARA EL PROGRESS BAR
+        android:layout_alignLeft="@+id/loadButton"
+        android:layout_alignTop="@+id/home_find_events"
+        
+         -->
+     
+    <ImageView
+        android:id="@+id/wave"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:contentDescription="@string/loading_events"/>
+
+    <ProgressBar
+        android:id="@+id/progressLoadHtml"
+        style="@android:style/Widget.ProgressBar.Large"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/wave"
+        android:visibility="invisible"
+        android:layout_centerInParent="true" />
+
+</RelativeLayout><!-- From: file:/home/alvaro/Coding/pathosAS/app/src/main/res/layout/activity_first_time.xml -->

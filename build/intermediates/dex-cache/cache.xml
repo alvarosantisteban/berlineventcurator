@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pre-dex-items>
+
+    <item
+        dex="/home/alvaro/Coding/pathosAS/app/build/intermediates/pre-dexed/debug/ormlite-android-4.45-8d13b8ac02d3630e5900d6eb7c969a03d5d914a1.jar"
+        jar="/home/alvaro/Coding/pathosAS/app/libs/ormlite-android-4.45.jar"
+        jumboMode="false"
+        revision="21.0.1"
+        sha1="8ff8c21e8d0162333559f35cafd6a2238a33e5ba"/>
+    <item
+        dex="/home/alvaro/Coding/pathosAS/app/build/intermediates/pre-dexed/debug/google-play-services-d8568d3fa717ad95e274a48ac1b9021ef7d396fe.jar"
+        jar="/home/alvaro/Coding/pathosAS/app/libs/google-play-services.jar"
+        jumboMode="false"
+        revision="21.0.1"
+        sha1="f0d8e4a84fad131bc291c3c4850afcaa8ba0b299"/>
+    <item
+        dex="/home/alvaro/Coding/pathosAS/app/build/intermediates/pre-dexed/debug/ormlite-core-4.45-fcf3f680ea46e9b9840c73bd807b16735929abd1.jar"
+        jar="/home/alvaro/Coding/pathosAS/app/libs/ormlite-core-4.45.jar"
+        jumboMode="false"
+        revision="21.0.1"
+        sha1="3db7b73aecea723803e10b068777cf09ed42d4be"/>
+    <item
+        dex="/home/alvaro/Coding/pathosAS/app/build/intermediates/pre-dexed/debug/support-v4-18.0.0-ed7a6d8d055f2eb9e27191348d457312bdae5763.jar"
+        jar="/home/alvaro/Downloads/android-sdk-linux/extras/android/m2repository/com/android/support/support-v4/18.0.0/support-v4-18.0.0.jar"
+        jumboMode="false"
+        revision="21.0.1"
+        sha1="44ec51e9d395a47aab135e5e1b556c0007442156"/>
+
+</pre-dex-items>
