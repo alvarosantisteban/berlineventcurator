@@ -3,7 +3,8 @@
     android:layout_width="match_parent" 
     android:layout_height="match_parent"
     android:orientation="vertical" 
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
         <TextView
             android:id="@+id/sequence"
             android:layout_width="wrap_content"
@@ -11,7 +12,9 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
             android:paddingLeft="35sp"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            tools:text="Sequence Text"
+            tools:background="@android:color/holo_blue_bright"/>
  
         <TextView
             android:id="@+id/childItem"
@@ -19,6 +22,10 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_toRightOf="@id/sequence"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
+            android:paddingBottom="@dimen/list_padding"
+            android:paddingTop="@dimen/list_padding"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            tools:text="Child item Text"
+            tools:background="@android:color/holo_orange_dark"/>
          
 </RelativeLayout>
