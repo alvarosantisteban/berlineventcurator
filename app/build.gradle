@@ -1,5 +1,27 @@
 apply plugin: 'com.android.application'
 
+project.archivesBaseName = "pathos"
+
+def versionMajor = 1
+def versionMinor = 5
+def versionPatch = 0
+def versionBuild = 0 // bump for dogfood builds, public betas, etc.
+
+def gitSha() {
+    def res = 'git rev-parse --short HEAD'.execute([], project.rootDir).text.trim()
+
+    def diff = 'git diff'.execute([], project.rootDir).text.trim()
+    if (diff != null && diff.length() > 0) {
+        res += "-dirty"
+    }
+
+    return res
+}
+
+def buildTime() {
+    return new Date().format("yyyy-MM-dd'T'HH:mm'Z'", TimeZone.getTimeZone("UTC"))
+}
+
 android {
     compileSdkVersion 'Google Inc.:Google APIs:18'
     buildToolsVersion "21.0.1"
@@ -8,9 +30,23 @@ android {
         applicationId "com.alvarosantisteban.pathos"
         minSdkVersion 10
         targetSdkVersion 19
+
+        versionCode versionMajor * 10000 + versionMinor * 1000 + versionPatch * 100 + versionBuild
+        versionName "${versionMajor}.${versionMinor}.${versionPatch}"
+        buildConfigField "String", "BUILD_DATETIME", "\"${buildTime()}\""
+        buildConfigField "String", "GIT_SHA", "\"${gitSha()}\""
+
+        applicationVariants.all { variant ->
+            def file = variant.outputFile
+            variant.outputFile = new File(file.parent, file.name.replace(".apk", "-" + versionName + ".apk"))
+        }
     }
 
     buildTypes {
+        debug {
+            versionNameSuffix "-DEBUG"
+            zipAlign = true
+        }
         release {
             runProguard false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
@@ -19,7 +55,7 @@ android {
 }
 
 dependencies {
-    compile 'com.android.support:support-v4:18.0.0'
+    compile 'com.android.support:support-v4:19.0.0'
     compile files('libs/google-play-services.jar')
     compile files('libs/ormlite-android-4.45.jar')
     compile files('libs/ormlite-core-4.45.jar')
