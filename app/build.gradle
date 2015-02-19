@@ -53,8 +53,9 @@ android {
 }
 
 dependencies {
-    compile files('libs/google-play-services.jar')
-    compile files('libs/ormlite-android-4.45.jar')
-    compile files('libs/ormlite-core-4.45.jar')
     compile 'com.android.support:support-v4:21.0.3'
+    compile 'com.google.android.gms:play-services:6.5.87'
+    compile 'com.j256.ormlite:ormlite-android:4.48'
+    compile 'com.j256.ormlite:ormlite-core:4.48'
+}
 }
