@@ -1,13 +1,5 @@
 package com.alvarosantisteban.pathos;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.Set;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -22,28 +14,21 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.util.TypedValue;
-import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.MotionEvent;
-import android.view.View;
+import android.view.*;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.Toast;
 
-import com.alvarosantisteban.pathos.R;
-import com.alvarosantisteban.pathos.loader.GothDatumEventLoader;
-import com.alvarosantisteban.pathos.loader.IHeartBerlinEventLoader;
-import com.alvarosantisteban.pathos.loader.IndexEventLoader;
-import com.alvarosantisteban.pathos.loader.MetalConcertsEventLoader;
-import com.alvarosantisteban.pathos.loader.StressFaktorEventLoader;
-import com.alvarosantisteban.pathos.loader.WhiteTrashEventLoader;
+import com.alvarosantisteban.pathos.loader.*;
 import com.alvarosantisteban.pathos.preferences.SettingsActivity;
 import com.alvarosantisteban.pathos.preferences.SettingsFragment;
 import com.alvarosantisteban.pathos.utils.DatabaseHelper;
 import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * Activity that is shown just one time, the first time that the app is used. It shows a small animation while downloading the events.
@@ -80,8 +65,7 @@ public class FirstTimeActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 	 * The total set of webs where the events can be extracted
 	 */
 	public static String[] websNames = {IHeartBerlinEventLoader.WEBSITE_NAME, 
-										MetalConcertsEventLoader.WEBSITE_NAME, 
-										WhiteTrashEventLoader.WEBSITE_NAME, 
+										MetalConcertsEventLoader.WEBSITE_NAME,
 										GothDatumEventLoader.WEBSITE_NAME, 
 										StressFaktorEventLoader.WEBSITE_NAME, 
 										IndexEventLoader.WEBSITE_NAME};

@@ -85,9 +85,6 @@ public class DownloadWebpageAsyncTask extends AsyncTask<String, String, Integer>
 			}else if(urls[i].equals("Metal Concerts")){
 				Log.d(TAG, "Inside metalConcerts");
 				eventsFromAWebsite = EventLoaderFactory.newMetalConcertsEventLoader().load(context);
-			}else if(urls[i].equals("White Trash")){
-				Log.d(TAG, "Inside whitetrash");
-				eventsFromAWebsite = EventLoaderFactory.newWhiteTrashEventLoader().load(context);
 			}else if(urls[i].equals("Goth Datum")){
 				Log.d(TAG, "Inside Goth");
 				eventsFromAWebsite = EventLoaderFactory.newGothDatumEventLoader().load(context);

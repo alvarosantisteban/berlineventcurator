@@ -37,7 +37,6 @@ public class LegalNoticesActivity extends Activity {
 		websites = (TextView)findViewById(R.id.used_websites_attribution);
 		websites.setText(Html.fromHtml("<a href=\"http://www.iheartberlin.de/\">I Heart Berlin</a> <br>" +
 				"<a href=\"http://berlinmetal.lima-city.de/index.php/index.php?id=start\">Metal Concerts</a> <br>" +
-				"<a href=\"http://www.whitetrashfastfood.com/events/\">White Trash</a> <br>" +
 				"<a href=\"http://www.goth-city-radio.com/dsb/dates.php\">Goth Datum</a> <br>" +
 				"<a href=\"http://stressfaktor.squat.net/termine.php\">Stress Faktor</a> <br>" +
 				"<a href=\"http://www.indexberlin.de/openings-and-events\">Index</a> <br>"));
