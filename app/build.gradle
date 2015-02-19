@@ -38,18 +38,15 @@ android {
         buildConfigField "String", "GIT_SHA", "\"${gitSha()}\""
 
         applicationVariants.all { variant ->
-            def file = variant.outputFile
-            variant.outputFile = new File(file.parent, file.name.replace(".apk", "-" + versionName + ".apk"))
+            variant.outputs.each { output ->
+            def outputFile = output.outputFile
+            output.outputFile = new File(outputFile.parent, outputFile.name.replace(".apk", "-" + versionName + ".apk"))
         }
     }
 
     buildTypes {
-        debug {
-            versionNameSuffix "-DEBUG"
-            zipAlign = true
-        }
         release {
-            runProguard false
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
     }
