@@ -1,9 +1,5 @@
 package com.alvarosantisteban.pathos;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -16,11 +12,14 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.alvarosantisteban.pathos.R;
 import com.alvarosantisteban.pathos.loader.EventLoaderFactory;
 import com.alvarosantisteban.pathos.utils.DatabaseHelper;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Asyncronous Task used to download a set of html from different websites. 
@@ -29,6 +28,8 @@ import com.j256.ormlite.dao.RuntimeExceptionDao;
  *
  */
 public class DownloadWebpageAsyncTask extends AsyncTask<String, String, Integer> {
+
+    private static final String TAG = "DownloadWebpageAsyncTask";
 	
 	private Context context;
 	private ProgressBar loadProgressBar;
@@ -40,11 +41,7 @@ public class DownloadWebpageAsyncTask extends AsyncTask<String, String, Integer>
 	* The Database Helper that helps dealing with the db easily
 	*/
 	private DatabaseHelper databaseHelper = null;
-	
-	/**
-	 * Used for logging purposes
-	 */
-	private static final String TAG = "DownloadWebpageAsyncTask";
+
 	private static final String EXTRA_DATE = "date";
 	
 	private String initialMessage;
@@ -62,7 +59,7 @@ public class DownloadWebpageAsyncTask extends AsyncTask<String, String, Integer>
 	 * Makes the progressBar visible
 	 */
 	protected void onPreExecute(){
-    	Log.d(TAG,"onPreExecute");
+    	Log.d(TAG, "onPreExecute");
     	if(loadProgressBar != null){
     		loadProgressBar.setVisibility(View.VISIBLE);
     	}
@@ -156,7 +153,7 @@ public class DownloadWebpageAsyncTask extends AsyncTask<String, String, Integer>
 		List<Event> foundEvents = eventDao.queryForFieldValuesArgs(fieldValues);
 		
 		if(foundEvents.size() >= 1){
-			//Log.v(TAG,"El evento ya existe, no se añade.");
+			//Log.v(TAG,"El evento ya existe, no se aï¿½ade.");
 			return true;
 		}
 		return false;

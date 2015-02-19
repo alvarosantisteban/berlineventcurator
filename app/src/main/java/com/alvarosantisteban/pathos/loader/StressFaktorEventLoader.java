@@ -1,15 +1,15 @@
 package com.alvarosantisteban.pathos.loader;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
+import android.content.Context;
+import android.util.Log;
 
 import com.alvarosantisteban.pathos.Event;
 import com.alvarosantisteban.pathos.R;
 import com.alvarosantisteban.pathos.utils.WebUtils;
 
-import android.content.Context;
-import android.util.Log;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * Receives the html from the Stress Faktor website and parses the information to create a list of events.
@@ -165,7 +165,7 @@ public class StressFaktorEventLoader implements EventLoader {
 	 * Extracts the thema tag assuming that the type was previously set and that if is of type "talk", it will be a political event
 	 * and if not, a going out event.
 	 * 
-	 * @param tag the type tag for this event
+	 * @param typeTag the type tag for this event
 	 * @return the thema tag (going out or political)
 	 */
 	private String extractThemaTag(String typeTag) {
@@ -178,7 +178,7 @@ public class StressFaktorEventLoader implements EventLoader {
 	}
 
 	/**
-	 * Extracts the type tag looking for some keywords. Some keywords such as Vöku, could also be easily recognized but still belong to
+	 * Extracts the type tag looking for some keywords. Some keywords such as Vï¿½ku, could also be easily recognized but still belong to
 	 * the "Other" type tag.
 	 * 
 	 * @param text the html with the keyword
@@ -196,8 +196,8 @@ public class StressFaktorEventLoader implements EventLoader {
 			return PARTY_TYPE_TAG;
 		}else if(lowerCase.contains("workshop") || lowerCase.contains("lesung") || lowerCase.contains("pressekonferenz") ||
 				lowerCase.contains("diskussionskreis") || lowerCase.contains("vortrag") || lowerCase.contains("infoveranstaltung") ||
-				lowerCase.contains("tresen") || lowerCase.contains("montagscafé") || lowerCase.contains("stricktreff") || 
-				lowerCase.contains("talk") || lowerCase.contains("lesebühne")){
+				lowerCase.contains("tresen") || lowerCase.contains("montagscafï¿½") || lowerCase.contains("stricktreff") || 
+				lowerCase.contains("talk") || lowerCase.contains("lesebï¿½hne")){
 			return TALK_TYPE_TAG;
 		}else if(lowerCase.contains("kino") || lowerCase.contains("videokino") || lowerCase.contains("hofkino") ||
 				lowerCase.contains("solarpowersupercinema") || lowerCase.contains("film") || lowerCase.contains("kurzfilme")

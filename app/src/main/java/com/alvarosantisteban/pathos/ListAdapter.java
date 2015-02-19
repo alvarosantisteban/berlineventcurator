@@ -19,7 +19,7 @@ import com.alvarosantisteban.pathos.R;
  *
  */
 public class ListAdapter extends BaseExpandableListAdapter {
-	
+
 	private Context context;
 	//private Typeface tf;
 	/**

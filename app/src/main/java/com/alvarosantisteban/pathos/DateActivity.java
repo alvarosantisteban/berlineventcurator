@@ -55,7 +55,7 @@ import com.j256.ormlite.stmt.SelectArg;
  *
  */
 public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
-	
+
 	//--------------------------------------------
 	// CONSTANTS AND EXTRAS
 	//--------------------------------------------
