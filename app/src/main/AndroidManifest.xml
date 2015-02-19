@@ -73,20 +73,33 @@
             android:name="com.alvarosantisteban.pathos.MapActivity"
             android:label="@string/title_activity_map" >
         </activity>
-        
-        <!-- KEY FOR DEBUG MODE 
+
+
+      <meta-data
+        android:name="com.google.android.gms.version"
+        android:value="@integer/google_play_services_version" />
+
+
+      <!-- KEY FOR DEBUG MODE    -->
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
-            android:value="AIzaSyACUudAyzwqQr_j2QVGzG1ihyESsJdVnHw" />
--->
-        <!--  KEY FOR RELEASE MODE -->
+            android:value="AIzaSyBSNSkaqPyIcRT2jJdK1rEldCa_BhwkVMY" />
+
+
+      <!--  KEY FOR RELEASE MODE
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="AIzaSyAqTU5eBds-ea5lI_-_h7rF4vowT_1RESI" />
-        
-        
 
-        
+            -->
+
+
+      <!-- KEY FOR DEBUG MODE OLD
+        <meta-data
+            android:name="com.google.android.maps.v2.API_KEY"
+            android:value="AIzaSyACUudAyzwqQr_j2QVGzG1ihyESsJdVnHw" />
+                 -->
+
     </application>
 
 </manifest>
