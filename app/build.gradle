@@ -26,6 +26,7 @@ android {
     compileSdkVersion 'Google Inc.:Google APIs:18'
     buildToolsVersion "21.1.2"
 
+    compileOptions.encoding = 'windows-1251' // write your encoding here
 
     defaultConfig {
         applicationId "com.alvarosantisteban.pathos"
