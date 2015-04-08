@@ -1,25 +1,10 @@
 package com.alvarosantisteban.pathos;
 
-import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
 import android.app.ActionBar;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.location.Address;
-import android.location.Criteria;
-import android.location.Geocoder;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
+import android.location.*;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -30,6 +15,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.alvarosantisteban.pathos.utils.DatabaseHelper;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.*;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
@@ -42,6 +30,11 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
 
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
 /**
  * Displays a map of Berlin with a set of markers representing all the events for the selected day. If gps is activated, 
  * the user location is also shown.  
@@ -49,7 +42,8 @@ import com.j256.ormlite.dao.RuntimeExceptionDao;
  * @author Alvaro Santisteban 2014 - alvarosantisteban@gmail.com
  *
  */
-public class MapActivity extends OrmLiteBaseActivity<DatabaseHelper>  implements LocationListener{
+public class MapActivity extends OrmLiteBaseActivity<DatabaseHelper>  implements
+        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener {
 	
 	private static final String TAG = "MapActivity";
 	
@@ -65,9 +59,9 @@ public class MapActivity extends OrmLiteBaseActivity<DatabaseHelper>  implements
 	GoogleMap map;
 	
 	// Used to get the GPS
-	boolean gpsEnabled;
-	private LocationManager locationManager;
-	private String provider;
+    private GoogleApiClient mGoogleApiClient;
+    private Location mLastLocation;
+    private LocationRequest mLocationRequest;
 	Marker userMarker;
 	
 	DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.GERMAN);
@@ -80,7 +74,8 @@ public class MapActivity extends OrmLiteBaseActivity<DatabaseHelper>  implements
 	
 	List<Event> eventsList = new ArrayList<Event>();
 
-	@Override
+
+    @Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		Log.d(TAG, "onCreate");
@@ -110,24 +105,15 @@ public class MapActivity extends OrmLiteBaseActivity<DatabaseHelper>  implements
 		
 	    // Load the events and set the markers
 		new LoadEventsAsyncTask().execute((String)null);
-		
-		// Get the location manager
-	    locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-	    
-	    gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-		if(gpsEnabled){
-			Log.d(TAG, "gpsEnabled");
-			// Define the criteria how to select the location provider -> use default
-		    Criteria criteria = new Criteria();
-		    provider = locationManager.getBestProvider(criteria, false);
-		    
-		    //Location location = locationManager.getLastKnownLocation(provider);
-		    // Initialize the location fields
-		    locationManager.requestLocationUpdates(provider, 400, 1, this);
-		}
-	}
-	
-	OnInfoWindowClickListener InfoWindowListener = new OnInfoWindowClickListener(){
+
+        // Create the location request
+        createLocationRequest();
+
+        // Build google API Client
+        buildGoogleApiClient();
+    }
+
+    OnInfoWindowClickListener InfoWindowListener = new OnInfoWindowClickListener(){
 		@Override
 		public void onInfoWindowClick(Marker marker) {
 			for (Event event : eventsList){
@@ -137,68 +123,12 @@ public class MapActivity extends OrmLiteBaseActivity<DatabaseHelper>  implements
 					startActivity(intent);
 				}
 			}
-	    }};
-
-	/*
-	private void addMarkerForEvents(List<Event> eventsList) {
-		for(int i=0; i<eventsList.size(); i++){
-			Event event = eventsList.get(i);
-			Geocoder geocoder = new Geocoder(this);
-			List<Address> addressList;
-			try {
-				addressList = geocoder.getFromLocationName(event.getLocation(), 1);
-				if (addressList != null && addressList.size() > 0) {
-					Log.d(TAG, "event "+event.getName()+" added as a marker");
-	                double lat = addressList.get(0).getLatitude();  
-	                double lng = addressList.get(0).getLongitude();  
-	                LatLng position = new LatLng(lat, lng);
-	    			Marker berlin = map.addMarker(new MarkerOptions().position(position)
-	    			        .title(event.getName())
-	    			        .snippet(event.getDescription())
-	    			        .icon(BitmapDescriptorFactory
-	    			            .fromResource(R.drawable.map_marker)));
-
-	    			berlin.showInfoWindow();
-				}
-			} catch (IOException e) {
-				Log.e(TAG, e.toString());
-			} 	
-		}	
-	}*/
-
-
-
-	/**
-	 * Loads the events from the DB that match the choosenDate and the set of tags for the kind of organization passed as parameters
-	 * 
-	 * @param kindOfOrganization the kind of organization (By Type, Thema, Origin)
-	 * @param setOfTags the set of tags that the event has to match in order to be extracted from the DB
-	 */
-	    /*
-	private List<Event> loadEvents(String kindOfOrganization, String[] setOfTags){ 
-		Log.d(TAG,"LOAD EVENTS");
-		// Get our dao
-		RuntimeExceptionDao<Event, Integer> eventDao = getHelper().getEventDataDao();
-		for (int i=0; i<setOfTags.length; i++){
-			Log.d(TAG,setOfTags[i]);
-			List<Event> events = null;
-			try {
-				Map<String, Object> fieldValues = new HashMap<String,Object>();
-				fieldValues.put(kindOfOrganization, setOfTags[i]);
-				fieldValues.put("day", choosenDate);
-				events = eventDao.queryForFieldValuesArgs(fieldValues);
-			} catch (Exception e) {
-				e.printStackTrace();
-				Log.e(TAG,"DB exception while retrieving the events from the website " +setOfTags[i]);
-			}
-			return events;
-		}
-		return null;
-	}*/
+	    }
+    };
 	    
-	    ///////////////////////////////////////////////////////////////////////////
-		// ASYNCTASKS
-		///////////////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////
+	// ASYNCTASKS
+	///////////////////////////////////////////////////////////////////////////
 	/**
 	 * AsyncTask that loads all events from the database
 	 * 
@@ -280,49 +210,88 @@ public class MapActivity extends OrmLiteBaseActivity<DatabaseHelper>  implements
 	}
 	
 	///////////////////////////////////////////////////////////////////////////
-	// GPS
+	// LOCATION
 	///////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public void onConnected(Bundle bundle) {
+        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
+                mGoogleApiClient);
+        if (mLastLocation != null) {
+            updateUI();
+        }
+        startLocationUpdates();
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        Log.w(TAG, "onConnectionSuspended Google API: " + i);
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+        Log.e(TAG, "onConnectionFailed Google API: " +connectionResult.toString());
+    }
+
+    protected synchronized void buildGoogleApiClient() {
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
+    }
+
+    protected void createLocationRequest() {
+        mLocationRequest = new LocationRequest();
+        mLocationRequest.setInterval(10000);
+        mLocationRequest.setFastestInterval(5000);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+    }
 
 	@Override
 	public void onLocationChanged(Location newLocation) {
-		Log.w(TAG, "onLocationChanged");
-		LatLng ltlg = new LatLng(newLocation.getLatitude(),newLocation.getLongitude());
-	    userMarker = map.addMarker(new MarkerOptions().position(ltlg)
-		        .title("You")
-		        .snippet("Here you are")
-		        .icon(BitmapDescriptorFactory
-		            .fromResource(R.drawable.ic_launcher_pathos)));
-	    //map.moveCamera(CameraUpdateFactory.newLatLngZoom(ltlg, 15));
-	    map.animateCamera(CameraUpdateFactory.newLatLngZoom(ltlg, 15), 1500, null);
-	    if(gpsEnabled){
-	    	locationManager.removeUpdates(this);
-	    }
+        mLastLocation = newLocation;
+        updateUI();
+
+        // Do not ask for more updates
+        if (mGoogleApiClient.isConnected()) {
+            stopLocationUpdates();
+        }
 	}
 
+    protected void startLocationUpdates() {
+        LocationServices.FusedLocationApi.requestLocationUpdates(
+                mGoogleApiClient, mLocationRequest, this);
+    }
 
-	@Override
-	public void onProviderDisabled(String provider) {
-		
-	}
+    protected void stopLocationUpdates() {
+        LocationServices.FusedLocationApi.removeLocationUpdates(
+                mGoogleApiClient, this);
+    }
 
-	@Override
-	public void onProviderEnabled(String provider) {
-		
-	}
-
-	@Override
-	public void onStatusChanged(String provider, int status, Bundle extras) {
-		
-	}
+    private void updateUI() {
+        LatLng ltlg = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+        userMarker = map.addMarker(new MarkerOptions().position(ltlg)
+                .title("You")
+                .snippet("Here you are")
+                .icon(BitmapDescriptorFactory
+                        .fromResource(R.drawable.ic_launcher_pathos)));
+    }
 	
 	/* Remove the locationlistener updates when Activity is paused */
 	@Override
 	protected void onPause() {
 		Log.d(TAG, "onPause");
 		super.onPause();
+
+        if (mGoogleApiClient.isConnected()) {
+            stopLocationUpdates();
+        }
+        /*
 		if(gpsEnabled){
 			locationManager.removeUpdates(this);
 		}
+		*/
 	}
 	  
 	  /* Request updates at startup */
@@ -330,10 +299,28 @@ public class MapActivity extends OrmLiteBaseActivity<DatabaseHelper>  implements
 	protected void onResume() {
 		Log.d(TAG, "onResume");
 		super.onResume();
+
+        if (mGoogleApiClient.isConnected() && userMarker == null) {
+            startLocationUpdates();
+        }
+        /*
 		if(userMarker == null && gpsEnabled){
 			locationManager.requestLocationUpdates(provider, 400, 1, this);
 		}
+		*/
 	}
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mGoogleApiClient.connect();
+    }
+
+    @Override
+    protected void onStop() {
+        mGoogleApiClient.disconnect();
+        super.onStop();
+    }
 	
 	@Override
 	public void onSaveInstanceState(Bundle savedInstanceState) {
