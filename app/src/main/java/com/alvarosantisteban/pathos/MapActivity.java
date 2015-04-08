@@ -272,8 +272,8 @@ public class MapActivity extends OrmLiteBaseActivity<DatabaseHelper>  implements
     private void updateUI() {
         LatLng ltlg = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
         userMarker = map.addMarker(new MarkerOptions().position(ltlg)
-                .title("You")
-                .snippet("Here you are")
+                .title(getString(R.string.map_user_marker_title))
+                .snippet(getString(R.string.map_user_marker_snippet))
                 .icon(BitmapDescriptorFactory
                         .fromResource(R.drawable.ic_launcher_pathos)));
     }
