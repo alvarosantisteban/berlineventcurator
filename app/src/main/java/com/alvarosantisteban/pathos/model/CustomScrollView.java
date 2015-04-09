@@ -1,4 +1,4 @@
-package com.alvarosantisteban.pathos;
+package com.alvarosantisteban.pathos.model;
 
 import com.google.android.gms.maps.MapView;
 

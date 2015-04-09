@@ -1,4 +1,4 @@
-package com.alvarosantisteban.pathos;
+package com.alvarosantisteban.pathos.model;
 
 import android.content.Context;
 import android.content.res.TypedArray;

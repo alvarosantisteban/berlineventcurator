@@ -1,4 +1,4 @@
-package com.alvarosantisteban.pathos;
+package com.alvarosantisteban.pathos.model;
 
 import android.app.Activity;
 import android.content.Context;
@@ -12,6 +12,9 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.alvarosantisteban.pathos.DateActivity;
+import com.alvarosantisteban.pathos.FirstTimeActivity;
+import com.alvarosantisteban.pathos.R;
 import com.alvarosantisteban.pathos.loader.EventLoaderFactory;
 import com.alvarosantisteban.pathos.utils.Constants;
 import com.alvarosantisteban.pathos.utils.DatabaseHelper;

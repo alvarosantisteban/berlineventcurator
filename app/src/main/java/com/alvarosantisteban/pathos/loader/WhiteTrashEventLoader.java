@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import com.alvarosantisteban.pathos.Event;
+import com.alvarosantisteban.pathos.model.Event;
 import com.alvarosantisteban.pathos.R;
 import com.alvarosantisteban.pathos.utils.StringUtils;
 import com.alvarosantisteban.pathos.utils.WebUtils;
@@ -127,7 +127,7 @@ public class WhiteTrashEventLoader implements EventLoader{
     }
 	
 	/**
-	 * Extracts the type tag looking for some keywords. Some keywords such as Vöku, could also be easily recognized but still belong to
+	 * Extracts the type tag looking for some keywords. Some keywords such as Vï¿½ku, could also be easily recognized but still belong to
 	 * the "Other" type tag.
 	 * 
 	 * @param text the html with the keyword

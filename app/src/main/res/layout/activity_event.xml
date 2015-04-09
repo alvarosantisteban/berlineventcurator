@@ -1,5 +1,5 @@
 
-<com.alvarosantisteban.pathos.CustomScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.alvarosantisteban.pathos.model.CustomScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/scrollViewEvent"
 	android:layout_width="fill_parent"
@@ -134,4 +134,4 @@
             -->
 	
 	</LinearLayout>
-</com.alvarosantisteban.pathos.CustomScrollView>
+</com.alvarosantisteban.pathos.model.CustomScrollView>

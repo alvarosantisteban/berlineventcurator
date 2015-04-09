@@ -21,6 +21,7 @@ import android.widget.PopupWindow;
 import android.widget.Toast;
 
 import com.alvarosantisteban.pathos.loader.*;
+import com.alvarosantisteban.pathos.model.DownloadWebpageAsyncTask;
 import com.alvarosantisteban.pathos.preferences.SettingsActivity;
 import com.alvarosantisteban.pathos.preferences.SettingsFragment;
 import com.alvarosantisteban.pathos.utils.DatabaseHelper;

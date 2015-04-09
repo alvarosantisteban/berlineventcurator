@@ -1,4 +1,4 @@
-package com.alvarosantisteban.pathos;
+package com.alvarosantisteban.pathos.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;

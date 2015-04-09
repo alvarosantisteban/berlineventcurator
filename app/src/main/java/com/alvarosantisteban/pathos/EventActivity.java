@@ -22,6 +22,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.alvarosantisteban.pathos.model.CustomScrollView;
+import com.alvarosantisteban.pathos.model.Event;
 import com.alvarosantisteban.pathos.utils.Constants;
 import com.alvarosantisteban.pathos.utils.DatabaseHelper;
 import com.google.android.gms.common.ConnectionResult;

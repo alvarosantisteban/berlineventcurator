@@ -1,4 +1,6 @@
-package com.alvarosantisteban.pathos;
+package com.alvarosantisteban.pathos.model;
+
+import com.alvarosantisteban.pathos.model.Event;
 
 import java.util.ArrayList;
 

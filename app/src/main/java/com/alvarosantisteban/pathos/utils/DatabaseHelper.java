@@ -6,7 +6,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-import com.alvarosantisteban.pathos.Event;
+import com.alvarosantisteban.pathos.model.Event;
 import com.alvarosantisteban.pathos.R;
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.dao.Dao;

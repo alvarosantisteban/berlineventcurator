@@ -5,7 +5,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
-import com.alvarosantisteban.pathos.Event;
+import com.alvarosantisteban.pathos.model.Event;
 import com.alvarosantisteban.pathos.utils.StringUtils;
 import com.alvarosantisteban.pathos.utils.WebUtils;
 

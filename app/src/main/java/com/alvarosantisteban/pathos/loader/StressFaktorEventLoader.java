@@ -3,7 +3,7 @@ package com.alvarosantisteban.pathos.loader;
 import android.content.Context;
 import android.util.Log;
 
-import com.alvarosantisteban.pathos.Event;
+import com.alvarosantisteban.pathos.model.Event;
 import com.alvarosantisteban.pathos.R;
 import com.alvarosantisteban.pathos.utils.WebUtils;
 

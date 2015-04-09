@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.alvarosantisteban.pathos.Event;
+import com.alvarosantisteban.pathos.model.Event;
 import com.alvarosantisteban.pathos.R;
 import com.alvarosantisteban.pathos.utils.WebUtils;
 
@@ -136,7 +136,7 @@ public class GothDatumEventLoader implements EventLoader {
 				//event.setLocation("<a href=\"https://maps.google.es/maps?q="+placeAndRest[0].trim().replace(' ', '+')+"\">"+placeAndRest[0].trim()+"</a>");
 				String location = placeAndRest[0].trim();
 				if(location.equals("Berlin - K17")){
-					location = "Pettenkoferstraße 17a, 10247 Berlin";
+					location = "Pettenkoferstraï¿½e 17a, 10247 Berlin";
 				}
 				event.setLocation(location);
 				String[] nothingNameAndRest = placeAndRest[1].split("<i>",2);

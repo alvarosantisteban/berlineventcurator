@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import com.alvarosantisteban.pathos.Event;
+import com.alvarosantisteban.pathos.model.Event;
 import com.alvarosantisteban.pathos.R;
 import com.alvarosantisteban.pathos.utils.WebUtils;
 
@@ -21,7 +21,7 @@ import android.util.Log;
 public class KoepiEventLoader implements EventLoader{
 	
 	public final static String WEBSITE_URL = "http://www.koepi137.net/eventskonzerte.php";
-	public final static String WEBSITE_NAME = "Köpi's events";
+	public final static String WEBSITE_NAME = "Kï¿½pi's events";
 	
 	/**
 	 * Used for logging purposes
@@ -109,7 +109,7 @@ public class KoepiEventLoader implements EventLoader{
 			event.setDescription(descriptionWithoutExtraLine);
 			
 			// Set the location
-			//event.setLocation("<a href=\"https://maps.google.es/maps?q=Koepenicker+139,+Berlin\">Köpi</a>");
+			//event.setLocation("<a href=\"https://maps.google.es/maps?q=Koepenicker+139,+Berlin\">Kï¿½pi</a>");
 			event.setLocation("Koepenicker 139, Berlin");
 			
 			// Check if there is a link
@@ -149,7 +149,7 @@ public class KoepiEventLoader implements EventLoader{
 	}
 
 	/**
-	 * Extracts the type tag looking for some keywords. Some keywords such as Vöku, could also be easily recognized but still belong to
+	 * Extracts the type tag looking for some keywords. Some keywords such as Vï¿½ku, could also be easily recognized but still belong to
 	 * the "Other" type tag.
 	 * 
 	 * @param text the html with the keyword

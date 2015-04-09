@@ -21,6 +21,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.alvarosantisteban.pathos.model.DownloadWebpageAsyncTask;
+import com.alvarosantisteban.pathos.model.Event;
+import com.alvarosantisteban.pathos.model.HeaderInfo;
+import com.alvarosantisteban.pathos.model.ListAdapter;
 import com.alvarosantisteban.pathos.preferences.SettingsActivity;
 import com.alvarosantisteban.pathos.preferences.SettingsFragment;
 import com.alvarosantisteban.pathos.utils.Constants;

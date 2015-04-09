@@ -3,7 +3,7 @@ package com.alvarosantisteban.pathos.loader;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.alvarosantisteban.pathos.Event;
+import com.alvarosantisteban.pathos.model.Event;
 import com.alvarosantisteban.pathos.R;
 import com.alvarosantisteban.pathos.utils.WebUtils;
 

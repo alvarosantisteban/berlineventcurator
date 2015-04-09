@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import com.alvarosantisteban.pathos.Event;
+import com.alvarosantisteban.pathos.model.Event;
 import com.alvarosantisteban.pathos.R;
 import com.alvarosantisteban.pathos.utils.StringUtils;
 import com.alvarosantisteban.pathos.utils.WebUtils;
@@ -201,9 +201,9 @@ public class IHeartBerlinEventLoader implements EventLoader {
 				if(street > -1){
 					pattern = " Str.";
 				}else{
-					street = description.indexOf("straße");
+					street = description.indexOf("straï¿½e");
 					if(street > -1){
-						pattern = "straße";
+						pattern = "straï¿½e";
 					}else{
 						street = description.indexOf("strasse");
 						if(street > -1){

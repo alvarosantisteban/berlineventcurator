@@ -2,7 +2,7 @@ package com.alvarosantisteban.pathos.loader;
 
 import java.util.List;
 
-import com.alvarosantisteban.pathos.Event;
+import com.alvarosantisteban.pathos.model.Event;
 
 import android.content.Context;
 

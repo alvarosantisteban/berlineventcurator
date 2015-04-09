@@ -1,4 +1,4 @@
-package com.alvarosantisteban.pathos;
+package com.alvarosantisteban.pathos.model;
 
 import java.util.ArrayList;
 
@@ -10,7 +10,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
+
 import com.alvarosantisteban.pathos.R;
+import com.alvarosantisteban.pathos.model.Event;
+import com.alvarosantisteban.pathos.model.HeaderInfo;
 
 /**
  * An adapter for the ExpandableList that enables the population through an ArrayList
