@@ -64,14 +64,47 @@ public class MapActivity extends OrmLiteBaseActivity<DatabaseHelper>  implements
 	
 	static final LatLng BERLIN = new LatLng(52.49333, 13.36446);
 
+    // The map
 	GoogleMap map;
 	
-	// Used to get the GPS
+	// Used to locate the user
     private GoogleApiClient mGoogleApiClient;
     private Location mLastLocation;
     private LocationRequest mLocationRequest;
 	Marker userMarker;
-	
+
+    // The callback for the management of the user settings regarding location
+    private ResultCallback<LocationSettingsResult> mResultCallbackFromSettings = new ResultCallback<LocationSettingsResult>() {
+        @Override
+        public void onResult(LocationSettingsResult result) {
+            final Status status = result.getStatus();
+            //final LocationSettingsStates locationSettingsStates = result.getLocationSettingsStates();
+            switch (status.getStatusCode()) {
+                case LocationSettingsStatusCodes.SUCCESS:
+                    // All location settings are satisfied. The client can initialize location
+                    // requests here.
+                    break;
+                case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
+                    // Location settings are not satisfied. But could be fixed by showing the user
+                    // a dialog.
+                    try {
+                        // Show the dialog by calling startResolutionForResult(),
+                        // and check the result in onActivityResult().
+                        status.startResolutionForResult(
+                                MapActivity.this,
+                                REQUEST_CHECK_SETTINGS);
+                    } catch (IntentSender.SendIntentException e) {
+                        // Ignore the error.
+                    }
+                    break;
+                case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
+                    Log.e(TAG, "Settings change unavailable. We have no way to fix the settings so we won't show the dialog.");
+                    break;
+            }
+        }
+    };
+
+    // Fields related to the datum
 	DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.GERMAN);
 	Calendar currentDay = Calendar.getInstance();
 	private String today = dateFormat.format(currentDay.getTime());
@@ -81,7 +114,6 @@ public class MapActivity extends OrmLiteBaseActivity<DatabaseHelper>  implements
 	Context context;
 	
 	List<Event> eventsList = new ArrayList<Event>();
-
 
     @Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -108,6 +140,7 @@ public class MapActivity extends OrmLiteBaseActivity<DatabaseHelper>  implements
 			chosenDate = sharedPref.getString(Constants.CHOSEN_DATE, today);
 		}
 
+        // Set the map
 		map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
 	    map.moveCamera(CameraUpdateFactory.newLatLngZoom(BERLIN, 12));
 	    map.setOnInfoWindowClickListener(InfoWindowListener);
@@ -125,37 +158,8 @@ public class MapActivity extends OrmLiteBaseActivity<DatabaseHelper>  implements
                 .addLocationRequest(mLocationRequest);
         PendingResult<LocationSettingsResult> result =
                 LocationServices.SettingsApi.checkLocationSettings(mGoogleApiClient, locationSettingsRequestBuilder.build());
-        result.setResultCallback(new ResultCallback<LocationSettingsResult>() {
-            @Override
-            public void onResult(LocationSettingsResult result) {
-                final Status status = result.getStatus();
-                //final LocationSettingsStates locationSettingsStates = result.getLocationSettingsStates();
-                switch (status.getStatusCode()) {
-                    case LocationSettingsStatusCodes.SUCCESS:
-                        Log.d(TAG, "Success");
-                        // All location settings are satisfied. The client can initialize location
-                        // requests here.
 
-                        break;
-                    case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
-                        // Location settings are not satisfied. But could be fixed by showing the user
-                        // a dialog.
-                        try {
-                            // Show the dialog by calling startResolutionForResult(),
-                            // and check the result in onActivityResult().
-                            status.startResolutionForResult(
-                                    MapActivity.this,
-                                    REQUEST_CHECK_SETTINGS);
-                        } catch (IntentSender.SendIntentException e) {
-                            // Ignore the error.
-                        }
-                        break;
-                    case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
-                        Log.e(TAG, "Settings change unavailable. we have no way to fix the settings so we won't show the dialog.");
-                        break;
-                }
-            }
-        });
+        result.setResultCallback(mResultCallbackFromSettings);
     }
 
     @Override
