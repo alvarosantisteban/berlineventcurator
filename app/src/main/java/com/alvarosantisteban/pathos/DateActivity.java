@@ -1,22 +1,5 @@
 package com.alvarosantisteban.pathos;
 
-import java.sql.SQLException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-
-
-import android.app.ActionBar;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -38,15 +21,20 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.alvarosantisteban.pathos.R;
 import com.alvarosantisteban.pathos.preferences.SettingsActivity;
 import com.alvarosantisteban.pathos.preferences.SettingsFragment;
+import com.alvarosantisteban.pathos.utils.Constants;
 import com.alvarosantisteban.pathos.utils.DatabaseHelper;
 import com.alvarosantisteban.pathos.utils.StringUtils;
 import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
 import com.j256.ormlite.stmt.DeleteBuilder;
 import com.j256.ormlite.stmt.SelectArg;
+
+import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * Main activity that displays a list with the events for a selected day organized by the type, topic or origin of the website.
@@ -67,7 +55,6 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 	// Constants to access Preferences
 	private final String LAST_SELECTION = "lastSelection";
 	private final String FIRST_TIME_APP = "isFirstTimeApp";
-	private final String CHOOSEN_DATE = "choosenDate";
 	
 	// The keyword passed as extra to EventActivity
 	public static final String EXTRA_EVENT = "com.alvarosantisteban.pathos.event";
@@ -126,9 +113,9 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 	private TextView displayedDate;
 	
 	/**
-	 * The String with the choosenDate by the user in the format DD/MM/YYYY
+	 * The String with the chosenDate by the user in the format DD/MM/YYYY
 	 */
-	public String choosenDate;
+	public String chosenDate;
 	
 	//--------------------------------------------
 	// STRUCTURES
@@ -172,7 +159,7 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 	private static Toast toast;
 	
 	/**
-	 * The total number of events for a choosenDate
+	 * The total number of events for a chosenDate
 	 */
 	int totalNumEvents = 0;
 	
@@ -285,24 +272,24 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 		
 		intent = getIntent();
 		// Get the choosen date from the calendar
-		choosenDate = intent.getStringExtra(EXTRA_DATE);
-		if (choosenDate == null){	
+		chosenDate = intent.getStringExtra(EXTRA_DATE);
+		if (chosenDate == null){
 			// The user did not select anything, the default date is today
-			choosenDate = sharedPref.getString(CHOOSEN_DATE, today);
+			chosenDate = sharedPref.getString(Constants.CHOSEN_DATE, today);
 		}else{
 			// Save the date selection
 			Editor editor = sharedPref.edit();
-			editor.putString(CHOOSEN_DATE, choosenDate);
+			editor.putString(Constants.CHOSEN_DATE, chosenDate);
 			editor.commit();
 		}	
 		displayedDate = (TextView) findViewById(R.id.date);
-		if (choosenDate.equals(today)){
+		if (chosenDate.equals(today)){
 			displayedDate.setText(R.string.events_for_today);
-		}else if (choosenDate.equals(getTomorrow())){
+		}else if (chosenDate.equals(getTomorrow())){
 			displayedDate.setText(R.string.events_for_tomorrow);
 		}else{
 			displayedDate.setText(R.string.events_for_a);
-			displayedDate.append(" " +choosenDate);
+			displayedDate.append(" " + chosenDate);
 		}
 		
 		// --------------------------------------------------
@@ -405,14 +392,14 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 		NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
 		// Check if is possible to establish a connection
 		if (networkInfo != null && networkInfo.isConnected()) {
-			DownloadWebpageAsyncTask download = new DownloadWebpageAsyncTask(this, loadProgressBar, choosenDate, context.getString(R.string.searching));
+			DownloadWebpageAsyncTask download = new DownloadWebpageAsyncTask(this, loadProgressBar, chosenDate, context.getString(R.string.searching));
 			// Execute the asyncronous task of downloading the websites
 			download.execute(addedGroups.toArray((new String[addedGroups.size()])));
 		}
 	}	
 	
 	/**
-	 * Loads the events from the DB that match the choosenDate and the set of tags for the kind of organization passed as parameters
+	 * Loads the events from the DB that match the chosenDate and the set of tags for the kind of organization passed as parameters
 	 * 
 	 * @param kindOfOrganization the kind of organization (By Type, Thema, Origin)
 	 * @param setOfTags the set of tags that the event has to match in order to be extracted from the DB
@@ -427,7 +414,7 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 			try {
 				Map<String, Object> fieldValues = new HashMap<String,Object>();
 				fieldValues.put(kindOfOrganization, setOfTags[i]);
-				fieldValues.put("day", choosenDate);
+				fieldValues.put("day", chosenDate);
 				eventsFromWebsite = eventDao.queryForFieldValuesArgs(fieldValues);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -479,7 +466,7 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 	}
 	
 	/**
-	 * Populates the {@link tagsMap} and the {@link groupsList} by creating {@link HeaderInfo} using the array of tags passed
+	 * Populates the tagsMap and the groupsList by creating {@link HeaderInfo} using the array of tags passed
 	 * in the parameter.
 	 * 
 	 * @param tagsNames the set of tags used to classified events
@@ -572,7 +559,7 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 		    NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
 		    // Check if is possible to establish a connection
 		    if (networkInfo != null && networkInfo.isConnected()) {
-		    	DownloadWebpageAsyncTask download = new DownloadWebpageAsyncTask(this,loadProgressBar, choosenDate, context.getString(R.string.searching));
+		    	DownloadWebpageAsyncTask download = new DownloadWebpageAsyncTask(this,loadProgressBar, chosenDate, context.getString(R.string.searching));
 				// Execute the asyncronous task of downloading the websites
 				download.execute(originTags.toArray(new String[0]));
 		    } else {

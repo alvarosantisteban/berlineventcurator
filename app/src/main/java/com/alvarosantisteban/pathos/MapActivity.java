@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.alvarosantisteban.pathos.utils.Constants;
 import com.alvarosantisteban.pathos.utils.DatabaseHelper;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -44,7 +45,7 @@ import java.util.*;
 
 /**
  * Displays a map of Berlin with a set of markers representing all the events for the selected day. If gps is activated, 
- * the user location is also shown.  
+ * the user location is also shown, if not, it shows a popup dialog.
  * 
  * @author Alvaro Santisteban 2014 - alvarosantisteban@gmail.com
  *
@@ -53,10 +54,10 @@ public class MapActivity extends OrmLiteBaseActivity<DatabaseHelper>  implements
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener {
 	
 	private static final String TAG = "MapActivity";
+
     private static final int REQUEST_CHECK_SETTINGS = 1;
 
-    private final String CHOOSEN_DATE = "choosenDate";
-	private final String EXTRA_DATE = "date";
+	private static final String EXTRA_DATE = "date";
 	public static final String EXTRA_EVENT = "com.alvarosantisteban.pathos.event";
 	
 	private final String BUNDLE_EVENTS_LIST = "eventsList";
@@ -75,7 +76,7 @@ public class MapActivity extends OrmLiteBaseActivity<DatabaseHelper>  implements
 	DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.GERMAN);
 	Calendar currentDay = Calendar.getInstance();
 	private String today = dateFormat.format(currentDay.getTime());
-	String choosenDate;
+	String chosenDate;
 	
 	SharedPreferences sharedPref;
 	Context context;
@@ -98,12 +99,12 @@ public class MapActivity extends OrmLiteBaseActivity<DatabaseHelper>  implements
 		}
 		
 		Intent intent = getIntent();
-		// Get the choosen date from the calendar
-		choosenDate = intent.getStringExtra(EXTRA_DATE);
-		if (choosenDate == null){	
+		// Get the chosen date from the calendar
+		chosenDate = intent.getStringExtra(EXTRA_DATE);
+		if (chosenDate == null){
 			// The user did not select anything, the default date is today
 			sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-			choosenDate = sharedPref.getString(CHOOSEN_DATE, today);
+			chosenDate = sharedPref.getString(Constants.CHOSEN_DATE, today);
 		}
 		
 		//generalMap = (MapView)findViewById(R.id.map);
@@ -213,7 +214,7 @@ public class MapActivity extends OrmLiteBaseActivity<DatabaseHelper>  implements
 			List<Event> events = null;
 			try {
 				Map<String, Object> fieldValues = new HashMap<String,Object>();
-				fieldValues.put("day", choosenDate);
+				fieldValues.put("day", chosenDate);
 				events = eventDao.queryForFieldValuesArgs(fieldValues);
 			} catch (Exception e) {
 				e.printStackTrace();
