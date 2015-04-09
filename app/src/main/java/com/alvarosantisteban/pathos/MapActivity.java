@@ -44,8 +44,8 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
- * Displays a map of Berlin with a set of markers representing all the events for the selected day. If gps is activated, 
- * the user location is also shown, if not, it shows a popup dialog.
+ * Displays a map of Berlin with a set of markers representing all the events for the selected day. If location services
+ * are activated, the user location is shown, if not, it shows a popup dialog.
  * 
  * @author Alvaro Santisteban 2014 - alvarosantisteban@gmail.com
  *

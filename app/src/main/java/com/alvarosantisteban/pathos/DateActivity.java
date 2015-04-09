@@ -47,6 +47,8 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 	//--------------------------------------------
 	// CONSTANTS AND EXTRAS
 	//--------------------------------------------
+
+    private static final String TAG = "DateActivity";
 	
 	// Constants to determinate the kind of organization
 	private String TYPE_ORGANIZATION;
@@ -55,11 +57,7 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 	// Constants to access Preferences
 	private final String LAST_SELECTION = "lastSelection";
 	private final String FIRST_TIME_APP = "isFirstTimeApp";
-	
-	// The keyword passed as extra to EventActivity
-	//public static final String EXTRA_EVENT = "com.alvarosantisteban.pathos.event";
-	// The keyword received as extra to know the selected date 
-	//private final String EXTRA_DATE = "date";
+
 	// Settings
 	private static final int RESULT_SETTINGS = 1;
 	
@@ -67,11 +65,6 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 	private static final int INTENT_RETURN_CODE = 1;
 	public static final int RESULT_UPDATE = 1;
 	public static final String EVENTS_RESULT_DATA = "result data";
-	
-	/**
-	 * Used for logging purposes
-	 */
-	private static final String TAG = "DateActivity";
 	
 	//--------------------------------------------
 	// SETS OF TAGS
