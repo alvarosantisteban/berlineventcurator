@@ -9,7 +9,7 @@ public final class Constants {
 
     // SHARED PREFERENCES
     public static final String CHOSEN_DATE = "chosenDate";
-    public static final String LAST_CHOOSEN_DATE = "lastChoosenDate";
+    public static final String LAST_CHOSEN_DATE = "lastChosenDate";
 
     // INTENT EXTRAS
     public static final String EXTRA_DATE = "extraDate";

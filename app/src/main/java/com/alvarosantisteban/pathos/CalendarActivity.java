@@ -57,7 +57,7 @@ public class CalendarActivity extends Activity {
 		
 		// Get the last selected day
 		Calendar today = new GregorianCalendar();
-		lastDate = sharedPref.getLong(Constants.LAST_CHOOSEN_DATE, today.getTimeInMillis());
+		lastDate = sharedPref.getLong(Constants.LAST_CHOSEN_DATE, today.getTimeInMillis());
 		calendar.setDate(lastDate);
 		
 		// Detect the change of the selected date
@@ -74,7 +74,7 @@ public class CalendarActivity extends Activity {
                 Calendar selectedDate = new GregorianCalendar(year, month-1, dayOfMonth);
                 long dateInMilliseconds = selectedDate.getTimeInMillis();
                 Editor editor = sharedPref.edit();
-                editor.putLong(Constants.LAST_CHOOSEN_DATE, dateInMilliseconds);
+                editor.putLong(Constants.LAST_CHOSEN_DATE, dateInMilliseconds);
                 editor.commit();
                  
                 // Go to DateActivity for the selected date

@@ -57,7 +57,7 @@ public class FakeCalendarActivity extends Activity{
 		sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
 		
 		Calendar selectedDay = new GregorianCalendar();
-		long lastDate = sharedPref.getLong(Constants.LAST_CHOOSEN_DATE, selectedDay.getTimeInMillis());
+		long lastDate = sharedPref.getLong(Constants.LAST_CHOSEN_DATE, selectedDay.getTimeInMillis());
 		selectedDay.setTimeInMillis(lastDate);
 		
 		// Detects the change of the date
@@ -74,7 +74,7 @@ public class FakeCalendarActivity extends Activity{
                 Calendar selectedDate = new GregorianCalendar(year, month-1, dayOfMonth);
                 long dateInMilliseconds = selectedDate.getTimeInMillis();
                 Editor editor = sharedPref.edit();
-                editor.putLong(Constants.LAST_CHOOSEN_DATE, dateInMilliseconds);
+                editor.putLong(Constants.LAST_CHOSEN_DATE, dateInMilliseconds);
                 editor.commit();
                 
                 String choosenDate = dateFormat.format(selectedDate.getTime());
