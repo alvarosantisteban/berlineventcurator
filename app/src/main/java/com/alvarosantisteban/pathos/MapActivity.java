@@ -56,12 +56,6 @@ public class MapActivity extends OrmLiteBaseActivity<DatabaseHelper>  implements
 	private static final String TAG = "MapActivity";
 
     private static final int REQUEST_CHECK_SETTINGS = 1;
-
-	private static final String EXTRA_DATE = "date";
-	public static final String EXTRA_EVENT = "com.alvarosantisteban.pathos.event";
-	
-	private final String BUNDLE_EVENTS_LIST = "eventsList";
-	
 	static final LatLng BERLIN = new LatLng(52.49333, 13.36446);
 
     // The map
@@ -111,7 +105,7 @@ public class MapActivity extends OrmLiteBaseActivity<DatabaseHelper>  implements
             for (Event event : eventsList) {
                 if (event.getDescription().equals(marker.getSnippet()) && event.getName().equals(marker.getTitle())) {
                     Intent intent = new Intent(context, EventActivity.class);
-                    intent.putExtra(EXTRA_EVENT, event);
+                    intent.putExtra(Constants.EXTRA_EVENT, event);
                     startActivity(intent);
                 }
             }
@@ -148,9 +142,9 @@ public class MapActivity extends OrmLiteBaseActivity<DatabaseHelper>  implements
 
         // Get the chosen date from the calendar
 		Intent intent = getIntent();
-		chosenDate = intent.getStringExtra(EXTRA_DATE);
+		chosenDate = intent.getStringExtra(Constants.EXTRA_DATE);
 		if (chosenDate == null){
-			// The user did not select anything, the default date is today
+			// The user did not select anything, get it from shared preferences
 			sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
 			chosenDate = sharedPref.getString(Constants.CHOSEN_DATE, today);
 		}
@@ -394,14 +388,14 @@ public class MapActivity extends OrmLiteBaseActivity<DatabaseHelper>  implements
 	public void onSaveInstanceState(@NonNull Bundle savedInstanceState) {
 		Log.v(TAG, "onSaveInstanceState");
 		super.onSaveInstanceState(savedInstanceState);
-		savedInstanceState.putParcelableArrayList(BUNDLE_EVENTS_LIST, (ArrayList<? extends Parcelable>) eventsList);
+		savedInstanceState.putParcelableArrayList(Constants.BUNDLE_EVENTS_LIST, (ArrayList<? extends Parcelable>) eventsList);
 	}
 	
 	@Override
 	public void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
 		Log.v(TAG, "onRestoreInstanceState");
 		super.onRestoreInstanceState(savedInstanceState);
-		eventsList = savedInstanceState.getParcelableArrayList(BUNDLE_EVENTS_LIST);
+		eventsList = savedInstanceState.getParcelableArrayList(Constants.BUNDLE_EVENTS_LIST);
 	}
 
     /**

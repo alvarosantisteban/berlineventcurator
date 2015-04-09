@@ -13,6 +13,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.alvarosantisteban.pathos.loader.EventLoaderFactory;
+import com.alvarosantisteban.pathos.utils.Constants;
 import com.alvarosantisteban.pathos.utils.DatabaseHelper;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
@@ -41,8 +42,6 @@ public class DownloadWebpageAsyncTask extends AsyncTask<String, String, Integer>
 	* The Database Helper that helps dealing with the db easily
 	*/
 	private DatabaseHelper databaseHelper = null;
-
-	private static final String EXTRA_DATE = "date";
 	
 	private String initialMessage;
 
@@ -193,7 +192,7 @@ public class DownloadWebpageAsyncTask extends AsyncTask<String, String, Integer>
 		// If there are new events for the current date, reload the DateActivity
 		if(numOfEventsInDate>0){
 			Intent intent = new Intent(context, DateActivity.class);
-			intent.putExtra(EXTRA_DATE, choosenDate);
+			intent.putExtra(Constants.EXTRA_DATE, choosenDate);
 			intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 			((Activity) context).startActivity(intent);
 		}

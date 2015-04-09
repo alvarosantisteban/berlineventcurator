@@ -7,5 +7,14 @@ package com.alvarosantisteban.pathos.utils;
  */
 public final class Constants {
 
+    // SHARED PREFERENCES
     public static final String CHOSEN_DATE = "chosenDate";
+    public static final String LAST_CHOOSEN_DATE = "lastChoosenDate";
+
+    // INTENT EXTRAS
+    public static final String EXTRA_DATE = "extraDate";
+    public static final String EXTRA_EVENT = "extraEvent";
+
+    // BUNDLE SAVED INSTANCE STATE
+    public static final String BUNDLE_EVENTS_LIST = "bundleEventsList";
 }

@@ -1,11 +1,5 @@
 package com.alvarosantisteban.pathos;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.Locale;
-
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
@@ -20,7 +14,14 @@ import android.view.MenuItem;
 import android.widget.DatePicker;
 import android.widget.DatePicker.OnDateChangedListener;
 import android.widget.Toast;
-import com.alvarosantisteban.pathos.R;
+
+import com.alvarosantisteban.pathos.utils.Constants;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.Locale;
 
 /**
  * Displays a date picker to select a date.
@@ -31,11 +32,9 @@ import com.alvarosantisteban.pathos.R;
  */
 public class FakeCalendarActivity extends Activity{
 
-private final String LAST_CHOOSEN_DATE = "lastChoosenDate";
 	
 	private DatePicker picker;
 	Context context = this;
-	public static final String EXTRA_DATE = "date";
 	
 	private SharedPreferences sharedPref;
 	
@@ -58,7 +57,7 @@ private final String LAST_CHOOSEN_DATE = "lastChoosenDate";
 		sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
 		
 		Calendar selectedDay = new GregorianCalendar();
-		long lastDate = sharedPref.getLong(LAST_CHOOSEN_DATE, selectedDay.getTimeInMillis());
+		long lastDate = sharedPref.getLong(Constants.LAST_CHOOSEN_DATE, selectedDay.getTimeInMillis());
 		selectedDay.setTimeInMillis(lastDate);
 		
 		// Detects the change of the date
@@ -75,12 +74,12 @@ private final String LAST_CHOOSEN_DATE = "lastChoosenDate";
                 Calendar selectedDate = new GregorianCalendar(year, month-1, dayOfMonth);
                 long dateInMilliseconds = selectedDate.getTimeInMillis();
                 Editor editor = sharedPref.edit();
-                editor.putLong(LAST_CHOOSEN_DATE, dateInMilliseconds);
+                editor.putLong(Constants.LAST_CHOOSEN_DATE, dateInMilliseconds);
                 editor.commit();
                 
                 String choosenDate = dateFormat.format(selectedDate.getTime());
                 Intent intent = new Intent(context, DateActivity.class);
-                intent.putExtra(EXTRA_DATE, choosenDate);
+                intent.putExtra(Constants.EXTRA_DATE, choosenDate);
             	startActivity(intent);
 				
 			}

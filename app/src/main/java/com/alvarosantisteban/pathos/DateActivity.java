@@ -57,9 +57,9 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 	private final String FIRST_TIME_APP = "isFirstTimeApp";
 	
 	// The keyword passed as extra to EventActivity
-	public static final String EXTRA_EVENT = "com.alvarosantisteban.pathos.event";
+	//public static final String EXTRA_EVENT = "com.alvarosantisteban.pathos.event";
 	// The keyword received as extra to know the selected date 
-	private final String EXTRA_DATE = "date";
+	//private final String EXTRA_DATE = "date";
 	// Settings
 	private static final int RESULT_SETTINGS = 1;
 	
@@ -272,7 +272,7 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 		
 		intent = getIntent();
 		// Get the choosen date from the calendar
-		chosenDate = intent.getStringExtra(EXTRA_DATE);
+		chosenDate = intent.getStringExtra(Constants.EXTRA_DATE);
 		if (chosenDate == null){
 			// The user did not select anything, the default date is today
 			chosenDate = sharedPref.getString(Constants.CHOSEN_DATE, today);
@@ -498,7 +498,7 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 			lastTouchedChildPosition = childPosition;
 			// Go the Event Activity
 			Intent intent = new Intent(context, EventActivity.class);
-			intent.putExtra(EXTRA_EVENT, clickedEvent);
+			intent.putExtra(Constants.EXTRA_EVENT, clickedEvent);
 			startActivityForResult(intent, INTENT_RETURN_CODE);
 			return false;
 		}

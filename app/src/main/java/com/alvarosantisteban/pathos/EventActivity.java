@@ -22,6 +22,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.alvarosantisteban.pathos.utils.Constants;
 import com.alvarosantisteban.pathos.utils.DatabaseHelper;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -48,6 +49,11 @@ import java.util.List;
  *
  */
 public class EventActivity extends OrmLiteBaseActivity<DatabaseHelper> {
+
+    /**
+     * Used for logging purposes
+     */
+    private static final String TAG = "EventActivity";
 	
 	CustomScrollView scrollView;
 	LinearLayout eventLayout;
@@ -65,18 +71,9 @@ public class EventActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 	MapView mapita;
 	
 	/**
-	 * Used for logging purposes
-	 */
-	private static final String TAG = "EventActivity";
-	
-	/**
 	 * The event being displayed
 	 */
 	Event event;
-	/**
-	 *  The key word passed as extra from DateActivity
-	 */
-	public static final String EXTRA_EVENT = "com.alvarosantisteban.pathos.event";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -88,7 +85,7 @@ public class EventActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 		// Get the intent with the Event
 		Intent intent = getIntent();
 		//event = (Event)intent.getSerializableExtra(EXTRA_EVENT);
-		event = (Event)intent.getParcelableExtra(EXTRA_EVENT);
+		event = (Event)intent.getParcelableExtra(Constants.EXTRA_EVENT);
 		
 		// Enable the app's icon to act as home
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
