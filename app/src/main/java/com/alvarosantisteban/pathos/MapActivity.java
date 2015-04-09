@@ -128,7 +128,7 @@ public class MapActivity extends OrmLiteBaseActivity<DatabaseHelper>  implements
             @Override
             public void onResult(LocationSettingsResult result) {
                 final Status status = result.getStatus();
-                final LocationSettingsStates locationSettingsStates = result.getLocationSettingsStates();
+                //final LocationSettingsStates locationSettingsStates = result.getLocationSettingsStates();
                 switch (status.getStatusCode()) {
                     case LocationSettingsStatusCodes.SUCCESS:
                         Log.d(TAG, "Success");
@@ -159,7 +159,7 @@ public class MapActivity extends OrmLiteBaseActivity<DatabaseHelper>  implements
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        final LocationSettingsStates states = LocationSettingsStates.fromIntent(intent);
+        //final LocationSettingsStates states = LocationSettingsStates.fromIntent(intent);
         switch (requestCode) {
             case REQUEST_CHECK_SETTINGS:
                 switch (resultCode) {
