@@ -104,6 +104,20 @@ public class MapActivity extends OrmLiteBaseActivity<DatabaseHelper>  implements
         }
     };
 
+    // The click listener of the info window of the markers of the events.
+    OnInfoWindowClickListener InfoWindowListener = new OnInfoWindowClickListener() {
+        @Override
+        public void onInfoWindowClick(Marker marker) {
+            for (Event event : eventsList) {
+                if (event.getDescription().equals(marker.getSnippet()) && event.getName().equals(marker.getTitle())) {
+                    Intent intent = new Intent(context, EventActivity.class);
+                    intent.putExtra(EXTRA_EVENT, event);
+                    startActivity(intent);
+                }
+            }
+        }
+    };
+
     // Fields related to the datum
 	DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.GERMAN);
 	Calendar currentDay = Calendar.getInstance();
@@ -119,6 +133,7 @@ public class MapActivity extends OrmLiteBaseActivity<DatabaseHelper>  implements
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		Log.d(TAG, "onCreate");
+
 		setContentView(R.layout.activity_map);
 		
 		context = this;
@@ -130,9 +145,9 @@ public class MapActivity extends OrmLiteBaseActivity<DatabaseHelper>  implements
                 actionBar.setDisplayHomeAsUpEnabled(true);
             }
         }
-		
+
+        // Get the chosen date from the calendar
 		Intent intent = getIntent();
-		// Get the chosen date from the calendar
 		chosenDate = intent.getStringExtra(EXTRA_DATE);
 		if (chosenDate == null){
 			// The user did not select anything, the default date is today
@@ -154,52 +169,18 @@ public class MapActivity extends OrmLiteBaseActivity<DatabaseHelper>  implements
         // Create the location request
         createLocationRequest();
 
+        // Check the location settings of the user and create the callback to react to the different possibilities
         LocationSettingsRequest.Builder locationSettingsRequestBuilder = new LocationSettingsRequest.Builder()
                 .addLocationRequest(mLocationRequest);
         PendingResult<LocationSettingsResult> result =
                 LocationServices.SettingsApi.checkLocationSettings(mGoogleApiClient, locationSettingsRequestBuilder.build());
-
         result.setResultCallback(mResultCallbackFromSettings);
     }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        //final LocationSettingsStates states = LocationSettingsStates.fromIntent(intent);
-        switch (requestCode) {
-            case REQUEST_CHECK_SETTINGS:
-                switch (resultCode) {
-                    case Activity.RESULT_OK:
-                        // All required changes were successfully made
-                        if (mGoogleApiClient.isConnected() && userMarker == null) {
-                            startLocationUpdates();
-                        }
-                        break;
-                    case Activity.RESULT_CANCELED:
-                        // The user was asked to change settings, but chose not to
-                        break;
-                    default:
-                        break;
-                }
-                break;
-        }
-    }
-
-    OnInfoWindowClickListener InfoWindowListener = new OnInfoWindowClickListener(){
-		@Override
-		public void onInfoWindowClick(Marker marker) {
-			for (Event event : eventsList){
-				if(event.getDescription().equals(marker.getSnippet()) && event.getName().equals(marker.getTitle())){
-					Intent intent = new Intent(context, EventActivity.class);
-					intent.putExtra(EXTRA_EVENT, event);
-					startActivity(intent);
-				}
-			}
-	    }
-    };
 	    
 	///////////////////////////////////////////////////////////////////////////
-	// ASYNCTASKS
+	// ASYNC TASKS
 	///////////////////////////////////////////////////////////////////////////
+
 	/**
 	 * AsyncTask that loads all events from the database
 	 * 
@@ -212,7 +193,6 @@ public class MapActivity extends OrmLiteBaseActivity<DatabaseHelper>  implements
 
 		@Override
 		protected List<Event> doInBackground(String... params) {
-			Log.d(TAG,"doInBackground");
 			// Get our dao
 			RuntimeExceptionDao<Event, Integer> eventDao = getHelper().getEventDataDao();
 			List<Event> events = null;
@@ -284,6 +264,9 @@ public class MapActivity extends OrmLiteBaseActivity<DatabaseHelper>  implements
 	// LOCATION
 	///////////////////////////////////////////////////////////////////////////
 
+    /**
+     * Get the last location and start a location update
+     */
     @Override
     public void onConnected(Bundle bundle) {
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
@@ -304,6 +287,9 @@ public class MapActivity extends OrmLiteBaseActivity<DatabaseHelper>  implements
         Log.e(TAG, "onConnectionFailed Google API: " +connectionResult.toString());
     }
 
+    /**
+     * Creates the mGoogleApiClient for the LocationServices API
+     */
     protected synchronized void buildGoogleApiClient() {
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
@@ -312,6 +298,9 @@ public class MapActivity extends OrmLiteBaseActivity<DatabaseHelper>  implements
                 .build();
     }
 
+    /**
+     * Creates the mLocationRequest
+     */
     protected void createLocationRequest() {
         mLocationRequest = new LocationRequest();
         mLocationRequest.setInterval(10000);
@@ -319,6 +308,11 @@ public class MapActivity extends OrmLiteBaseActivity<DatabaseHelper>  implements
         mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
     }
 
+    /**
+     * Updates the user location and the UI.
+     *
+     * @param newLocation the new user Location
+     */
 	@Override
 	public void onLocationChanged(Location newLocation) {
         mLastLocation = newLocation;
@@ -330,80 +324,118 @@ public class MapActivity extends OrmLiteBaseActivity<DatabaseHelper>  implements
         }
 	}
 
+    /**
+     * Starts the user location updates
+     */
     protected void startLocationUpdates() {
         LocationServices.FusedLocationApi.requestLocationUpdates(
                 mGoogleApiClient, mLocationRequest, this);
     }
 
+    /**
+     * Stops the user location updates
+     */
     protected void stopLocationUpdates() {
         LocationServices.FusedLocationApi.removeLocationUpdates(
                 mGoogleApiClient, this);
     }
 
+    /**
+     * Adds a marker for the user in their last known location
+     */
     private void updateUI() {
-        LatLng ltlg = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
-        userMarker = map.addMarker(new MarkerOptions().position(ltlg)
+        LatLng ltLg = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+        userMarker = map.addMarker(new MarkerOptions().position(ltLg)
                 .title(getString(R.string.map_user_marker_title))
                 .snippet(getString(R.string.map_user_marker_snippet)));
     }
-	
-	/* Remove the locationlistener updates when Activity is paused */
+
+    ///////////////////////////////////////////////////////////////////////////
+    // LIFE CYCLE
+    ///////////////////////////////////////////////////////////////////////////
+
 	@Override
 	protected void onPause() {
-		Log.d(TAG, "onPause");
+		Log.v(TAG, "onPause");
 		super.onPause();
 
         if (mGoogleApiClient.isConnected()) {
             stopLocationUpdates();
         }
-        /*
-		if(gpsEnabled){
-			locationManager.removeUpdates(this);
-		}
-		*/
 	}
-	  
-	  /* Request updates at startup */
+
 	@Override
 	protected void onResume() {
-		Log.d(TAG, "onResume");
+		Log.v(TAG, "onResume");
 		super.onResume();
 
         if (mGoogleApiClient.isConnected() && userMarker == null) {
             startLocationUpdates();
         }
-        /*
-		if(userMarker == null && gpsEnabled){
-			locationManager.requestLocationUpdates(provider, 400, 1, this);
-		}
-		*/
 	}
 
     @Override
     protected void onStart() {
         super.onStart();
+
+        // Connect the GoogleAPIClient
         mGoogleApiClient.connect();
     }
 
     @Override
     protected void onStop() {
+        // Disconnect the GoogleAPIClient
         mGoogleApiClient.disconnect();
+
         super.onStop();
     }
 	
 	@Override
 	public void onSaveInstanceState(@NonNull Bundle savedInstanceState) {
-		Log.d(TAG, "onSaveInstanceState");
+		Log.v(TAG, "onSaveInstanceState");
 		super.onSaveInstanceState(savedInstanceState);
 		savedInstanceState.putParcelableArrayList(BUNDLE_EVENTS_LIST, (ArrayList<? extends Parcelable>) eventsList);
 	}
 	
 	@Override
 	public void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
-		Log.d(TAG, "onRestoreInstanceState");
+		Log.v(TAG, "onRestoreInstanceState");
 		super.onRestoreInstanceState(savedInstanceState);
 		eventsList = savedInstanceState.getParcelableArrayList(BUNDLE_EVENTS_LIST);
 	}
+
+    /**
+     * Used to check the result of the check of the user location settings
+     *
+     * @param requestCode code of the request made
+     * @param resultCode code of the result of that request
+     * @param intent intent with further information
+     */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        //final LocationSettingsStates states = LocationSettingsStates.fromIntent(intent);
+        switch (requestCode) {
+            case REQUEST_CHECK_SETTINGS:
+                switch (resultCode) {
+                    case Activity.RESULT_OK:
+                        // All required changes were successfully made
+                        if (mGoogleApiClient.isConnected() && userMarker == null) {
+                            startLocationUpdates();
+                        }
+                        break;
+                    case Activity.RESULT_CANCELED:
+                        // The user was asked to change settings, but chose not to
+                        break;
+                    default:
+                        break;
+                }
+                break;
+        }
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // MENU RELATED
+    ///////////////////////////////////////////////////////////////////////////
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -411,7 +443,6 @@ public class MapActivity extends OrmLiteBaseActivity<DatabaseHelper>  implements
 		getMenuInflater().inflate(R.menu.map, menu);
 		return true;
 	}
-	
 	
 	/**
      * Check which item from the menu has been clicked
