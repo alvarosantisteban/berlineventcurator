@@ -1,10 +1,14 @@
 package com.alvarosantisteban.pathos;
 
 import android.app.ActionBar;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.content.SharedPreferences;
-import android.location.*;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -17,6 +21,9 @@ import android.view.MenuItem;
 import com.alvarosantisteban.pathos.utils.DatabaseHelper;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.*;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -46,8 +53,9 @@ public class MapActivity extends OrmLiteBaseActivity<DatabaseHelper>  implements
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener {
 	
 	private static final String TAG = "MapActivity";
-	
-	private final String CHOOSEN_DATE = "choosenDate";
+    private static final int REQUEST_CHECK_SETTINGS = 1;
+
+    private final String CHOOSEN_DATE = "choosenDate";
 	private final String EXTRA_DATE = "date";
 	public static final String EXTRA_EVENT = "com.alvarosantisteban.pathos.event";
 	
@@ -106,11 +114,69 @@ public class MapActivity extends OrmLiteBaseActivity<DatabaseHelper>  implements
 	    // Load the events and set the markers
 		new LoadEventsAsyncTask().execute((String)null);
 
+        // Build google API Client
+        buildGoogleApiClient();
+
         // Create the location request
         createLocationRequest();
 
-        // Build google API Client
-        buildGoogleApiClient();
+        LocationSettingsRequest.Builder locationSettingsRequestBuilder = new LocationSettingsRequest.Builder()
+                .addLocationRequest(mLocationRequest);
+        PendingResult<LocationSettingsResult> result =
+                LocationServices.SettingsApi.checkLocationSettings(mGoogleApiClient, locationSettingsRequestBuilder.build());
+        result.setResultCallback(new ResultCallback<LocationSettingsResult>() {
+            @Override
+            public void onResult(LocationSettingsResult result) {
+                final Status status = result.getStatus();
+                final LocationSettingsStates locationSettingsStates = result.getLocationSettingsStates();
+                switch (status.getStatusCode()) {
+                    case LocationSettingsStatusCodes.SUCCESS:
+                        Log.d(TAG, "Success");
+                        // All location settings are satisfied. The client can initialize location
+                        // requests here.
+
+                        break;
+                    case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
+                        // Location settings are not satisfied. But could be fixed by showing the user
+                        // a dialog.
+                        try {
+                            // Show the dialog by calling startResolutionForResult(),
+                            // and check the result in onActivityResult().
+                            status.startResolutionForResult(
+                                    MapActivity.this,
+                                    REQUEST_CHECK_SETTINGS);
+                        } catch (IntentSender.SendIntentException e) {
+                            // Ignore the error.
+                        }
+                        break;
+                    case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
+                        Log.e(TAG, "Settings change unavailable. we have no way to fix the settings so we won't show the dialog.");
+                        break;
+                }
+            }
+        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        final LocationSettingsStates states = LocationSettingsStates.fromIntent(intent);
+        switch (requestCode) {
+            case REQUEST_CHECK_SETTINGS:
+                switch (resultCode) {
+                    case Activity.RESULT_OK:
+                        // All required changes were successfully made
+                        if (mGoogleApiClient.isConnected() && userMarker == null) {
+                            startLocationUpdates();
+                        }
+                        break;
+                    case Activity.RESULT_CANCELED:
+                        // The user was asked to change settings, but chose not to
+                        break;
+                    default:
+                        break;
+                }
+                break;
+        }
     }
 
     OnInfoWindowClickListener InfoWindowListener = new OnInfoWindowClickListener(){
@@ -184,7 +250,7 @@ public class MapActivity extends OrmLiteBaseActivity<DatabaseHelper>  implements
 			try {
 				addressList = geocoder.getFromLocationName(event.getLocation(), 1);
 				if (addressList != null && addressList.size() > 0) {
-					Log.d(TAG, "event "+event.getName()+" added as a marker");
+					Log.v(TAG, "Event: "+event.getName()+" added as a marker");
 	                double lat = addressList.get(0).getLatitude();  
 	                double lng = addressList.get(0).getLongitude();  
 	                LatLng position = new LatLng(lat, lng);
