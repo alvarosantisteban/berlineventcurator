@@ -14,6 +14,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -387,14 +388,14 @@ public class MapActivity extends OrmLiteBaseActivity<DatabaseHelper>  implements
     }
 	
 	@Override
-	public void onSaveInstanceState(Bundle savedInstanceState) {
+	public void onSaveInstanceState(@NonNull Bundle savedInstanceState) {
 		Log.d(TAG, "onSaveInstanceState");
 		super.onSaveInstanceState(savedInstanceState);
 		savedInstanceState.putParcelableArrayList(BUNDLE_EVENTS_LIST, (ArrayList<? extends Parcelable>) eventsList);
 	}
 	
 	@Override
-	public void onRestoreInstanceState(Bundle savedInstanceState) {
+	public void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
 		Log.d(TAG, "onRestoreInstanceState");
 		super.onRestoreInstanceState(savedInstanceState);
 		eventsList = savedInstanceState.getParcelableArrayList(BUNDLE_EVENTS_LIST);
