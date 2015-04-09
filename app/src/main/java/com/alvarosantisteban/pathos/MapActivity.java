@@ -30,7 +30,6 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
 import com.google.android.gms.maps.MapFragment;
-import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -63,8 +62,7 @@ public class MapActivity extends OrmLiteBaseActivity<DatabaseHelper>  implements
 	private final String BUNDLE_EVENTS_LIST = "eventsList";
 	
 	static final LatLng BERLIN = new LatLng(52.49333, 13.36446);
-	
-	MapView generalMap;
+
 	GoogleMap map;
 	
 	// Used to get the GPS
@@ -106,8 +104,7 @@ public class MapActivity extends OrmLiteBaseActivity<DatabaseHelper>  implements
 			sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
 			chosenDate = sharedPref.getString(Constants.CHOSEN_DATE, today);
 		}
-		
-		//generalMap = (MapView)findViewById(R.id.map);
+
 		map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
 	    map.moveCamera(CameraUpdateFactory.newLatLngZoom(BERLIN, 12));
 	    map.setOnInfoWindowClickListener(InfoWindowListener);
