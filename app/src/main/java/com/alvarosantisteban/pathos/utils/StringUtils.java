@@ -1,12 +1,12 @@
 package com.alvarosantisteban.pathos.utils;
 
+import android.util.Log;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Set;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-
-import android.util.Log;
 
 /**
  * Methods that are used across the application that deal with strings
@@ -76,8 +76,8 @@ public final class StringUtils {
 			// Check if there is a time interval by looking at a time separator
 			if (hour.contains("-")){
 				timeSeparator = "-";
-			}else if (hour.contains("–")){
-				timeSeparator = "–";
+			}else if (hour.contains("ï¿½")){
+				timeSeparator = "ï¿½";
 			}else{	
 				String hour24;
 				if (hour.length() == 1){
@@ -122,55 +122,65 @@ public final class StringUtils {
 	 * Normalizes a date from the I Heart Berlin and Berlin Art Parasites format: "July 13 2013",
 	 * the White Trash format: "13 July 2013" 
 	 * or the Index format: "13 Jul 2013" to the app's format "13/07/2013"
+     *
+     * It can handle lower and upper cases but there needs to be a separation between the month/day/year
 	 * 
 	 * @param inputDate the date in the I Heart Berlin, Berlin Art Parasites, White Trash or Index format
 	 * @return a String with the date normalized
 	 */
 	public static String formatDate(String inputDate){
-		String monthNumber;
-		String monthLetter = "";
-		String day = "";
-		String[] monthDayYear = inputDate.split(" ");
-		for (int i=0;i<2;i++){ // Just the first two
-			// If there is a letter, we have the month
-			if (Character.isLetter(monthDayYear[i].charAt(0))){
-				monthLetter = monthDayYear[i];
-			}else{ // If not, we have the day
-				if (monthDayYear[i].length() == 1){
-					// We need to add a extra "0"
-					day = "0"+monthDayYear[i];
-				}else{
-					day = monthDayYear[i];
-				}
-			}
-		}
-		if (monthLetter.equals("January") || monthLetter.equals("Jan"))
-			monthNumber = "01";
-		else if (monthLetter.equals("February") || monthLetter.equals("Feb"))
-            monthNumber = "02";
-		else if (monthLetter.equals("March") || monthLetter.equals("Mar"))
-            monthNumber = "03";
-        else if (monthLetter.equals("April") || monthLetter.equals("Apr"))
-            monthNumber = "04";
-        else if (monthLetter.equals("May"))
-            monthNumber = "05";
-        else if (monthLetter.equals("June") || monthLetter.equals("Jun"))
-            monthNumber = "06";
-        else if (monthLetter.equals("July") || monthLetter.equals("Jul"))
-            monthNumber = "07";
-        else if (monthLetter.equals("August") || monthLetter.equals("Aug"))
-            monthNumber = "08";
-        else if (monthLetter.equals("September") || monthLetter.equals("Sep"))
-            monthNumber = "09";
-        else if (monthLetter.equals("October") || monthLetter.equals("Oct"))
-            monthNumber = "10";
-        else if (monthLetter.equals("November") || monthLetter.equals("Nov"))
-            monthNumber = "11";
-        else if (monthLetter.equals("December") || monthLetter.equals("Dec"))
-            monthNumber = "12";
-        else
-            monthNumber = "00";
-		String total = day+"/"+monthNumber+"/"+monthDayYear[2];
+        String total;
+        try {
+            String monthNumber;
+            String monthLetter = "";
+            String day = "";
+            String[] monthDayYear = inputDate.split(" ");
+            for (int i = 0; i < 2; i++) { // Just the first two
+                // If there is a letter, we have the month
+                if (Character.isLetter(monthDayYear[i].charAt(0))) {
+                    monthLetter = monthDayYear[i];
+                } else { // If not, we have the day
+                    if (monthDayYear[i].length() == 1) {
+                        // We need to add a extra "0"
+                        day = "0" + monthDayYear[i];
+                    } else {
+                        day = monthDayYear[i];
+                    }
+                }
+            }
+            monthLetter = monthLetter.toLowerCase();
+            if (monthLetter.equals("january") || monthLetter.equals("jan"))
+                monthNumber = "01";
+            else if (monthLetter.equals("february") || monthLetter.equals("feb"))
+                monthNumber = "02";
+            else if (monthLetter.equals("march") || monthLetter.equals("mar"))
+                monthNumber = "03";
+            else if (monthLetter.equals("april") || monthLetter.equals("apr"))
+                monthNumber = "04";
+            else if (monthLetter.equals("may"))
+                monthNumber = "05";
+            else if (monthLetter.equals("june") || monthLetter.equals("jun"))
+                monthNumber = "06";
+            else if (monthLetter.equals("july") || monthLetter.equals("jul"))
+                monthNumber = "07";
+            else if (monthLetter.equals("august") || monthLetter.equals("aug"))
+                monthNumber = "08";
+            else if (monthLetter.equals("september") || monthLetter.equals("sep"))
+                monthNumber = "09";
+            else if (monthLetter.equals("october") || monthLetter.equals("oct"))
+                monthNumber = "10";
+            else if (monthLetter.equals("november") || monthLetter.equals("nov"))
+                monthNumber = "11";
+            else if (monthLetter.equals("december") || monthLetter.equals("dec"))
+                monthNumber = "12";
+            else
+                monthNumber = "00";
+            total = day + "/" + monthNumber + "/" + monthDayYear[2];
+        }catch(Exception e){
+            Log.e(TAG, "Exception formatting the date. Return an empty string as date.");
+            e.printStackTrace();
+            total = "";
+        }
 		return total.trim(); 
 	}
 	
