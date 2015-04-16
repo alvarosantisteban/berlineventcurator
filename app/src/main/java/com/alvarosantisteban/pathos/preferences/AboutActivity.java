@@ -1,6 +1,5 @@
 package com.alvarosantisteban.pathos.preferences;
 
-import com.alvarosantisteban.pathos.R;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
@@ -11,6 +10,8 @@ import android.text.method.LinkMovementMethod;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
+
+import com.alvarosantisteban.pathos.R;
 
 /**
  * Displays information of the app such as the logo, version and creator.
@@ -35,11 +36,11 @@ public class AboutActivity extends Activity {
 		
 	    email = (TextView) findViewById(R.id.email_address);
 	    email.setMovementMethod(LinkMovementMethod.getInstance());
-	    email.setText(Html.fromHtml("<a href=\"mailto:alvarosantisteban@gmail.com?Subject=BerlinCurator\">alvarosantisteban@gmail.com</a>"));
+	    email.setText(Html.fromHtml("<a href=\"mailto:alvarosantisteban@gmail.com?Subject=Pathos\">alvarosantisteban@gmail.com</a>"));
 	    
 	    gitHubUrl = (TextView) findViewById(R.id.codeUrl);
 	    gitHubUrl.setMovementMethod(LinkMovementMethod.getInstance());
-	    gitHubUrl.setText(Html.fromHtml("<a href=\"https://github.com/alvarosantisteban/curator\">My GitHub account</a>"));
+	    gitHubUrl.setText(Html.fromHtml("<a href=\"https://github.com/alvarosantisteban/berlineventcurator\">My GitHub account</a>"));
 	}
 
 	@Override
