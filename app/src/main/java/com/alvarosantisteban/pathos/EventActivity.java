@@ -1,9 +1,11 @@
 package com.alvarosantisteban.pathos;
 
 import android.app.ActionBar;
+import android.content.Context;
 import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.CalendarContract;
@@ -16,11 +18,7 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup.LayoutParams;
-import android.widget.CheckBox;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.*;
 
 import com.alvarosantisteban.pathos.model.CustomScrollView;
 import com.alvarosantisteban.pathos.model.Event;
@@ -28,11 +26,8 @@ import com.alvarosantisteban.pathos.utils.Constants;
 import com.alvarosantisteban.pathos.utils.DatabaseHelper;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.*;
 import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
-import com.google.android.gms.maps.GoogleMapOptions;
-import com.google.android.gms.maps.MapView;
-import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.model.*;
 import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
@@ -68,8 +63,7 @@ public class EventActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 	TextView location;
 	TextView tags;
 	CheckBox interestingCheck;
-	
-	Geocoder geocoder = null;  
+
 	MapView mapita;
 	
 	/**
@@ -174,36 +168,19 @@ public class EventActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 	}
 
 	/**
-	 * Initializes the mapView, sets the position of the event on it and adds the map to the layout.
+	 * Initializes the mapView and throws a GeoCodeAsyncTask to set the position of the event on it.
 	 * 
 	 */
 	private void initMap(Bundle savedInstanceState) {
-		geocoder = new Geocoder(this);	
-		try {
-			List<Address> addressList = geocoder.getFromLocationName(event.getLocation(), 1); 
-			if (addressList != null && addressList.size() > 0) {
-                double lat = addressList.get(0).getLatitude();  
-                double lng = addressList.get(0).getLongitude();  
-                GoogleMapOptions options = new GoogleMapOptions();
-        		options.camera(new CameraPosition(new LatLng(lat, lng), 15, 0, 0));  
-        		mapita = new MapView(this, options);
-        		mapita.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, 400)); 
-        		mapita.onCreate(savedInstanceState); 		
-        		eventLayout.addView(mapita);
-        		scrollView.setMap(mapita);
-        		GoogleMap mMap = mapita.getMap();
-        		if(mMap != null){
-        			mMap.addMarker(new MarkerOptions().position(new LatLng(lat, lng))
-        												.title(event.getName())
-        												//.snippet(event.getLocation())
-        												.icon(BitmapDescriptorFactory.fromResource(R.drawable.map_marker)));
-                    mMap.setOnInfoWindowClickListener(InfoWindowListener);
-                }
-            }  
-		} catch (IOException e) {
-			Log.e(TAG,"Problem getting the Address for the map.");
-			e.printStackTrace();
-		}
+		// Set the mapView
+		mapita = new MapView(this);
+		mapita.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, 400));
+		mapita.onCreate(savedInstanceState);
+		eventLayout.addView(mapita);
+		scrollView.setMap(mapita);
+
+		// Throw the AsyncTask to locate the event
+		new GeoCodeAsyncTask(this). execute();
 	}
 	
 	OnInfoWindowClickListener InfoWindowListener = new OnInfoWindowClickListener(){
@@ -216,7 +193,7 @@ public class EventActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 	
 
 	// ----------------------------------------------------------------------------------------------
-	// INTERACTING WITH ELEMENTS OF THE EVENTACTIVITY
+	// INTERACTING WITH ELEMENTS OF THE EVENT ACTIVITY
 	// ----------------------------------------------------------------------------------------------
 	
 	/**
@@ -285,7 +262,7 @@ public class EventActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 	    // Is the view now checked?
 	    boolean checked = ((CheckBox) view).isChecked();
 	    event.markEventAsInteresting(checked);
-	    Log.d(TAG,event.getName() +"with id:" +event.getId() +" is interesting =" +event.isTheEventInteresting());
+	    Log.d(TAG,event.getName() +" with id:" +event.getId() +" is interesting =" +event.isTheEventInteresting());
 	    if (view.getId() == R.id.checkbox_interesting) {
 	    	Toast toast;
 			if (checked){
@@ -305,51 +282,56 @@ public class EventActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 			setResult(DateActivity.RESULT_UPDATE, returnIntent);  
 		}
 	}
-	
-	/**
-	 * AsyncTask that adds a marker in the map for each event with a known location
-	 * 
-	 * @author  Alvaro Santisteban 2014 - alvarosantisteban@gmail.com
-	 *
-	 *
-	public class AddMapAsyncTask extends AsyncTask<Event, Void, MarkerOptions> {
-		
-		private final static String TAG = "AddMarkersAsyncTask";
+
+	// ----------------------------------------------------------------------------------------------
+	// ASYNC TASK TO GEOCODE
+	// ----------------------------------------------------------------------------------------------
+
+	private class GeoCodeAsyncTask extends AsyncTask <Void, Void, Address>{
+
+		private Context context;
+
+		public GeoCodeAsyncTask(Context theContext){
+			context = theContext;
+		}
 
 		@Override
-		protected MarkerOptions doInBackground(Event... params) {
-			Event event = params[0];
+		protected Address doInBackground(Void... params) {
 			Geocoder geocoder = new Geocoder(context);
-			List<Address> addressList;
 			try {
-				addressList = geocoder.getFromLocationName(event.getLocation(), 1);
+				List<Address> addressList = geocoder.getFromLocationName(event.getLocation(), 1);
 				if (addressList != null && addressList.size() > 0) {
-					Log.d(TAG, "event "+event.getName()+" added as a marker");
-	                double lat = addressList.get(0).getLatitude();  
-	                double lng = addressList.get(0).getLongitude();  
-	                LatLng position = new LatLng(lat, lng);
-	                return new MarkerOptions().position(position)
-	    			        .title(event.getName())
-	    			        .snippet(event.getDescription())
-	    			        .icon(BitmapDescriptorFactory
-	    			            .fromResource(R.drawable.map_marker));
+					return addressList.get(0);
 				}
 			} catch (IOException e) {
-				Log.e(TAG, e.toString());
-			} 
+				Log.e(TAG, "Problem getting the address for the map.");
+				e.printStackTrace();
+			}
 			return null;
 		}
-			
+
 		@Override
-		public void onPostExecute(MarkerOptions theMarkerOptions){
-			if(theMarkerOptions != null){
-				Marker berlin = map.addMarker(theMarkerOptions);
-				berlin.showInfoWindow();
+		protected void onPostExecute(Address theAddress){
+			if (theAddress != null) {
+				GoogleMap mMap = mapita.getMap();
+				if (mMap != null) {
+					double lat = theAddress.getLatitude();
+					double lng = theAddress.getLongitude();
+
+					// Add the marker
+					mMap.addMarker(new MarkerOptions().position(new LatLng(lat, lng))
+							.title(event.getName())
+							.icon(BitmapDescriptorFactory.fromResource(R.drawable.map_marker)));
+					mMap.setOnInfoWindowClickListener(InfoWindowListener);
+
+					// Update the camera position
+					CameraPosition cameraPosition = new CameraPosition(new LatLng(lat, lng), 15, 0, 0);
+					CameraUpdate update = CameraUpdateFactory.newCameraPosition(cameraPosition);
+					mMap.moveCamera(update);
+				}
 			}
 		}
 	}
-	*/
-	
 
 	// ----------------------------------------------------------------------------------------------
 	// MENU RELATED
