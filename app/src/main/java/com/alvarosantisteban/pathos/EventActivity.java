@@ -80,7 +80,7 @@ public class EventActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		Log.d(TAG,"In the onCreate() event");
+		Log.v(TAG,"In the onCreate() event");
 		
 		setContentView(R.layout.activity_event);
 		
@@ -113,12 +113,11 @@ public class EventActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 		// Check if the GooglePlay services for the Map can be used
 		int availabilityCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getApplicationContext());
 		if(availabilityCode == ConnectionResult.SUCCESS){
-			Log.i(TAG, "GooglePlayServices is available :)");
 			MapsInitializer.initialize(getApplicationContext());
-		}		
+		}
+
 		// Initializes the mapView
 		initMap(savedInstanceState);
-		
 	}
 
 	/**
@@ -211,9 +210,9 @@ public class EventActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 		
 		@Override
 		public void onInfoWindowClick(Marker marker) {
-			Log.w(TAG,"epa");
 			marker.hideInfoWindow();
-	    }};
+	    }
+	};
 	
 
 	// ----------------------------------------------------------------------------------------------
@@ -373,22 +372,12 @@ public class EventActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 				Intent i2 = new Intent(this, CalendarActivity.class);
 				startActivity(i2);
         	}else{
-        		/*
-        		Toast toast = Toast.makeText(getBaseContext(), "You need to have an Android with version at least 3.0 to select the day", Toast.LENGTH_SHORT);
-    			toast.setGravity(Gravity.TOP, 0, FirstTimeActivity.actionBarHeight);
-    			toast.show();
-    			*/
     			Intent i2 = new Intent(this, FakeCalendarActivity.class);
 				startActivity(i2);
         	}
 		} else if (item.getItemId() == android.R.id.home) {
 			// app icon in action bar clicked; go to the DateActivity
 			finish();
-			/*
-            Intent intent = new Intent(this, DateActivity.class);
-			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-			startActivity(intent);
-			*/
 		}
  
         return true;
@@ -400,12 +389,12 @@ public class EventActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 	
 	public void onStart() {
 		super.onStart();
-		Log.d(TAG, "In the onStart() event");
+		Log.v(TAG, "In the onStart() event");
 	}		   
 
 	public void onRestart() {
 		super.onRestart();
-		Log.d(TAG, "In the onRestart() event");
+		Log.v(TAG, "In the onRestart() event");
 	}
 	    
 	public void onResume() {
@@ -413,7 +402,7 @@ public class EventActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 		if (mapita != null){
 			mapita.onResume();
 		}
-		Log.d(TAG, "In the onResume() event");
+		Log.v(TAG, "In the onResume() event");
 	}
 	    
 	public void onPause() {
@@ -421,12 +410,12 @@ public class EventActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 	    if (mapita != null){
 	    	mapita.onPause();
 	    }
-	    Log.d(TAG, "In the onPause() event");
+	    Log.v(TAG, "In the onPause() event");
 	}
 	    
 	public void onStop() {
 	    super.onStop();
-	    Log.d(TAG, "In the onStop() event");
+	    Log.v(TAG, "In the onStop() event");
 	}
 	    
 	public void onDestroy() {
@@ -434,7 +423,7 @@ public class EventActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 	    if (mapita != null){
 	    	mapita.onDestroy();
 	    }
-	    Log.d(TAG, "In the onDestroy() event");
+	    Log.v(TAG, "In the onDestroy() event");
 	}
 	
 	public void onSaveInstanceState(Bundle savedInstanceState){
