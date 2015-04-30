@@ -48,11 +48,12 @@ import java.util.List;
  */
 public class EventActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 
-    /**
+	/**
      * Used for logging purposes
      */
     private static final String TAG = "EventActivity";
-	
+	private static final int MAP_HEIGHT = 400;
+
 	CustomScrollView scrollView;
 	LinearLayout eventLayout;
 	TextView name;
@@ -185,7 +186,7 @@ public class EventActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 	private void initMap(Bundle savedInstanceState) {
 		// Set the mapView
 		mapita = new MapView(this);
-		mapita.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, 400));
+		mapita.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, MAP_HEIGHT));
 		mapita.onCreate(savedInstanceState);
 		eventLayout.addView(mapita);
 		scrollView.setMap(mapita);
