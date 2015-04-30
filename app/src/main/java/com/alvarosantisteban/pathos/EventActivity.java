@@ -10,6 +10,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.CalendarContract;
 import android.provider.CalendarContract.Events;
+import android.support.annotation.NonNull;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.text.util.Linkify;
@@ -65,6 +66,15 @@ public class EventActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 	CheckBox interestingCheck;
 
 	MapView mapita;
+
+	// The listener for the clicks on the window of the marker
+	OnInfoWindowClickListener infoWindowListener = new OnInfoWindowClickListener() {
+
+		@Override
+		public void onInfoWindowClick(Marker marker) {
+			marker.hideInfoWindow();
+		}
+	};
 	
 	/**
 	 * The event being displayed
@@ -80,13 +90,14 @@ public class EventActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 		
 		// Get the intent with the Event
 		Intent intent = getIntent();
-		//event = (Event)intent.getSerializableExtra(EXTRA_EVENT);
-		event = (Event)intent.getParcelableExtra(Constants.EXTRA_EVENT);
+		event = intent.getParcelableExtra(Constants.EXTRA_EVENT);
 		
 		// Enable the app's icon to act as home
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 			ActionBar actionBar = getActionBar();
-			actionBar.setDisplayHomeAsUpEnabled(true);
+			if (actionBar != null) {
+				actionBar.setDisplayHomeAsUpEnabled(true);
+			}
 		} 
 		
 		scrollView = (CustomScrollView) findViewById(R.id.scrollViewEvent);
@@ -108,10 +119,10 @@ public class EventActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 		int availabilityCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getApplicationContext());
 		if(availabilityCode == ConnectionResult.SUCCESS){
 			MapsInitializer.initialize(getApplicationContext());
-		}
 
-		// Initializes the mapView
-		initMap(savedInstanceState);
+			// Initializes the mapView
+			initMap(savedInstanceState);
+		}
 	}
 
 	/**
@@ -180,21 +191,12 @@ public class EventActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 		scrollView.setMap(mapita);
 
 		// Throw the AsyncTask to locate the event
-		new GeoCodeAsyncTask(this). execute();
+		new GeoCodeAsyncTask(this).execute();
 	}
-	
-	OnInfoWindowClickListener InfoWindowListener = new OnInfoWindowClickListener(){
-		
-		@Override
-		public void onInfoWindowClick(Marker marker) {
-			marker.hideInfoWindow();
-	    }
-	};
-	
 
-	// ----------------------------------------------------------------------------------------------
+	/////////////////////////////////////////////////////////////////////////
 	// INTERACTING WITH ELEMENTS OF THE EVENT ACTIVITY
-	// ----------------------------------------------------------------------------------------------
+	/////////////////////////////////////////////////////////////////////////
 	
 	/**
 	 * Adds the event to a Google Calendar of the user.
@@ -283,9 +285,9 @@ public class EventActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 		}
 	}
 
-	// ----------------------------------------------------------------------------------------------
+	/////////////////////////////////////////////////////////////////////////
 	// ASYNC TASK TO GEOCODE
-	// ----------------------------------------------------------------------------------------------
+	/////////////////////////////////////////////////////////////////////////
 
 	private class GeoCodeAsyncTask extends AsyncTask <Void, Void, Address>{
 
@@ -304,7 +306,7 @@ public class EventActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 					return addressList.get(0);
 				}
 			} catch (IOException e) {
-				Log.e(TAG, "Problem getting the address for the map.");
+				Log.e(TAG, "Problem getting the address for the map while geocoding.");
 				e.printStackTrace();
 			}
 			return null;
@@ -322,7 +324,7 @@ public class EventActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 					mMap.addMarker(new MarkerOptions().position(new LatLng(lat, lng))
 							.title(event.getName())
 							.icon(BitmapDescriptorFactory.fromResource(R.drawable.map_marker)));
-					mMap.setOnInfoWindowClickListener(InfoWindowListener);
+					mMap.setOnInfoWindowClickListener(infoWindowListener);
 
 					// Update the camera position
 					CameraPosition cameraPosition = new CameraPosition(new LatLng(lat, lng), 15, 0, 0);
@@ -333,9 +335,9 @@ public class EventActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 		}
 	}
 
-	// ----------------------------------------------------------------------------------------------
+	/////////////////////////////////////////////////////////////////////////
 	// MENU RELATED
-	// ----------------------------------------------------------------------------------------------
+	/////////////////////////////////////////////////////////////////////////
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -365,20 +367,23 @@ public class EventActivity extends OrmLiteBaseActivity<DatabaseHelper> {
         return true;
     }
 
-	// ----------------------------------------------------------------------------------------------
+	/////////////////////////////////////////////////////////////////////////
 	// LIFECYCLE
-	// ----------------------------------------------------------------------------------------------
-	
+	/////////////////////////////////////////////////////////////////////////
+
+	@Override
 	public void onStart() {
 		super.onStart();
 		Log.v(TAG, "In the onStart() event");
 	}		   
 
+	@Override
 	public void onRestart() {
 		super.onRestart();
 		Log.v(TAG, "In the onRestart() event");
 	}
-	    
+
+	@Override
 	public void onResume() {
 		super.onResume();
 		if (mapita != null){
@@ -386,7 +391,8 @@ public class EventActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 		}
 		Log.v(TAG, "In the onResume() event");
 	}
-	    
+
+	@Override
 	public void onPause() {
 	    super.onPause();
 	    if (mapita != null){
@@ -394,12 +400,14 @@ public class EventActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 	    }
 	    Log.v(TAG, "In the onPause() event");
 	}
-	    
+
+	@Override
 	public void onStop() {
 	    super.onStop();
 	    Log.v(TAG, "In the onStop() event");
 	}
-	    
+
+	@Override
 	public void onDestroy() {
 	    super.onDestroy();
 	    if (mapita != null){
@@ -407,19 +415,20 @@ public class EventActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 	    }
 	    Log.v(TAG, "In the onDestroy() event");
 	}
-	
-	public void onSaveInstanceState(Bundle savedInstanceState){
+
+	@Override
+	public void onSaveInstanceState(@NonNull Bundle savedInstanceState){
 		super.onSaveInstanceState(savedInstanceState);
 		if (mapita != null){
 			mapita.onSaveInstanceState(savedInstanceState);
 		}
 	}
-	
+
+	@Override
 	public void onLowMemory(){
 		super.onLowMemory();
 		if (mapita != null){
 			mapita.onLowMemory();
 		}
-	}	
-		
+	}
 }
