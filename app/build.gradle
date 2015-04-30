@@ -23,15 +23,15 @@ def buildTime() {
 }
 
 android {
-    compileSdkVersion 'Google Inc.:Google APIs:18'
-    buildToolsVersion "21.1.2"
+    compileSdkVersion 'Google Inc.:Google APIs:22'
+    buildToolsVersion "22.0.1"
 
     compileOptions.encoding = 'windows-1251' // write your encoding here
 
     defaultConfig {
         applicationId "com.alvarosantisteban.pathos"
         minSdkVersion 10
-        targetSdkVersion 21
+        targetSdkVersion 22
 
         versionCode versionMajor * 10000 + versionMinor * 1000 + versionPatch * 100 + versionBuild
         versionName "${versionMajor}.${versionMinor}.${versionPatch}"
@@ -54,8 +54,8 @@ android {
 }
 
 dependencies {
-    compile 'com.android.support:support-v4:22.0.0'
-    compile 'com.google.android.gms:play-services:7.0.0'
+    compile 'com.android.support:support-v4:22.1.1'
+    compile 'com.google.android.gms:play-services:7.3.0'
     compile 'com.j256.ormlite:ormlite-android:4.48'
     compile 'com.j256.ormlite:ormlite-core:4.48'
     testCompile 'junit:junit:4.12'
