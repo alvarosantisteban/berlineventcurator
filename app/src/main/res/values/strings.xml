@@ -39,7 +39,9 @@
     <string name="mark_event">You marked this event as interesting</string>
     <string name="unmark_event">You unmarked this event</string>
     <string name="events_origin">Event taken from</string>
-    
+
+    <!-- Calendar Activity -->
+    <string name="calendar_toast_chosen_date">"Events from %1$d / %2$d / %3$d"</string>
 
     <!-- Settings Activity -->
     <string name="manifesto_title">Manifesto</string>
@@ -148,7 +150,7 @@ From Ancient Greek πάθος (pathos, “suffering”).
     <string name="time_unknown"></string>
     <string name="action_settings">Settings</string>
 
-  <!-- Arrays -->
+    <!-- Arrays -->
     <string-array name="sites_array">
         <item>I Heart Berlin</item>
         <item>Metal Concerts</item>
