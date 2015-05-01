@@ -363,16 +363,15 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 		Log.d(TAG, "There are " +deletedGroups.size() +" groups deleted");
 		// Get the Event DAO to deleted the entries of the unselected groups
 		RuntimeExceptionDao<Event, Integer> eventDao = getHelper().getEventDataDao();
-		DeleteBuilder<Event, Integer> deleteBuilder = eventDao.deleteBuilder();	
-		Iterator <String> deletedIterator = deletedGroups.iterator();
-		while (deletedIterator.hasNext()){
+		DeleteBuilder<Event, Integer> deleteBuilder = eventDao.deleteBuilder();
+		for (String deletedGroup : deletedGroups) {
 			try {
 				// create our argument which uses a SQL ? to avoid having problems with apostrophes
-				SelectArg deletedArg = new SelectArg(deletedIterator.next());
+				SelectArg deletedArg = new SelectArg(deletedGroup);
 				deleteBuilder.where().eq("eventsOrigin", deletedArg);
 				deleteBuilder.delete();
 			} catch (SQLException e) {
-				Log.e(TAG, "Error deleting events after checking difference between old and new selection." +e);
+				Log.e(TAG, "Error deleting events after checking difference between old and new selection." + e);
 			}
 		}
 	}
@@ -405,21 +404,21 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 		Log.d(TAG,"LOAD EVENTS");
 		// Get our dao
 		RuntimeExceptionDao<Event, Integer> eventDao = getHelper().getEventDataDao();
-		for (int i=0; i<setOfTags.length; i++){
-			Log.d(TAG,setOfTags[i]);
+		for (String setOfTag : setOfTags) {
+			Log.d(TAG, setOfTag);
 			List<Event> eventsFromWebsite = null;
 			try {
-				Map<String, Object> fieldValues = new HashMap<String,Object>();
-				fieldValues.put(kindOfOrganization, setOfTags[i]);
+				Map<String, Object> fieldValues = new HashMap<String, Object>();
+				fieldValues.put(kindOfOrganization, setOfTag);
 				fieldValues.put("day", chosenDate);
 				eventsFromWebsite = eventDao.queryForFieldValuesArgs(fieldValues);
 			} catch (Exception e) {
 				e.printStackTrace();
-				Log.e(TAG,"DB exception while retrieving the events from the website " +setOfTags[i]);
+				Log.e(TAG, "DB exception while retrieving the events from the website " + setOfTag);
 			}
 			// Add the events to the corresponding group
 			for (int j = 0; j < eventsFromWebsite.size(); j++) {
-				addEvent(setOfTags[i],eventsFromWebsite.get(j));
+				addEvent(setOfTag, eventsFromWebsite.get(j));
 			}
 		}
 	}
@@ -469,10 +468,10 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 	 * @param tagsNames the set of tags used to classified events
 	 */
 	private void createHeaderGroups(String[] tagsNames) {
-		for (int i=0; i<tagsNames.length; i++){
+		for (String tagsName : tagsNames) {
 			HeaderInfo headerInfo = new HeaderInfo();
-			headerInfo.setName(tagsNames[i]);
-			tagsMap.put(tagsNames[i], headerInfo);
+			headerInfo.setName(tagsName);
+			tagsMap.put(tagsName, headerInfo);
 			groupsList.add(headerInfo);
 		}
 	}
@@ -626,7 +625,7 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 			if(resultCode == RESULT_UPDATE){      
 		        // The event was updated
 				//Event changedEvent = (Event)data.getSerializableExtra(EVENTS_RESULT_DATA);
-				Event changedEvent = (Event)data.getParcelableExtra(EVENTS_RESULT_DATA);
+				Event changedEvent = data.getParcelableExtra(EVENTS_RESULT_DATA);
 				replaceAnEvent(changedEvent);
 				listAdapter.notifyDataSetChanged();
 		    }
