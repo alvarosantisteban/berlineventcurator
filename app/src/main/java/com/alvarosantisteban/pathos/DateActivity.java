@@ -176,7 +176,7 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 	 *  Loads the elements from the resources, gets the data from the mainActitivy and calls the parsers to extract the information that
 	 *  will be shown.
 	 *  
-	 * @param savedInstanceState
+	 * @param savedInstanceState the Bundle
 	 */
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -277,7 +277,7 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 			// Save the date selection
 			Editor editor = sharedPref.edit();
 			editor.putString(Constants.CHOSEN_DATE, chosenDate);
-			editor.commit();
+			editor.apply();
 		}	
 		displayedDate = (TextView) findViewById(R.id.date);
 		if (chosenDate.equals(today)){
@@ -346,7 +346,7 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 			} else {
 				editor.putString(LAST_SELECTION, StringUtils.join(lastSelection, ","));
 			}
-            editor.commit();
+            editor.apply();
 		}
 	}
 	
