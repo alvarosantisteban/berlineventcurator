@@ -36,8 +36,6 @@ public class CalendarActivity extends Activity {
 	private SharedPreferences sharedPref;
 	
 	private DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.GERMAN);
-	private long lastDate;
-	private CalendarView calendar;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -49,15 +47,15 @@ public class CalendarActivity extends Activity {
 			ActionBar actionBar = getActionBar();
 			actionBar.setDisplayHomeAsUpEnabled(true);
 		}
-		
-		calendar = (CalendarView) findViewById(R.id.calendarView);
+
+		CalendarView calendar = (CalendarView) findViewById(R.id.calendarView);
 		
 		// Get the default shared preferences
 		sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
 		
 		// Get the last selected day
 		Calendar today = new GregorianCalendar();
-		lastDate = sharedPref.getLong(Constants.LAST_CHOSEN_DATE, today.getTimeInMillis());
+		long lastDate = sharedPref.getLong(Constants.LAST_CHOSEN_DATE, today.getTimeInMillis());
 		calendar.setDate(lastDate);
 		
 		// Detect the change of the selected date
