@@ -45,7 +45,9 @@ public class CalendarActivity extends Activity {
 		// Enable the app's icon to act as home
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 			ActionBar actionBar = getActionBar();
-			actionBar.setDisplayHomeAsUpEnabled(true);
+			if (actionBar != null) {
+				actionBar.setDisplayHomeAsUpEnabled(true);
+			}
 		}
 
 		CalendarView calendar = (CalendarView) findViewById(R.id.calendarView);
