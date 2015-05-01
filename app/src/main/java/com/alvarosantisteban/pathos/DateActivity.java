@@ -127,12 +127,12 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 	 * A LinkedHashMap with the name of the tag (from website/thema/type) as key and its corresponding HeaderInfo as value. 
 	 * Used to make the search easier
 	 */
-	private LinkedHashMap<String, HeaderInfo> tagsMap = new LinkedHashMap<String, HeaderInfo>();
+	private LinkedHashMap<String, HeaderInfo> tagsMap = new LinkedHashMap<>();
 	
 	/**
 	 * An ArrayList with the HeaderInfo of each group
 	 */
-	private ArrayList<HeaderInfo> groupsList = new ArrayList<HeaderInfo>();
+	private ArrayList<HeaderInfo> groupsList = new ArrayList<>();
 	 
 	/**
 	 * The adapter for the ExpandableListView
@@ -210,20 +210,20 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 		
 		// Get the old selection of tags
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-			lastSelection = sharedPref.getStringSet(LAST_SELECTION, new HashSet<String>(Arrays.asList(context.getResources().getStringArray(R.array.default_sites_array))));
+			lastSelection = sharedPref.getStringSet(LAST_SELECTION, new HashSet<>(Arrays.asList(context.getResources().getStringArray(R.array.default_sites_array))));
 		} else {
 			String s = sharedPref.getString(LAST_SELECTION, context.getResources().getString(R.string.sites_pseudoarray_values));
 			if(s != null){
-				lastSelection = new HashSet<String>(Arrays.asList(s.split(",")));
+				lastSelection = new HashSet<>(Arrays.asList(s.split(",")));
 			}
 		}
 		// Get the sites are meant to be shown
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-			originTags = sharedPref.getStringSet(SettingsFragment.KEY_PREF_MULTILIST_SITES, new HashSet<String>(Arrays.asList(context.getResources().getStringArray(R.array.default_sites_array))));
+			originTags = sharedPref.getStringSet(SettingsFragment.KEY_PREF_MULTILIST_SITES, new HashSet<>(Arrays.asList(context.getResources().getStringArray(R.array.default_sites_array))));
 		} else {
 			String s = sharedPref.getString(SettingsFragment.KEY_PREF_MULTILIST_SITES, context.getResources().getString(R.string.sites_pseudoarray_values));
 			if(s != null){
-				originTags = new HashSet<String>(Arrays.asList(s.split(",")));
+				originTags = new HashSet<>(Arrays.asList(s.split(",")));
 			}
 		}
 		
@@ -233,11 +233,11 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 		if (kindOfOrganization.equals(TYPE_ORGANIZATION)){
 			// Get the set of type tags
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-				typeTags = sharedPref.getStringSet(SettingsFragment.KEY_PREF_MULTILIST_TYPE, new HashSet<String>(Arrays.asList(context.getResources().getStringArray(R.array.types_array_values))));
+				typeTags = sharedPref.getStringSet(SettingsFragment.KEY_PREF_MULTILIST_TYPE, new HashSet<>(Arrays.asList(context.getResources().getStringArray(R.array.types_array_values))));
 			} else {
 				String s = sharedPref.getString(SettingsFragment.KEY_PREF_MULTILIST_TYPE, context.getResources().getString(R.string.types_pseudoarray_values));
 				if(s != null){
-					typeTags = new HashSet<String>(Arrays.asList(s.split(",")));
+					typeTags = new HashSet<>(Arrays.asList(s.split(",")));
 				}
 			}
 			setOfTags = typeTags.toArray(new String[0]);
@@ -245,11 +245,11 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 		}else if (kindOfOrganization.equals(TOPIC_ORGANIZATION)){
 			// Get the set of topic tags
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-				topicTags = sharedPref.getStringSet(SettingsFragment.KEY_PREF_MULTILIST_TOPIC, new HashSet<String>(Arrays.asList(context.getResources().getStringArray(R.array.themas_array_values))));
+				topicTags = sharedPref.getStringSet(SettingsFragment.KEY_PREF_MULTILIST_TOPIC, new HashSet<>(Arrays.asList(context.getResources().getStringArray(R.array.themas_array_values))));
 			} else {
 				String s = sharedPref.getString(SettingsFragment.KEY_PREF_MULTILIST_TOPIC, context.getResources().getString(R.string.topics_pseudoarray_values));
 				if(s != null){
-					topicTags = new HashSet<String>(Arrays.asList(s.split(",")));
+					topicTags = new HashSet<>(Arrays.asList(s.split(",")));
 				}
 			}
 			
@@ -323,8 +323,8 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 		// Check if there were changes in the selection of the groups
 		if(!lastSelection.equals(originTags)){
 			Log.d(TAG, "The user changed some of the tags.");
-			Set<String> deletedGroups = new HashSet<String>(lastSelection);
-			Set<String> addedGroups = new HashSet<String>(originTags);
+			Set<String> deletedGroups = new HashSet<>(lastSelection);
+			Set<String> addedGroups = new HashSet<>(originTags);
 			deletedGroups.removeAll(originTags);
 			addedGroups.removeAll(lastSelection);
 			
@@ -408,7 +408,7 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 			Log.d(TAG, setOfTag);
 			List<Event> eventsFromWebsite = null;
 			try {
-				Map<String, Object> fieldValues = new HashMap<String, Object>();
+				Map<String, Object> fieldValues = new HashMap<>();
 				fieldValues.put(kindOfOrganization, setOfTag);
 				fieldValues.put("day", chosenDate);
 				eventsFromWebsite = eventDao.queryForFieldValuesArgs(fieldValues);
