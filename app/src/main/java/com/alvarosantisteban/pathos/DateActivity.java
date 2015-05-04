@@ -418,8 +418,10 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 				Log.e(TAG, "DB exception while retrieving the events from the website " + setOfTag);
 			}
 			// Add the events to the corresponding group
-			for (int j = 0; j < eventsFromWebsite.size(); j++) {
-				addEvent(setOfTag, eventsFromWebsite.get(j));
+			if (eventsFromWebsite != null) {
+				for (int j = 0; j < eventsFromWebsite.size(); j++) {
+                    addEvent(setOfTag, eventsFromWebsite.get(j));
+                }
 			}
 		}
 	}
