@@ -230,7 +230,7 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 		// Get the kind of organization
 		String kindOfOrganization = sharedPref.getString(SettingsFragment.KEY_PREF_LIST_ORGANIZATIONS, TYPE_ORGANIZATION);
 		String kindOfOrganizationDBTag;
-		if (kindOfOrganization.equals(TYPE_ORGANIZATION)){
+		if (kindOfOrganization != null && kindOfOrganization.equals(TYPE_ORGANIZATION)){
 			// Get the set of type tags
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 				typeTags = sharedPref.getStringSet(SettingsFragment.KEY_PREF_MULTILIST_TYPE, new HashSet<>(Arrays.asList(context.getResources().getStringArray(R.array.types_array_values))));
@@ -240,9 +240,11 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 					typeTags = new HashSet<>(Arrays.asList(s.split(",")));
 				}
 			}
-			setOfTags = typeTags.toArray(new String[0]);
+			if (typeTags != null) {
+				setOfTags = typeTags.toArray(new String[typeTags.size()]);
+			}
 			kindOfOrganizationDBTag = "typeTag";
-		}else if (kindOfOrganization.equals(TOPIC_ORGANIZATION)){
+		}else if (kindOfOrganization != null && kindOfOrganization.equals(TOPIC_ORGANIZATION)){
 			// Get the set of topic tags
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 				topicTags = sharedPref.getStringSet(SettingsFragment.KEY_PREF_MULTILIST_TOPIC, new HashSet<>(Arrays.asList(context.getResources().getStringArray(R.array.themas_array_values))));
@@ -252,11 +254,13 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 					topicTags = new HashSet<>(Arrays.asList(s.split(",")));
 				}
 			}
-			
-			setOfTags = topicTags.toArray(new String[0]);
+
+			if (topicTags != null) {
+				setOfTags = topicTags.toArray(new String[topicTags.size()]);
+			}
 			kindOfOrganizationDBTag ="themaTag";
 		}else{
-			setOfTags = originTags.toArray(new String[0]);
+			setOfTags = originTags.toArray(new String[originTags.size()]);
 			kindOfOrganizationDBTag = "eventsOrigin";
 		}
 		
@@ -557,7 +561,7 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 		    if (networkInfo != null && networkInfo.isConnected()) {
 		    	DownloadWebpageAsyncTask download = new DownloadWebpageAsyncTask(this,loadProgressBar, chosenDate, context.getString(R.string.searching));
 				// Execute the asyncronous task of downloading the websites
-				download.execute(originTags.toArray(new String[0]));
+				download.execute(originTags.toArray(new String[originTags.size()]));
 		    } else {
 		    	// Inform the user that there is no network connection available
 		    	displayToast(getString(R.string.no_network));
