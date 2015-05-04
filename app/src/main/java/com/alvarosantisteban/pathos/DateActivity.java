@@ -103,12 +103,7 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 	 * The String with the date of today in the format DD/MM/YYYY
 	 */
 	private String today = dateFormat.format(currentDay.getTime());
-	
-	/**
-	 * The TextView displaying the selected date. It may also display the words "Today" or "Tomorrow"
-	 */
-	private TextView displayedDate;
-	
+
 	/**
 	 * The String with the chosenDate by the user in the format DD/MM/YYYY
 	 */
@@ -152,7 +147,7 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 	//--------------------------------------------
 	// OTHER
 	//--------------------------------------------
-	
+
 	private static Toast toast;
 	
 	/**
@@ -283,7 +278,9 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 			editor.putString(Constants.CHOSEN_DATE, chosenDate);
 			editor.apply();
 		}	
-		displayedDate = (TextView) findViewById(R.id.date);
+
+	  	// The TextView displaying the selected date. It may also display the words "Today" or "Tomorrow"
+		TextView displayedDate = (TextView) findViewById(R.id.date);
 		if (chosenDate.equals(today)){
 			displayedDate.setText(R.string.events_for_today);
 		}else if (chosenDate.equals(getTomorrow())){
