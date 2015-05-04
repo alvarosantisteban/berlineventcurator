@@ -1,14 +1,5 @@
 package com.alvarosantisteban.pathos.preferences;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
-import com.alvarosantisteban.pathos.DateActivity;
-import com.alvarosantisteban.pathos.R;
-import com.alvarosantisteban.pathos.utils.StringUtils;
-
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -20,6 +11,16 @@ import android.preference.MultiSelectListPreference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.util.Log;
+
+import com.alvarosantisteban.pathos.DateActivity;
+import com.alvarosantisteban.pathos.R;
+import com.alvarosantisteban.pathos.utils.Constants;
+import com.alvarosantisteban.pathos.utils.StringUtils;
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Creates the settings for versions newer than Honeycomb. 
@@ -59,12 +60,6 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 	 * Preference for the list with possible organizations
 	 */
 	public static final String KEY_PREF_LIST_ORGANIZATIONS = "possible_organizations_list";
-	 
-	// -----------
-	// CONSTANTS
-	// -----------
-	private String TYPE_ORGANIZATION;
-	private String TOPIC_ORGANIZATION; 
 
 	ListPreference organizationList; 
 	MultiSelectListPreference topicMultiList;
@@ -80,8 +75,7 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d(TAG, "ON CREATE THE SETTINGS FRAGMENT");
-        TYPE_ORGANIZATION = getResources().getString(R.string.organization_by_type);
-        TOPIC_ORGANIZATION = getResources().getString(R.string.organization_by_topic);
+
         // Load the preferences from an XML resource
         addPreferencesFromResource(R.xml.preferences);
         
@@ -169,9 +163,9 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 			startActivity(i);
         }else if (key.equals(KEY_PREF_LIST_ORGANIZATIONS)){
         	Log.d(TAG,"key=possible_organizations_list changed");
-        	String kindOfOrganization = sharedPreferences.getString(key, TYPE_ORGANIZATION);
+        	String kindOfOrganization = sharedPreferences.getString(key, Constants.TYPE_ORGANIZATION);
         	enableActiveOrganization(kindOfOrganization);
-        	if(kindOfOrganization.equals(TYPE_ORGANIZATION) || kindOfOrganization.equals(TOPIC_ORGANIZATION)){
+        	if(kindOfOrganization.equals(Constants.TYPE_ORGANIZATION) || kindOfOrganization.equals(Constants.TOPIC_ORGANIZATION)){
         		Log.d(TAG,"Selected By Type or By Topic. Restore default websites selection"); 
         		restoreDefaultWebsitesSelection(sharedPreferences);
         	}
@@ -199,11 +193,11 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 	 * @param activeOrganization the key that identifies the active kind of organization
 	 */
 	private void enableActiveOrganization(String activeOrganization) {
-		if (activeOrganization.equals(TYPE_ORGANIZATION)){
+		if (activeOrganization.equals(Constants.TYPE_ORGANIZATION)){
 	    	topicMultiList.setEnabled(false);
 	    	typeMultiList.setEnabled(true);
 	    	originMultiList.setEnabled(false);
-	    }else if(activeOrganization.equals(TOPIC_ORGANIZATION)){
+	    }else if(activeOrganization.equals(Constants.TOPIC_ORGANIZATION)){
 	    	topicMultiList.setEnabled(true);
 	    	typeMultiList.setEnabled(false);
 	    	originMultiList.setEnabled(false);

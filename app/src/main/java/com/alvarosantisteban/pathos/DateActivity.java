@@ -54,13 +54,9 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 
     private static final String TAG = "DateActivity";
 	
-	// Constants to determinate the kind of organization
-	private String TYPE_ORGANIZATION;
-	private String TOPIC_ORGANIZATION;
-	
 	// Constants to access Preferences
-	private final String LAST_SELECTION = "lastSelection";
-	private final String FIRST_TIME_APP = "isFirstTimeApp";
+	private final static String LAST_SELECTION = "lastSelection";
+	private final static String FIRST_TIME_APP = "isFirstTimeApp";
 
 	// Settings
 	private static final int RESULT_SETTINGS = 1;
@@ -176,9 +172,7 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		Log.d(TAG, "onCreate");
-		
-		TYPE_ORGANIZATION = getResources().getString(R.string.organization_by_type);
-		TOPIC_ORGANIZATION = getResources().getString(R.string.organization_by_topic);
+
 		toast = Toast.makeText(this, "", Toast.LENGTH_LONG);
 		
 		// Get the default shared preferences
@@ -223,9 +217,9 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 		}
 		
 		// Get the kind of organization
-		String kindOfOrganization = sharedPref.getString(SettingsFragment.KEY_PREF_LIST_ORGANIZATIONS, TYPE_ORGANIZATION);
+		String kindOfOrganization = sharedPref.getString(SettingsFragment.KEY_PREF_LIST_ORGANIZATIONS, Constants.TYPE_ORGANIZATION);
 		String kindOfOrganizationDBTag;
-		if (kindOfOrganization != null && kindOfOrganization.equals(TYPE_ORGANIZATION)){
+		if (kindOfOrganization != null && kindOfOrganization.equals(Constants.TYPE_ORGANIZATION)){
 			// Get the set of type tags
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 				typeTags = sharedPref.getStringSet(SettingsFragment.KEY_PREF_MULTILIST_TYPE, new HashSet<>(Arrays.asList(context.getResources().getStringArray(R.array.types_array_values))));
@@ -239,7 +233,7 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 				setOfTags = typeTags.toArray(new String[typeTags.size()]);
 			}
 			kindOfOrganizationDBTag = Constants.TYPE_TAG;
-		}else if (kindOfOrganization != null && kindOfOrganization.equals(TOPIC_ORGANIZATION)){
+		}else if (kindOfOrganization != null && kindOfOrganization.equals(Constants.TOPIC_ORGANIZATION)){
 			// Get the set of topic tags
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 				topicTags = sharedPref.getStringSet(SettingsFragment.KEY_PREF_MULTILIST_TOPIC, new HashSet<>(Arrays.asList(context.getResources().getStringArray(R.array.themas_array_values))));

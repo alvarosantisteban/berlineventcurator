@@ -21,4 +21,8 @@ public final class Constants {
     public static final String TYPE_TAG = "typeTag";
     public static final String THEMA_TAG = "themaTag";
     public static final String EVENTS_ORIGIN = "eventsOrigin";
+
+    // DETERMINATE THE KIND OF ORGANIZATION
+    public static final String TYPE_ORGANIZATION = "By Type";
+    public static final String TOPIC_ORGANIZATION = "By Topic";
 }
