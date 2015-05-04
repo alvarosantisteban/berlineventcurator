@@ -243,7 +243,7 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 			if (typeTags != null) {
 				setOfTags = typeTags.toArray(new String[typeTags.size()]);
 			}
-			kindOfOrganizationDBTag = "typeTag";
+			kindOfOrganizationDBTag = Constants.TYPE_TAG;
 		}else if (kindOfOrganization != null && kindOfOrganization.equals(TOPIC_ORGANIZATION)){
 			// Get the set of topic tags
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
@@ -258,10 +258,10 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 			if (topicTags != null) {
 				setOfTags = topicTags.toArray(new String[topicTags.size()]);
 			}
-			kindOfOrganizationDBTag ="themaTag";
+			kindOfOrganizationDBTag = Constants.THEMA_TAG;
 		}else{
 			setOfTags = originTags.toArray(new String[originTags.size()]);
-			kindOfOrganizationDBTag = "eventsOrigin";
+			kindOfOrganizationDBTag = Constants.EVENTS_ORIGIN;
 		}
 		
 		// Create the header groups
@@ -372,7 +372,7 @@ public class DateActivity extends OrmLiteBaseActivity<DatabaseHelper>{
 			try {
 				// create our argument which uses a SQL ? to avoid having problems with apostrophes
 				SelectArg deletedArg = new SelectArg(deletedGroup);
-				deleteBuilder.where().eq("eventsOrigin", deletedArg);
+				deleteBuilder.where().eq(Constants.EVENTS_ORIGIN, deletedArg);
 				deleteBuilder.delete();
 			} catch (SQLException e) {
 				Log.e(TAG, "Error deleting events after checking difference between old and new selection." + e);

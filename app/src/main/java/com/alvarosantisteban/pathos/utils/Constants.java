@@ -17,4 +17,8 @@ public final class Constants {
 
     // BUNDLE SAVED INSTANCE STATE
     public static final String BUNDLE_EVENTS_LIST = "bundleEventsList";
+
+    public static final String TYPE_TAG = "typeTag";
+    public static final String THEMA_TAG = "themaTag";
+    public static final String EVENTS_ORIGIN = "eventsOrigin";
 }
